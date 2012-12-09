@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSet1" targetNamespace="http://tempuri.org/DataSet1.xsd" xmlns:mstns="http://tempuri.org/DataSet1.xsd" xmlns="http://tempuri.org/DataSet1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSet1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSet1" msprop:Generator_UserDSName="DataSet1">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Architect" msprop:Generator_TableClassName="ArchitectDataTable" msprop:Generator_TableVarName="tableArchitect" msprop:Generator_TablePropName="Architect" msprop:Generator_RowDeletingName="ArchitectRowDeleting" msprop:Generator_UserTableName="Architect" msprop:Generator_RowChangingName="ArchitectRowChanging" msprop:Generator_RowEvHandlerName="ArchitectRowChangeEventHandler" msprop:Generator_RowDeletedName="ArchitectRowDeleted" msprop:Generator_RowEvArgName="ArchitectRowChangeEvent" msprop:Generator_RowChangedName="ArchitectRowChanged" msprop:Generator_RowClassName="ArchitectRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FirstName" msprop:Generator_ColumnVarNameInTable="columnFirstName" msprop:Generator_ColumnPropNameInRow="FirstName" msprop:Generator_ColumnPropNameInTable="FirstNameColumn" msprop:Generator_UserColumnName="FirstName" type="xs:string" minOccurs="0" />
+              <xs:element name="LastName" msprop:Generator_ColumnVarNameInTable="columnLastName" msprop:Generator_ColumnPropNameInRow="LastName" msprop:Generator_ColumnPropNameInTable="LastNameColumn" msprop:Generator_UserColumnName="LastName" type="xs:string" minOccurs="0" />
+              <xs:element name="ID" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Project" msprop:Generator_TableClassName="ProjectDataTable" msprop:Generator_TableVarName="tableProject" msprop:Generator_TablePropName="Project" msprop:Generator_RowDeletingName="ProjectRowDeleting" msprop:Generator_UserTableName="Project" msprop:Generator_RowChangingName="ProjectRowChanging" msprop:Generator_RowEvHandlerName="ProjectRowChangeEventHandler" msprop:Generator_RowDeletedName="ProjectRowDeleted" msprop:Generator_RowEvArgName="ProjectRowChangeEvent" msprop:Generator_RowChangedName="ProjectRowChanged" msprop:Generator_RowClassName="ProjectRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Name" msdata:Caption="FirstName" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
+              <xs:element name="ID" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Phase" msprop:Generator_TableClassName="PhaseDataTable" msprop:Generator_TableVarName="tablePhase" msprop:Generator_TablePropName="Phase" msprop:Generator_RowDeletingName="PhaseRowDeleting" msprop:Generator_UserTableName="Phase" msprop:Generator_RowChangingName="PhaseRowChanging" msprop:Generator_RowEvHandlerName="PhaseRowChangeEventHandler" msprop:Generator_RowDeletedName="PhaseRowDeleted" msprop:Generator_RowEvArgName="PhaseRowChangeEvent" msprop:Generator_RowChangedName="PhaseRowChanged" msprop:Generator_RowClassName="PhaseRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Name" msdata:Caption="FirstName" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
+              <xs:element name="ID" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Company" msprop:Generator_TableClassName="CompanyDataTable" msprop:Generator_TableVarName="tableCompany" msprop:Generator_TablePropName="Company" msprop:Generator_RowDeletingName="CompanyRowDeleting" msprop:Generator_UserTableName="Company" msprop:Generator_RowChangingName="CompanyRowChanging" msprop:Generator_RowEvHandlerName="CompanyRowChangeEventHandler" msprop:Generator_RowDeletedName="CompanyRowDeleted" msprop:Generator_RowEvArgName="CompanyRowChangeEvent" msprop:Generator_RowChangedName="CompanyRowChanged" msprop:Generator_RowClassName="CompanyRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Name" msdata:Caption="FirstName" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
+              <xs:element name="ID" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="ID" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Architect" />
+      <xs:field xpath="mstns:ID" />
+    </xs:unique>
+    <xs:unique name="Project_ID" msdata:ConstraintName="ID" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Project" />
+      <xs:field xpath="mstns:ID" />
+    </xs:unique>
+    <xs:unique name="Phase_ID" msdata:ConstraintName="ID" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Phase" />
+      <xs:field xpath="mstns:ID" />
+    </xs:unique>
+    <xs:unique name="Company_ID" msdata:ConstraintName="ID" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Company" />
+      <xs:field xpath="mstns:ID" />
+    </xs:unique>
+    <xs:keyref name="WorkAt" refer="ID" msprop:rel_Generator_UserChildTable="Company" msprop:rel_Generator_ChildPropName="GetCompanyRows" msprop:rel_Generator_ParentPropName="ArchitectRow" msprop:rel_Generator_UserRelationName="WorkAt" msprop:rel_Generator_RelationVarName="relationWorkAt" msprop:rel_Generator_UserParentTable="Architect">
+      <xs:selector xpath=".//mstns:Company" />
+      <xs:field xpath="mstns:ID" />
+    </xs:keyref>
+    <xs:keyref name="WorkOnProject" refer="ID" msprop:rel_Generator_UserChildTable="Project" msprop:rel_Generator_ChildPropName="GetProjectRows" msprop:rel_Generator_ParentPropName="ArchitectRow" msprop:rel_Generator_UserRelationName="WorkOnProject" msprop:rel_Generator_RelationVarName="relationWorkOnProject" msprop:rel_Generator_UserParentTable="Architect">
+      <xs:selector xpath=".//mstns:Project" />
+      <xs:field xpath="mstns:ID" />
+    </xs:keyref>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="WorkOnPhase" msdata:parent="Architect" msdata:child="Phase" msdata:parentkey="ID" msdata:childkey="ID" msprop:Generator_UserChildTable="Phase" msprop:Generator_ChildPropName="GetPhaseRows" msprop:Generator_ParentPropName="ArchitectRow" msprop:Generator_UserRelationName="WorkOnPhase" msprop:Generator_RelationVarName="relationWorkOnPhase" msprop:Generator_UserParentTable="Architect" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>
