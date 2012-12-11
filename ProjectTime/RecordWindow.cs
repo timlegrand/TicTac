@@ -46,7 +46,7 @@ namespace ProjectTime
             _architectsDb = architectsDb;
             _projectDb = projectDb;
             _phaseDb = phaseDb;
-            _bgTimer = null;
+            //_bgTimer = null;
             _currentArchitect = null;
             _currentProject = null;
             _currentPhase = null;
@@ -76,8 +76,7 @@ namespace ProjectTime
             GC.KeepAlive(_timer);
 
             // Create a backgroung worker for inter-thread communications
-            //_bgTimer = new BackgroundWorker();
-            //_bgTimer.RunWorkerAsync();
+            //this._bgTimer = new System.ComponentModel.BackgroundWorker();
 
             // Read config file if any
             if (File.Exists(ConfigFile))
@@ -159,20 +158,30 @@ namespace ProjectTime
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             _realTimeElapsed = string.Format("{0:00}:{1:00}:{2:00}", e.SignalTime.Hour, e.SignalTime.Minute, e.SignalTime.Second);
+            Debug.Assert(_bgTimer != null);
             _bgTimer.RunWorkerAsync();
         }
 
         private void BgTimerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.labelTime.Text = _realTimeElapsed;
+            // tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
+            // DOES NOT WORK
+            // (first method works)
+            //this.labelTime.Text = _realTimeElapsed;
         }
 
 
         private void AddArchitectClick(object sender, EventArgs e)
         {
+            if (!Program.IsInternetConnexion())
+            {
+                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+                
             var addForm = new AddArchitect(_architectsDb, this);
             addForm.Show();
-        }
+            }
 
         private void SaveConfig(Architect archi, Project pro, Phase ph)
         {
@@ -242,6 +251,26 @@ namespace ProjectTime
             Console.WriteLine("Writing " + ConfigFile + "...");
             SaveConfig(_currentArchitect, _currentProject, _currentPhase);
             Console.WriteLine(ConfigFile + " written.");
+        }
+
+        private void AddProjectClick(object sender, EventArgs e)
+        {
+            if (!Program.IsInternetConnexion())
+            {
+                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+            //TODO
+        }
+
+        private void AddPhaseClick(object sender, EventArgs e)
+        {
+            if (!Program.IsInternetConnexion())
+            {
+                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+            //TODO
         }
     }
 }

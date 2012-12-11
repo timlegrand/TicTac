@@ -103,6 +103,26 @@ namespace ProjectTime
             Application.Run(mainWindow);
         }
 
+        public static bool IsInternetConnexion()
+        {
+            var req = new System.Net.NetworkInformation.Ping();
+            System.Net.NetworkInformation.PingReply rep;
+            try
+            {
+                rep = req.Send("www.google.com");
+            }
+            catch (System.Net.NetworkInformation.PingException e)
+            {
+                using (var logFile = new System.IO.StreamWriter("log.txt", true))
+                {
+                    logFile.WriteLine(System.DateTime.Now + ": User tried to add an entry to the database but no Internet was available.");
+                }
+                return false;
+            }
+            return rep != null && (rep.Status == System.Net.NetworkInformation.IPStatus.Success);
+            
+        }
+
         public static void VarDump(object obj)
         {
             /*if ( obj.ToString() != string.Empty )

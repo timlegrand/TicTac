@@ -146,6 +146,7 @@ namespace ProjectTime
             this.addProject.TabIndex = 10;
             this.addProject.Text = "+";
             this.addProject.UseVisualStyleBackColor = true;
+            this.addProject.Click += new System.EventHandler(this.AddProjectClick);
             // 
             // addPhase
             // 
@@ -155,9 +156,10 @@ namespace ProjectTime
             this.addPhase.TabIndex = 11;
             this.addPhase.Text = "+";
             this.addPhase.UseVisualStyleBackColor = true;
-            //
-            // Background Worker thread
-            //
+            this.addPhase.Click += new System.EventHandler(this.AddPhaseClick);
+            // 
+            // _bgTimer
+            // 
             this._bgTimer.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BgTimerRunWorkerCompleted);
             // 
             // RecordWindow
