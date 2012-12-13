@@ -173,7 +173,7 @@ namespace ProjectTime
 
         private void AddArchitectClick(object sender, EventArgs e)
         {
-            if (!Program.IsInternetConnexion())
+            if (!Program.IsInternetConnexionAvailable())
             {
                 MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -255,7 +255,7 @@ namespace ProjectTime
 
         private void AddProjectClick(object sender, EventArgs e)
         {
-            if (!Program.IsInternetConnexion())
+            if (!Program.IsInternetConnexionAvailable())
             {
                 MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -265,7 +265,7 @@ namespace ProjectTime
 
         private void AddPhaseClick(object sender, EventArgs e)
         {
-            if (!Program.IsInternetConnexion())
+            if (!Program.IsInternetConnexionAvailable())
             {
                 MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;

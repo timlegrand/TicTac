@@ -8,19 +8,41 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 // For file access
 using System.IO;
-
+using MySql.Data.MySqlClient;
 namespace ProjectTime
 {
     static class Program
     {
+        public static string ConnexionString = "Database=he;DataSource=192.168.0.1;UserId=he;Password=mySqlUserPassword";
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
+            var con = new MySqlConnection(ConnexionString);
+            try
+            {
+                con.Open(); // connection must be openned for command
+                
+                var cmd = new MySqlCommand("select * from e_architect", con);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Console.WriteLine(reader.GetString("id") + ": " + reader.GetString("firstname"));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: "+ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return;
             // Use serialization to files until real DB
-            BinaryFormatter bformatter = new BinaryFormatter();
+            var bformatter = new BinaryFormatter();
 
             // Simulation of DB of Architects
             var architectsDb = new List<Architect>();
@@ -32,7 +54,6 @@ namespace ProjectTime
             // Serialization of DB Architects
             using(var architectsFile = File.Open("Architects.osl", FileMode.Create))
             {
-                //Console.WriteLine("Ecriture de la table des architectes (dans un fichier)");
                 bformatter.Serialize(architectsFile, architectsDb);
             }
          
@@ -40,10 +61,9 @@ namespace ProjectTime
             List<Architect> architects;
             using(var architectsFile = File.Open("Architects.osl", FileMode.Open))
             {
-                //Console.WriteLine("Lecture de la table des architectes (depuis un fichier)");
                 architects = (List<Architect>)bformatter.Deserialize(architectsFile);
             }
-           
+          
 
             // Simulation of DB of Projects
             var projectsDb = new List<Project>();
@@ -56,7 +76,6 @@ namespace ProjectTime
             // Serialization of DB Projects
             using(var projectsFile = File.Open("Projects.osl", FileMode.Create))
             {
-                //Console.WriteLine("Ecriture de la table des projets (dans un fichier)");
                 bformatter.Serialize(projectsFile, projectsDb);
             }
 
@@ -64,7 +83,6 @@ namespace ProjectTime
             List<Project> projects;
             using(var projectsFile = File.Open("Projects.osl", FileMode.Open))
             {
-                //Console.WriteLine("Lecture de la table des projets (depuis un fichier)");
                 projects = (List<Project>)bformatter.Deserialize(projectsFile);
             }
             
@@ -82,7 +100,6 @@ namespace ProjectTime
             // Serialization of DB Phases
             using(var phasesFile = File.Open("Phases.osl", FileMode.Create))
             {
-                //Console.WriteLine("Ecriture de la table des phases (dans un fichier)");
                 bformatter.Serialize(phasesFile, phasesDb);
             }
 
@@ -90,7 +107,6 @@ namespace ProjectTime
             List<Phase> phases;
             using(var phasesFile = File.Open("Phases.osl", FileMode.Open))
             {
-                //Console.WriteLine("Lecture de la table des phases (depuis un fichier)");
                 phases = (List<Phase>)bformatter.Deserialize(phasesFile);
             }
 
@@ -103,7 +119,7 @@ namespace ProjectTime
             Application.Run(mainWindow);
         }
 
-        public static bool IsInternetConnexion()
+        public static bool IsInternetConnexionAvailable()
         {
             var req = new System.Net.NetworkInformation.Ping();
             System.Net.NetworkInformation.PingReply rep;
