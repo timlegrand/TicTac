@@ -136,6 +136,7 @@ namespace ProjectTime
             this.addArchitect.TabIndex = 9;
             this.addArchitect.Text = "+";
             this.addArchitect.UseVisualStyleBackColor = true;
+            this.addArchitect.Visible = false;
             this.addArchitect.Click += new System.EventHandler(this.AddArchitectClick);
             // 
             // addProject
@@ -146,6 +147,7 @@ namespace ProjectTime
             this.addProject.TabIndex = 10;
             this.addProject.Text = "+";
             this.addProject.UseVisualStyleBackColor = true;
+            this.addProject.Visible = false;
             this.addProject.Click += new System.EventHandler(this.AddProjectClick);
             // 
             // addPhase
@@ -156,6 +158,7 @@ namespace ProjectTime
             this.addPhase.TabIndex = 11;
             this.addPhase.Text = "+";
             this.addPhase.UseVisualStyleBackColor = true;
+            this.addPhase.Visible = false;
             this.addPhase.Click += new System.EventHandler(this.AddPhaseClick);
             // 
             // _bgTimer

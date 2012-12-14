@@ -13,7 +13,6 @@ using System.Xml;
 
 // For timers
 using Timer = System.Timers.Timer;
-//using System.Threading;
 
 
 namespace ProjectTime
@@ -81,7 +80,7 @@ namespace ProjectTime
             // Read config file if any
             if (File.Exists(ConfigFile))
             {
-                ReadConfigFile(ConfigFile);
+                LoadConfig();
                 comboBoxArchitects.SelectedItem = _currentArchitect.FirstName;
                 comboBoxProjects.SelectedItem = _currentProject.Name;
                 comboBoxPhases.SelectedItem = _currentPhase.Name;
@@ -159,7 +158,7 @@ namespace ProjectTime
         {
             _realTimeElapsed = string.Format("{0:00}:{1:00}:{2:00}", e.SignalTime.Hour, e.SignalTime.Minute, e.SignalTime.Second);
             Debug.Assert(_bgTimer != null);
-            _bgTimer.RunWorkerAsync();
+            //_bgTimer.RunWorkerAsync();
         }
 
         private void BgTimerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -185,8 +184,12 @@ namespace ProjectTime
 
         private void SaveConfig(Architect archi, Project pro, Phase ph)
         {
-            var myXmlTextWriter = new XmlTextWriter("config.xml", System.Text.Encoding.UTF8);
-            myXmlTextWriter.Formatting = Formatting.Indented;
+            Program.VarDump(archi);
+            Program.VarDump(pro);
+            Program.VarDump(ph);
+
+            var myXmlTextWriter = new XmlTextWriter(ConfigFile, System.Text.Encoding.UTF8)
+                                      {Formatting = Formatting.Indented};
 
             myXmlTextWriter.WriteStartDocument(false);
             myXmlTextWriter.WriteComment("Fichier de sauvegarde de la dernière configuration de ProjectTime.");
@@ -207,7 +210,7 @@ namespace ProjectTime
             myXmlTextWriter.Close();
         }
 
-        private void ReadConfigFile(string configFile)
+        private void LoadConfig()
         {
             var settings = new XmlReaderSettings
                                {
@@ -215,7 +218,7 @@ namespace ProjectTime
                                    IgnoreWhitespace = true,
                                    IgnoreComments = true
                                };
-            var reader = XmlReader.Create(configFile, settings);
+            var reader = XmlReader.Create(ConfigFile, settings);
 
             reader.Read();
             reader.ReadStartElement("config");
@@ -243,6 +246,8 @@ namespace ProjectTime
             reader.ReadEndElement();
 
             reader.ReadEndElement();
+
+            reader.Close();
         }
 
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)

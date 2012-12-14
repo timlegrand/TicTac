@@ -10,6 +10,13 @@ namespace ProjectTime
         private string _lastName;
         private string _company;
 
+        public Architect()
+        {
+            _firstName = null;
+            _lastName = null;
+            _company = null;
+        }
+
         public Architect(string firstName, string lastName, string company)
         {
             _firstName = firstName;
@@ -34,6 +41,11 @@ namespace ProjectTime
         {
             get { return _company; }
             set { _company = value; }
+        }
+
+        public bool IsValid()
+        {
+            return ((_firstName != null) && (_lastName != null) && (_company != null));
         }
     }
 }
