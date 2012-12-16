@@ -9,15 +9,11 @@ namespace ProjectTime
         [STAThread]
         static void Main()
         {
-            var db = new DBConnect();
-            var architects = db.SelectAllArchitects();
-            var projects = db.SelectAllProjects();
-            var phases = db.SelectAllPhases();
-            
             // Create time recording window and launch application
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var mainWindow = new RecordWindow(architects, projects, phases){FormBorderStyle = FormBorderStyle.FixedSingle};
+            var mainWindow = new RecordWindow()
+                                 {FormBorderStyle = FormBorderStyle.FixedSingle};
             Application.Run(mainWindow);
         }
 
@@ -44,12 +40,14 @@ namespace ProjectTime
 
         public static void VarDump(object obj)
         {
-            /*if ( obj.ToString() != string.Empty )
+            // If native (atomic) type
+            if (obj.GetType().GetProperties().Length == 0)
             {
-                Console.Write(obj.ToString());
+                Console.WriteLine("({0}) \"{1}\"", obj.GetType().ToString(), obj.ToString());
                 return;
-            }*/
+            }
 
+            // Else if complex / user-defined type
             Console.WriteLine(obj.GetType().ToString());
             Console.WriteLine("{");
             PropertyInfo[] props = obj.GetType().GetProperties();

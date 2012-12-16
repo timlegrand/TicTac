@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
@@ -33,6 +36,11 @@ namespace ProjectTime
         //open connection to database
         private bool OpenConnection()
         {
+            if (_connection.State == ConnectionState.Open)
+            {
+                return true;
+            }
+            
             try
             {
                 _connection.Open();
@@ -70,10 +78,22 @@ namespace ProjectTime
             }
         }
 
-        //Insert statement
-        public void Insert()
+        //InsertWorked statement
+        public void InsertWorked(double elapsedTime, Architect archi, Project project, Phase phase)
         {
-            //TODO
+            if (OpenConnection())
+            {
+                var cmd = new MySqlCommand(null, _connection);
+                cmd.CommandText = "INSERT INTO r_worked VALUES (@archi, @project, @phase, @time)";
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@archi", archi.Id);
+                cmd.Parameters.AddWithValue("@project", project.Id);
+                cmd.Parameters.AddWithValue("@phase", phase.Id);
+                cmd.Parameters.AddWithValue("@time", elapsedTime);
+                
+                cmd.ExecuteNonQuery();
+                CloseConnection();
+            }
         }
 
         //Update statement
@@ -88,77 +108,176 @@ namespace ProjectTime
             //TODO
         }
 
-
-        public List<Architect> SelectAllArchitects()
+        public double GetTimeCountFromProjectId(int? id)
         {
-            const string query = "SELECT * FROM e_architect";
-
-            var architects = new List<Architect>();
+            Debug.Assert(id != null);
+                
+            string query = "SELECT * FROM r_worked WHERE project=\"" + id + "\"";
+            double count=0;
             if (OpenConnection())
             {
                 var cmd = new MySqlCommand(query, _connection);
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    var fn = (string) dataReader["firstname"];
-                    var ln = (string) dataReader["lastname"];
-                    var co = (string) dataReader["company"].ToString();
-
-                    architects.Add(new Architect(fn, ln, co));
+                    count += (double) dataReader["time"];
                 }
 
                 dataReader.Close();
                 CloseConnection();
             }
+            return count;
+        }
+
+        public string GetArchitectFullNameFromId(int id)
+        {
+            string query = "SELECT * FROM e_architect WHERE ID=\"" + id + "\"";
+            string name = null;
+
+            if (OpenConnection())
+            {
+                var cmd = new MySqlCommand(query, _connection);
+                var dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    var fn = (string)dataReader["firstname"];
+                    var ln = (string)dataReader["lastname"];
+                    name = fn + " " + ln;
+                }
+                dataReader.Close();
+                CloseConnection();
+            }
+
+            return name;
+        }
+
+        public string GetProjectNameFromId(int id)
+        {
+            string query = "SELECT * FROM e_project WHERE ID=\"" + id + "\"";
+            string name = null;
+
+            if (OpenConnection())
+            {
+                var cmd = new MySqlCommand(query, _connection);
+                var dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    name = (string)dataReader["name"];
+                }
+                dataReader.Close();
+                CloseConnection();
+            }
+
+            return name;
+        }
+
+        public string GetPhaseNameFromId(int id)
+        {
+            string query = "SELECT * FROM e_phase WHERE ID=\"" + id + "\"";
+            string name = null;
+
+            if (OpenConnection())
+            {
+                var cmd = new MySqlCommand(query, _connection);
+                var dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    name = (string)dataReader["name"];
+                }
+                dataReader.Close();
+                CloseConnection();
+            }
+
+            return name;
+        }
+
+        public string GetCompanyNameFromId(int id)
+        {
+            string query = "SELECT * FROM e_company WHERE ID=\"" + id + "\"";
+            string name = null;
+
+            if (OpenConnection())
+            {
+                var cmd = new MySqlCommand(query, _connection);
+                var dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    name = (string) dataReader["name"];
+                }
+                dataReader.Close();
+                CloseConnection();
+            }
+
+            return name;
+        }
+
+        public List<Architect> SelectAllArchitects()
+        {
+            const string query = "SELECT * FROM e_architect";
+            var architects = new List<Architect>();
+
+            if (OpenConnection())
+            {
+                var cmd = new MySqlCommand(query, _connection);
+                var dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    var id = (int) dataReader["id"];
+                    var fn = (string) dataReader["firstname"];
+                    var ln = (string) dataReader["lastname"];
+                    var co = (int) dataReader["company"];
+                    architects.Add(new Architect(id, fn, ln, co.ToString()));
+                }
+                dataReader.Close();
+                CloseConnection();
+            }
+
             return architects;
         }
 
         public List<Project> SelectAllProjects()
         {
             const string query = "SELECT * FROM e_project";
-
             var projects = new List<Project>();
+            
             if (OpenConnection())
             {
                 var cmd = new MySqlCommand(query, _connection);
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    var n = (string)dataReader["name"];
-                    projects.Add(new Project(n));
+                    var id = (int) dataReader["id"];
+                    var na = (string)dataReader["name"];
+                    projects.Add(new Project(id, na));
                 }
-
                 dataReader.Close();
                 CloseConnection();
             }
+
             return projects;
         }
 
         public List<Phase> SelectAllPhases()
         {
             const string query = "SELECT * FROM e_phase";
-
             var phases = new List<Phase>();
+            
             if (OpenConnection())
             {
                 var cmd = new MySqlCommand(query, _connection);
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    var n = (string)dataReader["name"];
-                    phases.Add(new Phase(n));
+                    var id = (int)dataReader["id"];
+                    var na = (string)dataReader["name"];
+                    phases.Add(new Phase(id, na));
                 }
-
                 dataReader.Close();
                 CloseConnection();
             }
+
             return phases;
         }
 
-        public int Count()
-        {
-            //TODO
-            return 0;
-        }
     }
 }

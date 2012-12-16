@@ -20,6 +20,7 @@ namespace ProjectTime
     public partial class RecordWindow : Form
     {
         //private string _title;
+        private readonly DBConnect _db;
         private readonly List<Project> _projectDb;
         private readonly List<Phase> _phaseDb;
         private readonly List<Architect> _architectsDb;
@@ -39,24 +40,25 @@ namespace ProjectTime
         delegate void SetTextCallback(string text);
 
 
-        public RecordWindow(List<Architect> architectsDb, List<Project> projectDb, List<Phase> phaseDb)
+        public RecordWindow()
         {
             InitializeComponent();
-            _architectsDb = architectsDb;
-            _projectDb = projectDb;
-            _phaseDb = phaseDb;
-            //_bgTimer = null;
+            _db = new DBConnect();
+            _architectsDb = _db.SelectAllArchitects();
+            _projectDb = _db.SelectAllProjects();
+            _phaseDb = _db.SelectAllPhases();
+            
             _currentArchitect = null;
             _currentProject = null;
             _currentPhase = null;
             buttonStop.Enabled = false;
 
             // Fill in the Architects ComboBox
-            var queryArchitects = from arch in _architectsDb orderby arch.FirstName ascending select arch.FirstName;
+            //var queryArchitects = from arch in _architectsDb orderby arch.LastName ascending select new { arch.FirstName, arch.LastName };
+            var queryArchitects = from arch in _architectsDb orderby arch.LastName ascending select arch.FirstName;
             comboBoxArchitects.Items.AddRange(queryArchitects.ToArray());
             comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
             
-
             // Fill in the Projects ComboBox
             var queryProjects = from proj in _projectDb orderby proj.Name ascending select proj.Name;
             comboBoxProjects.Items.AddRange(queryProjects.ToArray());
@@ -135,6 +137,7 @@ namespace ProjectTime
             _elapsedTime = _stopTime - _startTime;
             labelTime.Text = string.Format("{0:00}:{1:00}:{2:00}", _elapsedTime.Hours, _elapsedTime.Minutes,
                                            _elapsedTime.Seconds);
+            _db.InsertWorked(_elapsedTime.TotalSeconds, _currentArchitect, _currentProject, _currentPhase);
             buttonStart.Enabled = true;
             buttonStop.Enabled = false;
         }
@@ -151,7 +154,7 @@ namespace ProjectTime
 
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _currentArchitect = GetArchitectFromName((string) comboBoxArchitects.SelectedItem);
+            _currentArchitect = GetArchitectFromName((string) comboBoxArchitects.SelectedItem.ToString());
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
