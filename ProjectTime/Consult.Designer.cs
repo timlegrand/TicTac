@@ -42,6 +42,8 @@
             this.addPhase = new System.Windows.Forms.Button();
             this.addProject = new System.Windows.Forms.Button();
             this.addArchitect = new System.Windows.Forms.Button();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBoxArchitects
@@ -172,11 +174,22 @@
             this.addArchitect.UseVisualStyleBackColor = true;
             this.addArchitect.Click += new System.EventHandler(this.AddArchitectClick);
             // 
+            // pictureBox
+            // 
+            this.pictureBox.Image = global::ProjectTime.Properties.Resources.loading;
+            this.pictureBox.Location = new System.Drawing.Point(172, 102);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(21, 21);
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox.TabIndex = 15;
+            this.pictureBox.TabStop = false;
+            // 
             // Consult
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(286, 220);
+            this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.addPhase);
             this.Controls.Add(this.addProject);
             this.Controls.Add(this.addArchitect);
@@ -191,8 +204,10 @@
             this.Controls.Add(this.comboBoxPhases);
             this.Controls.Add(this.comboBoxProjects);
             this.Controls.Add(this.comboBoxArchitects);
+            this.MaximizeBox = false;
             this.Name = "Consult";
             this.Text = "Consulter";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -214,5 +229,6 @@
         private System.Windows.Forms.Button addPhase;
         private System.Windows.Forms.Button addProject;
         private System.Windows.Forms.Button addArchitect;
+        private System.Windows.Forms.PictureBox pictureBox;
     }
 }

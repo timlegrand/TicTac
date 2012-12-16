@@ -141,8 +141,6 @@ namespace ProjectTime
                 }
                 where += "phase=\"" + phaseId + "\"";
             }
-
-            Console.WriteLine(where);
             
             string query = "SELECT * FROM r_worked" + where;
             double count = 0;

@@ -21,9 +21,9 @@ namespace ProjectTime
     {
         //private string _title;
         private readonly DBConnect _db;
-        private readonly List<Project> _projectDb;
-        private readonly List<Phase> _phaseDb;
-        private readonly List<Architect> _architectsDb;
+        private readonly List<Project> _projectList;
+        private readonly List<Phase> _phaseList;
+        private readonly List<Architect> _architectsList;
         private Architect _currentArchitect;
         private Project _currentProject;
         private Phase _currentPhase;
@@ -44,9 +44,9 @@ namespace ProjectTime
         {
             InitializeComponent();
             _db = new DBConnect();
-            _architectsDb = _db.SelectAllArchitects();
-            _projectDb = _db.SelectAllProjects();
-            _phaseDb = _db.SelectAllPhases();
+            _architectsList = _db.SelectAllArchitects();
+            _projectList = _db.SelectAllProjects();
+            _phaseList = _db.SelectAllPhases();
             
             _currentArchitect = null;
             _currentProject = null;
@@ -54,11 +54,11 @@ namespace ProjectTime
             buttonStop.Enabled = false;
 
             // Fill in the Architect, Project and Phases ComboBox
-            comboBoxArchitects.Items.AddRange(_architectsDb.ToArray());
+            comboBoxArchitects.Items.AddRange(_architectsList.ToArray());
             comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
-            comboBoxProjects.Items.AddRange(_projectDb.ToArray());
+            comboBoxProjects.Items.AddRange(_projectList.ToArray());
             comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
-            comboBoxPhases.Items.AddRange(_phaseDb.ToArray());
+            comboBoxPhases.Items.AddRange(_phaseList.ToArray());
             comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
 
             // Create a timer with a one-second interval
@@ -96,21 +96,21 @@ namespace ProjectTime
         // Database queries
         private Architect GetArchitectFromId(int id)
         {
-            var matchingArchitects = from arch in _architectsDb where arch.Id == id select arch;
+            var matchingArchitects = from arch in _architectsList where arch.Id == id select arch;
             if (matchingArchitects.Count() != 1) throw new DataException("Aucun ou plusieurs architectes ont l'id désiré");
             return matchingArchitects.First();
         }
 
         private Project GetProjectFromId(int id)
         {
-            var matchingProjects = from proj in _projectDb where proj.Id == id select proj;
+            var matchingProjects = from proj in _projectList where proj.Id == id select proj;
             if (matchingProjects.Count() != 1) throw new DataException("Aucun ou plusieurs projets ont le nom désiré");
             return matchingProjects.First();
         }
 
         private Phase GetPhaseFromId(int id)
         {
-            var matchingPhases = from phase in _phaseDb where phase.Id == id select phase;
+            var matchingPhases = from phase in _phaseList where phase.Id == id select phase;
             if (matchingPhases.Count() != 1) throw new DataException();
             return matchingPhases.First();
         }

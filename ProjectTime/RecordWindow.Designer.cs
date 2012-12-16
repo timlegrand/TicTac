@@ -155,7 +155,9 @@ namespace ProjectTime
             this.Controls.Add(this.comboBoxProjects);
             this.Controls.Add(this.buttonStop);
             this.Controls.Add(this.buttonStart);
+            this.MaximizeBox = false;
             this.Name = "RecordWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ProjectTime";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.RecordWindowFormClosed);
             this.ResumeLayout(false);

@@ -17,8 +17,7 @@ namespace ProjectTime
                                         Screen.PrimaryScreen.WorkingArea.Height/2);
             var mainWindow = new RecordWindow
                                  {
-                                     FormBorderStyle = FormBorderStyle.FixedSingle,
-                                     Location = centerPoint
+                                     FormBorderStyle = FormBorderStyle.FixedSingle
                                  };
             Application.Run(mainWindow);
         }
