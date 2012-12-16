@@ -32,11 +32,11 @@ namespace ProjectTime
         private TimeSpan _elapsedTime;
         private static Timer _timer;
         private BackgroundWorker _bgTimer;
-        private const string ConfigFile = "config.xml";
+        private const string ConfigFileName = "config.xml";
+        private string ConfigFile;
         private string _realTimeElapsed;
 
-        // This delegate enables asynchronous calls for setting
-        // the text property on a TextBox control.
+        // This delegate enables asynchronous calls for setting the text property on a TextBox control.
         delegate void SetTextCallback(string text);
 
 
@@ -71,7 +71,14 @@ namespace ProjectTime
             // Create a backgroung worker for inter-thread communications
             //this._bgTimer = new System.ComponentModel.BackgroundWorker();
 
-            // Read config file if any
+            // ConfigFile should be saved in "My Document" folder
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ProjectTime\\";
+            if (!Directory.Exists(path)) 
+            {
+                Directory.CreateDirectory(path);
+            }
+            ConfigFile = path + ConfigFileName;
+            Console.WriteLine(ConfigFile);
             if (File.Exists(ConfigFile) && (new FileInfo(ConfigFile).Length > 100))
             {
                 LoadConfig();
@@ -112,7 +119,7 @@ namespace ProjectTime
         // ComboBox selection
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _currentArchitect = (Architect)comboBoxArchitects.SelectedItem;
+            _currentArchitect = (Architect) comboBoxArchitects.SelectedItem;
         }
         
         private void ComboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
@@ -242,6 +249,7 @@ namespace ProjectTime
             reader.Close();
         }
 
+        // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
             Debug.Assert(_currentArchitect != null && _currentProject != null && _currentPhase != null);
@@ -250,37 +258,11 @@ namespace ProjectTime
             Console.WriteLine(ConfigFile + " written.");
         }
 
-
-        private void AddArchitectClick(object sender, EventArgs e)
+        private void ButtonConsultClick(object sender, EventArgs e)
         {
-            if (!Program.IsInternetConnexionAvailable())
-            {
-                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
-            var addForm = new AddArchitect(_architectsDb, this);
-            addForm.Show();
-        }
-
-        private void AddProjectClick(object sender, EventArgs e)
-        {
-            if (!Program.IsInternetConnexionAvailable())
-            {
-                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-            //TODO
-        }
-
-        private void AddPhaseClick(object sender, EventArgs e)
-        {
-            if (!Program.IsInternetConnexionAvailable())
-            {
-                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-            //TODO
+            var consultForm = new Consult(this)
+                                  { FormBorderStyle = FormBorderStyle.FixedSingle };
+            consultForm.Show();
         }
     }
 }

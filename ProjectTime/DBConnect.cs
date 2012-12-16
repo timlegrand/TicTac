@@ -36,6 +36,12 @@ namespace ProjectTime
         //open connection to database
         private bool OpenConnection()
         {
+            if (!Program.IsInternetConnexionAvailable())
+            {
+                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return false;
+            }
+
             if (_connection.State == ConnectionState.Open)
             {
                 return true;
@@ -84,7 +90,7 @@ namespace ProjectTime
             if (OpenConnection())
             {
                 var cmd = new MySqlCommand(null, _connection);
-                cmd.CommandText = "INSERT INTO r_worked VALUES (@archi, @project, @phase, @time)";
+                cmd.CommandText = "INSERT INTO r_worked VALUES (NOW(), @archi, @project, @phase, @time)";
                 cmd.Prepare();
                 cmd.Parameters.AddWithValue("@archi", archi.Id);
                 cmd.Parameters.AddWithValue("@project", project.Id);
@@ -106,6 +112,53 @@ namespace ProjectTime
         public void Delete()
         {
             //TODO
+        }
+
+        public double GetTimeCount(int? archiId, int? projectId, int? phaseId)
+        {
+            string where = "";
+            if ((archiId != null) || (projectId != null) || (phaseId != null))
+            {
+                where += " WHERE ";
+            }
+            if (archiId != null)
+            {
+                where += "archi=\"" + archiId + "\"";
+            }
+            if (projectId != null)
+            {
+                if (archiId != null)
+                {
+                    where += " AND ";
+                }
+                where += "project=\"" + projectId + "\"";
+            }
+            if (phaseId != null)
+            {
+                if (projectId != null)
+                {
+                    where += " AND ";
+                }
+                where += "phase=\"" + phaseId + "\"";
+            }
+
+            Console.WriteLine(where);
+            
+            string query = "SELECT * FROM r_worked" + where;
+            double count = 0;
+            if (OpenConnection())
+            {
+                var cmd = new MySqlCommand(query, _connection);
+                var dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    count += (double)dataReader["time"];
+                }
+
+                dataReader.Close();
+                CloseConnection();
+            }
+            return count;
         }
 
         public double GetTimeCountFromProjectId(int? id)

@@ -85,6 +85,12 @@
       <DependentUpon>AddArchitect.cs</DependentUpon>
     </Compile>
     <Compile Include="DBConnect.cs" />
+    <Compile Include="Consult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Consult.Designer.cs">
+      <DependentUpon>Consult.cs</DependentUpon>
+    </Compile>
     <Compile Include="Phase.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="RecordWindow.cs">
@@ -97,6 +103,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AddArchitect.resx">
       <DependentUpon>AddArchitect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Consult.resx">
+      <DependentUpon>Consult.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RecordWindow.resx">
       <DependentUpon>RecordWindow.cs</DependentUpon>

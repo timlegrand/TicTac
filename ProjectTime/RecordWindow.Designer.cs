@@ -39,10 +39,8 @@ namespace ProjectTime
             this.label3 = new System.Windows.Forms.Label();
             this.comboBoxArchitects = new System.Windows.Forms.ComboBox();
             this.labelTime = new System.Windows.Forms.Label();
-            this.addArchitect = new System.Windows.Forms.Button();
-            this.addProject = new System.Windows.Forms.Button();
-            this.addPhase = new System.Windows.Forms.Button();
             this._bgTimer = new System.ComponentModel.BackgroundWorker();
+            this.buttonConsult = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonStart
@@ -128,51 +126,26 @@ namespace ProjectTime
             this.labelTime.TabIndex = 8;
             this.labelTime.Text = "Au boulot !";
             // 
-            // addArchitect
-            // 
-            this.addArchitect.Location = new System.Drawing.Point(253, 13);
-            this.addArchitect.Name = "addArchitect";
-            this.addArchitect.Size = new System.Drawing.Size(20, 21);
-            this.addArchitect.TabIndex = 9;
-            this.addArchitect.Text = "+";
-            this.addArchitect.UseVisualStyleBackColor = true;
-            this.addArchitect.Visible = false;
-            this.addArchitect.Click += new System.EventHandler(this.AddArchitectClick);
-            // 
-            // addProject
-            // 
-            this.addProject.Location = new System.Drawing.Point(253, 40);
-            this.addProject.Name = "addProject";
-            this.addProject.Size = new System.Drawing.Size(20, 21);
-            this.addProject.TabIndex = 10;
-            this.addProject.Text = "+";
-            this.addProject.UseVisualStyleBackColor = true;
-            this.addProject.Visible = false;
-            this.addProject.Click += new System.EventHandler(this.AddProjectClick);
-            // 
-            // addPhase
-            // 
-            this.addPhase.Location = new System.Drawing.Point(253, 67);
-            this.addPhase.Name = "addPhase";
-            this.addPhase.Size = new System.Drawing.Size(20, 21);
-            this.addPhase.TabIndex = 11;
-            this.addPhase.Text = "+";
-            this.addPhase.UseVisualStyleBackColor = true;
-            this.addPhase.Visible = false;
-            this.addPhase.Click += new System.EventHandler(this.AddPhaseClick);
-            // 
             // _bgTimer
             // 
             this._bgTimer.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BgTimerRunWorkerCompleted);
+            // 
+            // buttonConsult
+            // 
+            this.buttonConsult.Location = new System.Drawing.Point(187, 131);
+            this.buttonConsult.Name = "buttonConsult";
+            this.buttonConsult.Size = new System.Drawing.Size(75, 21);
+            this.buttonConsult.TabIndex = 9;
+            this.buttonConsult.Text = "Consulter";
+            this.buttonConsult.UseVisualStyleBackColor = true;
+            this.buttonConsult.Click += new System.EventHandler(this.ButtonConsultClick);
             // 
             // RecordWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(282, 157);
-            this.Controls.Add(this.addPhase);
-            this.Controls.Add(this.addProject);
-            this.Controls.Add(this.addArchitect);
+            this.Controls.Add(this.buttonConsult);
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.comboBoxArchitects);
             this.Controls.Add(this.label3);
@@ -201,9 +174,7 @@ namespace ProjectTime
         private System.Windows.Forms.ComboBox comboBoxPhases;
         private System.Windows.Forms.ComboBox comboBoxArchitects;
         private System.Windows.Forms.Label labelTime;
-        private System.Windows.Forms.Button addArchitect;
-        private System.Windows.Forms.Button addProject;
-        private System.Windows.Forms.Button addPhase;
+        private System.Windows.Forms.Button buttonConsult;
     }
 }
 

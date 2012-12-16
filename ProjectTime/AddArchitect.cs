@@ -12,7 +12,7 @@ namespace ProjectTime
     public partial class AddArchitect : Form
     {
         private  List<Architect> _architectDb;
-        private RecordWindow _mainWindow;
+        private readonly RecordWindow _mainWindow;
 
         public AddArchitect(List<Architect> architectDb, RecordWindow mainWindow)
         {

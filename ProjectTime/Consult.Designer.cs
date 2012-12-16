@@ -1,0 +1,218 @@
+﻿namespace ProjectTime
+{
+    partial class Consult
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.comboBoxArchitects = new System.Windows.Forms.ComboBox();
+            this.comboBoxProjects = new System.Windows.Forms.ComboBox();
+            this.comboBoxPhases = new System.Windows.Forms.ComboBox();
+            this.labelArchitect = new System.Windows.Forms.Label();
+            this.labelProject = new System.Windows.Forms.Label();
+            this.labelPhase = new System.Windows.Forms.Label();
+            this.buttonValidate = new System.Windows.Forms.Button();
+            this.labelTotalCountHours = new System.Windows.Forms.Label();
+            this.textBoxCountHours = new System.Windows.Forms.TextBox();
+            this.textBoxCountManMonth = new System.Windows.Forms.TextBox();
+            this.labelTotalCountManMonth = new System.Windows.Forms.Label();
+            this.addPhase = new System.Windows.Forms.Button();
+            this.addProject = new System.Windows.Forms.Button();
+            this.addArchitect = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // comboBoxArchitects
+            // 
+            this.comboBoxArchitects.FormattingEnabled = true;
+            this.comboBoxArchitects.Location = new System.Drawing.Point(116, 18);
+            this.comboBoxArchitects.Name = "comboBoxArchitects";
+            this.comboBoxArchitects.Size = new System.Drawing.Size(158, 21);
+            this.comboBoxArchitects.TabIndex = 0;
+            this.comboBoxArchitects.SelectedIndexChanged += new System.EventHandler(this.ComboBoxArchitectsSelectedIndexChanged);
+            // 
+            // comboBoxProjects
+            // 
+            this.comboBoxProjects.FormattingEnabled = true;
+            this.comboBoxProjects.Location = new System.Drawing.Point(116, 46);
+            this.comboBoxProjects.Name = "comboBoxProjects";
+            this.comboBoxProjects.Size = new System.Drawing.Size(158, 21);
+            this.comboBoxProjects.TabIndex = 1;
+            this.comboBoxProjects.SelectedIndexChanged += new System.EventHandler(this.ComboBoxProjectsSelectedIndexChanged);
+            // 
+            // comboBoxPhases
+            // 
+            this.comboBoxPhases.FormattingEnabled = true;
+            this.comboBoxPhases.Location = new System.Drawing.Point(116, 74);
+            this.comboBoxPhases.Name = "comboBoxPhases";
+            this.comboBoxPhases.Size = new System.Drawing.Size(158, 21);
+            this.comboBoxPhases.TabIndex = 2;
+            this.comboBoxPhases.SelectedIndexChanged += new System.EventHandler(this.ComboBoxPhasesSelectedIndexChanged);
+            // 
+            // labelArchitect
+            // 
+            this.labelArchitect.AutoSize = true;
+            this.labelArchitect.Location = new System.Drawing.Point(44, 21);
+            this.labelArchitect.Name = "labelArchitect";
+            this.labelArchitect.Size = new System.Drawing.Size(55, 13);
+            this.labelArchitect.TabIndex = 3;
+            this.labelArchitect.Text = "Architecte";
+            // 
+            // labelProject
+            // 
+            this.labelProject.AutoSize = true;
+            this.labelProject.Location = new System.Drawing.Point(44, 49);
+            this.labelProject.Name = "labelProject";
+            this.labelProject.Size = new System.Drawing.Size(34, 13);
+            this.labelProject.TabIndex = 4;
+            this.labelProject.Text = "Projet";
+            // 
+            // labelPhase
+            // 
+            this.labelPhase.AutoSize = true;
+            this.labelPhase.Location = new System.Drawing.Point(44, 77);
+            this.labelPhase.Name = "labelPhase";
+            this.labelPhase.Size = new System.Drawing.Size(37, 13);
+            this.labelPhase.TabIndex = 5;
+            this.labelPhase.Text = "Phase";
+            // 
+            // buttonValidate
+            // 
+            this.buttonValidate.Location = new System.Drawing.Point(199, 101);
+            this.buttonValidate.Name = "buttonValidate";
+            this.buttonValidate.Size = new System.Drawing.Size(75, 23);
+            this.buttonValidate.TabIndex = 6;
+            this.buttonValidate.Text = "Valider";
+            this.buttonValidate.UseVisualStyleBackColor = true;
+            this.buttonValidate.Click += new System.EventHandler(this.ButtonValidateClick);
+            // 
+            // labelTotalCountHours
+            // 
+            this.labelTotalCountHours.AutoSize = true;
+            this.labelTotalCountHours.Location = new System.Drawing.Point(12, 152);
+            this.labelTotalCountHours.Name = "labelTotalCountHours";
+            this.labelTotalCountHours.Size = new System.Drawing.Size(66, 13);
+            this.labelTotalCountHours.TabIndex = 7;
+            this.labelTotalCountHours.Text = "Total heures";
+            // 
+            // textBoxCountHours
+            // 
+            this.textBoxCountHours.Location = new System.Drawing.Point(116, 149);
+            this.textBoxCountHours.Name = "textBoxCountHours";
+            this.textBoxCountHours.ReadOnly = true;
+            this.textBoxCountHours.Size = new System.Drawing.Size(158, 20);
+            this.textBoxCountHours.TabIndex = 8;
+            // 
+            // textBoxCountManMonth
+            // 
+            this.textBoxCountManMonth.Location = new System.Drawing.Point(116, 179);
+            this.textBoxCountManMonth.Name = "textBoxCountManMonth";
+            this.textBoxCountManMonth.ReadOnly = true;
+            this.textBoxCountManMonth.Size = new System.Drawing.Size(158, 20);
+            this.textBoxCountManMonth.TabIndex = 10;
+            // 
+            // labelTotalCountManMonth
+            // 
+            this.labelTotalCountManMonth.AutoSize = true;
+            this.labelTotalCountManMonth.Location = new System.Drawing.Point(12, 182);
+            this.labelTotalCountManMonth.Name = "labelTotalCountManMonth";
+            this.labelTotalCountManMonth.Size = new System.Drawing.Size(88, 13);
+            this.labelTotalCountManMonth.TabIndex = 9;
+            this.labelTotalCountManMonth.Text = "Total homme.jour";
+            // 
+            // addPhase
+            // 
+            this.addPhase.Location = new System.Drawing.Point(12, 73);
+            this.addPhase.Name = "addPhase";
+            this.addPhase.Size = new System.Drawing.Size(20, 21);
+            this.addPhase.TabIndex = 14;
+            this.addPhase.Text = "+";
+            this.addPhase.UseVisualStyleBackColor = true;
+            this.addPhase.Click += new System.EventHandler(this.AddPhaseClick);
+            // 
+            // addProject
+            // 
+            this.addProject.Location = new System.Drawing.Point(12, 46);
+            this.addProject.Name = "addProject";
+            this.addProject.Size = new System.Drawing.Size(20, 21);
+            this.addProject.TabIndex = 13;
+            this.addProject.Text = "+";
+            this.addProject.UseVisualStyleBackColor = true;
+            this.addProject.Click += new System.EventHandler(this.AddProjectClick);
+            // 
+            // addArchitect
+            // 
+            this.addArchitect.Location = new System.Drawing.Point(12, 19);
+            this.addArchitect.Name = "addArchitect";
+            this.addArchitect.Size = new System.Drawing.Size(20, 21);
+            this.addArchitect.TabIndex = 12;
+            this.addArchitect.Text = "+";
+            this.addArchitect.UseVisualStyleBackColor = true;
+            this.addArchitect.Click += new System.EventHandler(this.AddArchitectClick);
+            // 
+            // Consult
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(286, 220);
+            this.Controls.Add(this.addPhase);
+            this.Controls.Add(this.addProject);
+            this.Controls.Add(this.addArchitect);
+            this.Controls.Add(this.textBoxCountManMonth);
+            this.Controls.Add(this.labelTotalCountManMonth);
+            this.Controls.Add(this.textBoxCountHours);
+            this.Controls.Add(this.labelTotalCountHours);
+            this.Controls.Add(this.buttonValidate);
+            this.Controls.Add(this.labelPhase);
+            this.Controls.Add(this.labelProject);
+            this.Controls.Add(this.labelArchitect);
+            this.Controls.Add(this.comboBoxPhases);
+            this.Controls.Add(this.comboBoxProjects);
+            this.Controls.Add(this.comboBoxArchitects);
+            this.Name = "Consult";
+            this.Text = "Consulter";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.ComboBox comboBoxArchitects;
+        private System.Windows.Forms.ComboBox comboBoxProjects;
+        private System.Windows.Forms.ComboBox comboBoxPhases;
+        private System.Windows.Forms.Label labelArchitect;
+        private System.Windows.Forms.Label labelProject;
+        private System.Windows.Forms.Label labelPhase;
+        private System.Windows.Forms.Button buttonValidate;
+        private System.Windows.Forms.Label labelTotalCountHours;
+        private System.Windows.Forms.TextBox textBoxCountHours;
+        private System.Windows.Forms.TextBox textBoxCountManMonth;
+        private System.Windows.Forms.Label labelTotalCountManMonth;
+        private System.Windows.Forms.Button addPhase;
+        private System.Windows.Forms.Button addProject;
+        private System.Windows.Forms.Button addArchitect;
+    }
+}
