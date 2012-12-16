@@ -35,9 +35,15 @@ namespace ProjectTime
             set { _name = value; }
         }
 
+        // Service
         public bool IsPushable()
         {
             return ((_id == null) && (_name != null));
+        }
+        
+        public override string ToString()
+        {
+            return _name;
         }
     }
 }

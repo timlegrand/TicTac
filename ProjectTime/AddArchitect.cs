@@ -31,7 +31,10 @@ namespace ProjectTime
                 MessageBox.Show("Please fill-in every fields", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
+            /*
             _architectDb.Add(new Architect(fn, ln, cp));
+            */
+            // TODO
             _mainWindow.Update();
             this.Hide();
         }

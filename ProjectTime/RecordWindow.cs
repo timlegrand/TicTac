@@ -53,20 +53,12 @@ namespace ProjectTime
             _currentPhase = null;
             buttonStop.Enabled = false;
 
-            // Fill in the Architects ComboBox
-            //var queryArchitects = from arch in _architectsDb orderby arch.LastName ascending select new { arch.FirstName, arch.LastName };
-            var queryArchitects = from arch in _architectsDb orderby arch.LastName ascending select arch.FirstName;
-            comboBoxArchitects.Items.AddRange(queryArchitects.ToArray());
+            // Fill in the Architect, Project and Phases ComboBox
+            comboBoxArchitects.Items.AddRange(_architectsDb.ToArray());
             comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
-            
-            // Fill in the Projects ComboBox
-            var queryProjects = from proj in _projectDb orderby proj.Name ascending select proj.Name;
-            comboBoxProjects.Items.AddRange(queryProjects.ToArray());
+            comboBoxProjects.Items.AddRange(_projectDb.ToArray());
             comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
-
-            // Fill in the Phase ComboBox
-            var queryPhases = from phase in _phaseDb select phase.Name;
-            comboBoxPhases.Items.AddRange(queryPhases.ToArray());
+            comboBoxPhases.Items.AddRange(_phaseDb.ToArray());
             comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
 
             // Create a timer with a one-second interval
@@ -80,12 +72,12 @@ namespace ProjectTime
             //this._bgTimer = new System.ComponentModel.BackgroundWorker();
 
             // Read config file if any
-            if (File.Exists(ConfigFile))
+            if (File.Exists(ConfigFile) && (new FileInfo(ConfigFile).Length > 100))
             {
                 LoadConfig();
-                comboBoxArchitects.SelectedItem = _currentArchitect.FirstName;
-                comboBoxProjects.SelectedItem = _currentProject.Name;
-                comboBoxPhases.SelectedItem = _currentPhase.Name;
+                comboBoxArchitects.SelectedItem = _currentArchitect;
+                comboBoxProjects.SelectedItem = _currentProject;
+                comboBoxPhases.SelectedItem = _currentPhase;
             }
         }
 
@@ -95,29 +87,46 @@ namespace ProjectTime
         public Phase CurrentPhase { get; set; }
 
         // Database queries
-        private Architect GetArchitectFromName(string firstName)
+        private Architect GetArchitectFromId(int id)
         {
-            var matchingArchitects = from arch in _architectsDb where arch.FirstName == firstName select arch;
-            if (matchingArchitects.Count() != 1) throw new DataException("Aucun ou plusieurs architectes ont le nom désiré");
+            var matchingArchitects = from arch in _architectsDb where arch.Id == id select arch;
+            if (matchingArchitects.Count() != 1) throw new DataException("Aucun ou plusieurs architectes ont l'id désiré");
             return matchingArchitects.First();
         }
 
-        private Project GetProjectFromName(string name)
+        private Project GetProjectFromId(int id)
         {
-            var matchingProjects = from proj in _projectDb where proj.Name == name select proj;
+            var matchingProjects = from proj in _projectDb where proj.Id == id select proj;
             if (matchingProjects.Count() != 1) throw new DataException("Aucun ou plusieurs projets ont le nom désiré");
             return matchingProjects.First();
         }
 
-        private Phase GetPhaseFromName(string name)
+        private Phase GetPhaseFromId(int id)
         {
-            var matchingPhases = from phase in _phaseDb where phase.Name == name select phase;
+            var matchingPhases = from phase in _phaseDb where phase.Id == id select phase;
             if (matchingPhases.Count() != 1) throw new DataException();
             return matchingPhases.First();
         }
 
 
-        // Events handling
+        // ComboBox selection
+        private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
+        {
+            _currentArchitect = (Architect)comboBoxArchitects.SelectedItem;
+        }
+        
+        private void ComboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
+        {
+            _currentProject = (Project) comboBoxProjects.SelectedItem;
+        }
+
+        private void ComboBoxPhaseSelectedIndexChanged(object sender, EventArgs e)
+        {
+            _currentPhase = (Phase) comboBoxPhases.SelectedItem;
+        }
+
+
+        // Time events handling
         private void ButtonStartClick(object sender, EventArgs e)
         {
             if (!(comboBoxProjects.SelectedIndex > -1) || !(comboBoxPhases.SelectedIndex > -1))
@@ -142,28 +151,13 @@ namespace ProjectTime
             buttonStop.Enabled = false;
         }
 
-        private void ComboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
-        {
-            _currentProject = GetProjectFromName((string) comboBoxProjects.SelectedItem);
-        }
-
-        private void ComboBoxPhaseSelectedIndexChanged(object sender, EventArgs e)
-        {
-            _currentPhase = GetPhaseFromName((string) comboBoxPhases.SelectedItem);
-        }
-
-        private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
-        {
-            _currentArchitect = GetArchitectFromName((string) comboBoxArchitects.SelectedItem.ToString());
-        }
-
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             _realTimeElapsed = string.Format("{0:00}:{1:00}:{2:00}", e.SignalTime.Hour, e.SignalTime.Minute, e.SignalTime.Second);
             Debug.Assert(_bgTimer != null);
             //_bgTimer.RunWorkerAsync();
         }
-
+        
         private void BgTimerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
@@ -173,18 +167,7 @@ namespace ProjectTime
         }
 
 
-        private void AddArchitectClick(object sender, EventArgs e)
-        {
-            if (!Program.IsInternetConnexionAvailable())
-            {
-                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-                
-            var addForm = new AddArchitect(_architectsDb, this);
-            addForm.Show();
-            }
-
+        // Last selection memorization
         private void SaveConfig(Architect archi, Project pro, Phase ph)
         {
             Program.VarDump(archi);
@@ -197,16 +180,24 @@ namespace ProjectTime
             myXmlTextWriter.WriteStartDocument(false);
             myXmlTextWriter.WriteComment("Fichier de sauvegarde de la dernière configuration de ProjectTime.");
             myXmlTextWriter.WriteStartElement("config");
+
             myXmlTextWriter.WriteStartElement("architect");
-            myXmlTextWriter.WriteElementString("lastname", archi.LastName);
+            myXmlTextWriter.WriteElementString("id", archi.Id.ToString());
             myXmlTextWriter.WriteElementString("firstname", archi.FirstName);
+            myXmlTextWriter.WriteElementString("lastname", archi.LastName);
+            myXmlTextWriter.WriteElementString("company", _db.GetCompanyNameFromId(archi.Company));
             myXmlTextWriter.WriteEndElement();
+
             myXmlTextWriter.WriteStartElement("project");
+            myXmlTextWriter.WriteElementString("id", pro.Id.ToString());
             myXmlTextWriter.WriteElementString("name", pro.Name);
             myXmlTextWriter.WriteEndElement();
+
             myXmlTextWriter.WriteStartElement("phase");
+            myXmlTextWriter.WriteElementString("id", ph.Id.ToString());
             myXmlTextWriter.WriteElementString("name", ph.Name);
             myXmlTextWriter.WriteEndElement();
+
             myXmlTextWriter.WriteEndElement();
             
             myXmlTextWriter.Flush();
@@ -227,28 +218,26 @@ namespace ProjectTime
             reader.ReadStartElement("config");
 
             reader.ReadStartElement("architect");
-            reader.ReadStartElement("lastname");
-            var ln = reader.ReadString();
-            reader.ReadEndElement();
-            reader.ReadStartElement("firstname");
-            var fn = reader.ReadString();
-            reader.ReadEndElement();
-            _currentArchitect = GetArchitectFromName(fn);
+            var archiId = int.Parse(reader.ReadElementString("id"));
+            reader.ReadElementString("firstname");
+            reader.ReadElementString("lastname");
+            reader.ReadElementString("company");
+            _currentArchitect = GetArchitectFromId(archiId);
             reader.ReadEndElement();
 
             reader.ReadStartElement("project");
-            reader.ReadStartElement("name");
-            _currentProject = GetProjectFromName(reader.ReadString());
-            reader.ReadEndElement();
+            var projectId = int.Parse(reader.ReadElementString("id"));
+            reader.ReadElementString("name");
+            _currentProject = GetProjectFromId(projectId);
             reader.ReadEndElement();
 
             reader.ReadStartElement("phase");
-            reader.ReadStartElement("name");
-            _currentPhase = GetPhaseFromName(reader.ReadString());
-            reader.ReadEndElement();
+            var phaseId = int.Parse(reader.ReadElementString("id"));
+            reader.ReadElementString("name");
+            _currentPhase = GetPhaseFromId(phaseId);
             reader.ReadEndElement();
 
-            reader.ReadEndElement();
+            reader.ReadEndElement(); // End "config"
 
             reader.Close();
         }
@@ -259,6 +248,19 @@ namespace ProjectTime
             Console.WriteLine("Writing " + ConfigFile + "...");
             SaveConfig(_currentArchitect, _currentProject, _currentPhase);
             Console.WriteLine(ConfigFile + " written.");
+        }
+
+
+        private void AddArchitectClick(object sender, EventArgs e)
+        {
+            if (!Program.IsInternetConnexionAvailable())
+            {
+                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            var addForm = new AddArchitect(_architectsDb, this);
+            addForm.Show();
         }
 
         private void AddProjectClick(object sender, EventArgs e)

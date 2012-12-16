@@ -226,7 +226,7 @@ namespace ProjectTime
                     var fn = (string) dataReader["firstname"];
                     var ln = (string) dataReader["lastname"];
                     var co = (int) dataReader["company"];
-                    architects.Add(new Architect(id, fn, ln, co.ToString()));
+                    architects.Add(new Architect(id, fn, ln, co));
                 }
                 dataReader.Close();
                 CloseConnection();

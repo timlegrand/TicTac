@@ -9,17 +9,17 @@ namespace ProjectTime
         private int? _id;
         private string _firstName;
         private string _lastName;
-        private string _company;
+        private int _company;
 
         public Architect()
         {
             _id = null;
             _firstName = null;
             _lastName = null;
-            _company = null;
+            _company = -1;
         }
 
-        public Architect(string firstName, string lastName, string company)
+        public Architect(string firstName, string lastName, int company)
         {
             _id = null;
             _firstName = firstName;
@@ -27,7 +27,7 @@ namespace ProjectTime
             _company = company;
         }
 
-        public Architect(int id, string firstName, string lastName, string company)
+        public Architect(int id, string firstName, string lastName, int company)
         {
             _id = id;
             _firstName = firstName;
@@ -54,15 +54,21 @@ namespace ProjectTime
             set { _lastName = value; }
         }
 
-        public string Company
+        public int Company
         {
             get { return _company; }
             set { _company = value; }
         }
 
+        // Service
         public bool IsPushable()
         {
             return ((_id == null) && (_firstName != null) && (_lastName != null) && (_company != null));
+        }
+
+        public override string ToString()
+        {
+            return _firstName + " " + _lastName;
         }
     }
 }
