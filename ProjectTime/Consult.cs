@@ -38,6 +38,8 @@ namespace ProjectTime
             comboBoxPhases.Items.AddRange(_phaseList.ToArray());
             comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
 
+            pictureBox.Hide();
+
             _mainWindow = mainWindow;
         }
 
@@ -68,6 +70,7 @@ namespace ProjectTime
         private void ButtonValidateClick(object sender, EventArgs e)
         {
             pictureBox.Show();
+            //System.Threading.Thread.Sleep(2000);
             var archiId = (_currentArchitect != null) ? _currentArchitect.Id : null;
             var projectId = (_currentProject != null) ? _currentProject.Id : null;
             var phaseId = (_currentPhase != null) ? _currentPhase.Id : null;
@@ -109,7 +112,7 @@ namespace ProjectTime
 
         private void ComboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxProjects.SelectedItem == "Tous")
+            if (comboBoxProjects.SelectedItem.ToString() == "Tous")
             {
                 _currentProject = null;
             }

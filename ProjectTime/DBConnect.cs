@@ -90,13 +90,19 @@ namespace ProjectTime
             if (OpenConnection())
             {
                 var cmd = new MySqlCommand(null, _connection);
-                cmd.CommandText = "INSERT INTO r_worked VALUES (NOW(), @archi, @project, @phase, @time)";
+                cmd.CommandText = "INSERT INTO r_worked VALUES (TIMESTAMP(NOW()), TIMESTAMP(NOW()), @archi, @project, @phase, @time, @test)";
                 cmd.Prepare();
                 cmd.Parameters.AddWithValue("@archi", archi.Id);
                 cmd.Parameters.AddWithValue("@project", project.Id);
                 cmd.Parameters.AddWithValue("@phase", phase.Id);
                 cmd.Parameters.AddWithValue("@time", elapsedTime);
-                
+                var test = 0;
+#if (DEBUG)
+                Console.WriteLine("Debug mode: row inserted with field \"test\"=1.");
+                test = 1;
+#endif
+                cmd.Parameters.AddWithValue("@test", test);
+
                 cmd.ExecuteNonQuery();
                 CloseConnection();
             }

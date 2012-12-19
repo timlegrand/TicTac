@@ -206,7 +206,15 @@ namespace ProjectTime
             myXmlTextWriter.WriteElementString("name", ph.Name);
             myXmlTextWriter.WriteEndElement();
 
-            myXmlTextWriter.WriteEndElement();
+            myXmlTextWriter.WriteEndElement(); //end config
+
+            //TODO
+            if (0/*stillRunning*/)
+            {
+                myXmlTextWriter.WriteStartElement("runningproject");
+                //myXmlTextWriter.WriteElementString("id", ?);
+                myXmlTextWriter.WriteEndElement();
+            }
             
             myXmlTextWriter.Flush();
             myXmlTextWriter.Close();
@@ -246,6 +254,14 @@ namespace ProjectTime
             reader.ReadEndElement();
 
             reader.ReadEndElement(); // End "config"
+
+            //TODO
+            if (0/*stillRunning*/)
+            {
+                myXmlTextWriter.WriteStartElement("runningproject");
+                //myXmlTextWriter.WriteElementString("id", ?);
+                myXmlTextWriter.WriteEndElement();
+            }
 
             reader.Close();
         }
