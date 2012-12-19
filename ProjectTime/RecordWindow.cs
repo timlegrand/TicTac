@@ -72,13 +72,14 @@ namespace ProjectTime
             //this._bgTimer = new System.ComponentModel.BackgroundWorker();
 
             // ConfigFile should be saved in "My Document" folder
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ProjectTime\\";
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ProjectTime\\";
             if (!Directory.Exists(path)) 
             {
+                Console.WriteLine("Directory does not exist, creating...");
                 Directory.CreateDirectory(path);
             }
-            ConfigFile = path + ConfigFileName;
-            Console.WriteLine(ConfigFile);
+            ConfigFile = Path.Combine(path, ConfigFileName);
+            
             if (File.Exists(ConfigFile) && (new FileInfo(ConfigFile).Length > 100))
             {
                 LoadConfig();
@@ -177,9 +178,9 @@ namespace ProjectTime
         // Last selection memorization
         private void SaveConfig(Architect archi, Project pro, Phase ph)
         {
-            Program.VarDump(archi);
-            Program.VarDump(pro);
-            Program.VarDump(ph);
+            //Program.VarDump(archi);
+            //Program.VarDump(pro);
+            //Program.VarDump(ph);
 
             var myXmlTextWriter = new XmlTextWriter(ConfigFile, System.Text.Encoding.UTF8)
                                       {Formatting = Formatting.Indented};
