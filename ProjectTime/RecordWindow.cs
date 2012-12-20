@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
+//using System.Reflection;
+//using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
-using System.Xml;
 
 // For timers
 using Timer = System.Timers.Timer;
@@ -20,10 +18,10 @@ namespace ProjectTime
     public partial class RecordWindow : Form
     {
         //private string _title;
-        private readonly DBConnect _db;
-        private readonly List<Project> _projectList;
-        private readonly List<Phase> _phaseList;
-        private readonly List<Architect> _architectsList;
+        private readonly DbConnect _db;
+        private static List<Project> _projectList;
+        private static List<Phase> _phaseList;
+        private static List<Architect> _architectsList;
         private Architect _currentArchitect;
         private Project _currentProject;
         private Phase _currentPhase;
@@ -32,25 +30,23 @@ namespace ProjectTime
         private TimeSpan _elapsedTime;
         private static Timer _timer;
         private BackgroundWorker _bgTimer;
-        private const string ConfigFileName = "config.xml";
-        private string ConfigFile;
-        private string _realTimeElapsed;
-
+        private readonly Config _config;
+        
         // This delegate enables asynchronous calls for setting the text property on a TextBox control.
-        delegate void SetTextCallback(string text);
+        //delegate void SetTextCallback(string text);
 
 
         public RecordWindow()
         {
             InitializeComponent();
-            _db = new DBConnect();
+
+            _db = new DbConnect();
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
-            
-            _currentArchitect = null;
-            _currentProject = null;
-            _currentPhase = null;
+
+            _config = new Config(_db) {Architect = null, Project = null, Phase = null};
+
             buttonStop.Enabled = false;
 
             // Fill in the Architect, Project and Phases ComboBox
@@ -62,7 +58,7 @@ namespace ProjectTime
             comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
 
             // Create a timer with a one-second interval
-            _timer = new System.Timers.Timer(1000);
+            _timer = new Timer(1000);
             _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             _timer.Enabled = true;
             // If the timer is declared in a long-running method, use KeepAlive to prevent garbage collection from occurring before the method ends.
@@ -71,51 +67,40 @@ namespace ProjectTime
             // Create a backgroung worker for inter-thread communications
             //this._bgTimer = new System.ComponentModel.BackgroundWorker();
 
-            // ConfigFile should be saved in "My Document" folder
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ProjectTime\\";
-            if (!Directory.Exists(path)) 
-            {
-                Console.WriteLine("Directory does not exist, creating...");
-                Directory.CreateDirectory(path);
-            }
-            ConfigFile = Path.Combine(path, ConfigFileName);
-            
-            if (File.Exists(ConfigFile) && (new FileInfo(ConfigFile).Length > 100))
-            {
-                LoadConfig();
-                comboBoxArchitects.SelectedItem = _currentArchitect;
-                comboBoxProjects.SelectedItem = _currentProject;
-                comboBoxPhases.SelectedItem = _currentPhase;
-            }
+            _config.LoadConfig();
+            comboBoxArchitects.SelectedItem = _config.Architect;
+            comboBoxProjects.SelectedItem = _config.Project;
+            comboBoxPhases.SelectedItem = _config.Phase;
         }
 
         // Accessors
         public Architect CurrentArchitect { get; set; }
         public Project CurrentProject { get; set; }
         public Phase CurrentPhase { get; set; }
+        public uint? RunningProjectId { get; set; }
 
         // Database queries
-        private Architect GetArchitectFromId(int id)
+        public static Architect GetArchitectFromId(int id)
         {
             var matchingArchitects = from arch in _architectsList where arch.Id == id select arch;
             if (matchingArchitects.Count() != 1) throw new DataException("Aucun ou plusieurs architectes ont l'id désiré");
             return matchingArchitects.First();
         }
 
-        private Project GetProjectFromId(int id)
+        public static Project GetProjectFromId(int id)
         {
             var matchingProjects = from proj in _projectList where proj.Id == id select proj;
             if (matchingProjects.Count() != 1) throw new DataException("Aucun ou plusieurs projets ont le nom désiré");
             return matchingProjects.First();
         }
 
-        private Phase GetPhaseFromId(int id)
+        public static Phase GetPhaseFromId(int id)
         {
             var matchingPhases = from phase in _phaseList where phase.Id == id select phase;
             if (matchingPhases.Count() != 1) throw new DataException();
             return matchingPhases.First();
         }
-
+        
 
         // ComboBox selection
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
@@ -139,7 +124,7 @@ namespace ProjectTime
         {
             if (!(comboBoxProjects.SelectedIndex > -1) || !(comboBoxPhases.SelectedIndex > -1))
             {
-                MessageBox.Show("Choisissez un projet et une phase", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(@"Choisissez un projet et une phase", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
                 //throw new Exception("Choisissez un projet et une phase");
             }
@@ -154,14 +139,21 @@ namespace ProjectTime
             _elapsedTime = _stopTime - _startTime;
             labelTime.Text = string.Format("{0:00}:{1:00}:{2:00}", _elapsedTime.Hours, _elapsedTime.Minutes,
                                            _elapsedTime.Seconds);
-            _db.InsertWorked(_elapsedTime.TotalSeconds, _currentArchitect, _currentProject, _currentPhase);
+            if (Program.IsInternetConnexionAvailable())
+            {
+                _db.InsertWorked(_elapsedTime.TotalSeconds, _currentArchitect, _currentProject, _currentPhase);
+            }
+            else
+            {
+                MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
             buttonStart.Enabled = true;
             buttonStop.Enabled = false;
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            _realTimeElapsed = string.Format("{0:00}:{1:00}:{2:00}", e.SignalTime.Hour, e.SignalTime.Minute, e.SignalTime.Second);
+            _config.RealTimeElapsed = string.Format("{0:00}:{1:00}:{2:00}", e.SignalTime.Hour, e.SignalTime.Minute, e.SignalTime.Second);
             Debug.Assert(_bgTimer != null);
             //_bgTimer.RunWorkerAsync();
         }
@@ -175,105 +167,13 @@ namespace ProjectTime
         }
 
 
-        // Last selection memorization
-        private void SaveConfig(Architect archi, Project pro, Phase ph)
-        {
-            //Program.VarDump(archi);
-            //Program.VarDump(pro);
-            //Program.VarDump(ph);
-
-            var writer = new XmlTextWriter(ConfigFile, System.Text.Encoding.UTF8)
-                                      {Formatting = Formatting.Indented};
-
-            writer.WriteStartDocument(false);
-            writer.WriteComment("Fichier de sauvegarde de la dernière configuration de ProjectTime.");
-            writer.WriteStartElement("config");
-
-            writer.WriteStartElement("architect");
-            writer.WriteElementString("id", archi.Id.ToString());
-            writer.WriteElementString("firstname", archi.FirstName);
-            writer.WriteElementString("lastname", archi.LastName);
-            writer.WriteElementString("company", _db.GetCompanyNameFromId(archi.Company));
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("project");
-            writer.WriteElementString("id", pro.Id.ToString());
-            writer.WriteElementString("name", pro.Name);
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("phase");
-            writer.WriteElementString("id", ph.Id.ToString());
-            writer.WriteElementString("name", ph.Name);
-            writer.WriteEndElement();
-
-            writer.WriteEndElement(); // End "config"
-
-            //TODO
-            if (0/*stillRunning*/)
-            {
-                writer.WriteStartElement("runningproject");
-                //myXmlTextWriter.WriteElementString("id", ?);
-                writer.WriteEndElement();
-            }
-            
-            writer.Flush();
-            writer.Close();
-        }
-
-        private void LoadConfig()
-        {
-            var settings = new XmlReaderSettings
-                               {
-                                   ConformanceLevel = ConformanceLevel.Fragment,
-                                   IgnoreWhitespace = true,
-                                   IgnoreComments = true
-                               };
-            var reader = XmlReader.Create(ConfigFile, settings);
-
-            reader.Read();
-            reader.ReadStartElement("config");
-
-            reader.ReadStartElement("architect");
-            var archiId = int.Parse(reader.ReadElementString("id"));
-            reader.ReadElementString("firstname");
-            reader.ReadElementString("lastname");
-            reader.ReadElementString("company");
-            _currentArchitect = GetArchitectFromId(archiId);
-            reader.ReadEndElement();
-
-            reader.ReadStartElement("project");
-            var projectId = int.Parse(reader.ReadElementString("id"));
-            reader.ReadElementString("name");
-            _currentProject = GetProjectFromId(projectId);
-            reader.ReadEndElement();
-
-            reader.ReadStartElement("phase");
-            var phaseId = int.Parse(reader.ReadElementString("id"));
-            reader.ReadElementString("name");
-            _currentPhase = GetPhaseFromId(phaseId);
-            reader.ReadEndElement();
-
-            reader.ReadEndElement(); // End "config"
-
-            //TODO
-            while (reader.Read())
-            {
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "runningproject"))
-                {
-                    this.RunningProjectId = reader.ReadElementString("id");
-                }
-            }
-            
-            reader.Close();
-        }
-
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
             Debug.Assert(_currentArchitect != null && _currentProject != null && _currentPhase != null);
-            Console.WriteLine("Writing " + ConfigFile + "...");
-            SaveConfig(_currentArchitect, _currentProject, _currentPhase);
-            Console.WriteLine(ConfigFile + " written.");
+            Console.WriteLine(@"Writing " + Config.ConfigFileName + @"...");
+            _config.SaveConfig(_currentArchitect, _currentProject, _currentPhase);
+            Console.WriteLine(Config.ConfigFileName + @" written.");
         }
 
         private void ButtonConsultClick(object sender, EventArgs e)

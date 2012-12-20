@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace ProjectTime
 {
-    class DBConnect
+    class DbConnect
     {
         private MySqlConnection _connection;
         private string _server;
@@ -16,7 +16,7 @@ namespace ProjectTime
         private string _password;
 
         //Constructor
-        public DBConnect()
+        public DbConnect()
         {
             Initialize();
         }
@@ -38,7 +38,7 @@ namespace ProjectTime
         {
             if (!Program.IsInternetConnexionAvailable())
             {
-                MessageBox.Show("Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return false;
             }
 
@@ -58,11 +58,11 @@ namespace ProjectTime
                 switch (ex.Number)
                 {
                     case 0:
-                        MessageBox.Show("Cannot connect to server. Contact administrator.");
+                        MessageBox.Show(@"Cannot connect to server. Contact administrator.");
                         break;
 
                     case 1045:
-                        MessageBox.Show("Invalid username/password, please try again.");
+                        MessageBox.Show(@"Invalid username/password, please try again.");
                         break;
                 }
                 return false;
@@ -87,25 +87,32 @@ namespace ProjectTime
         //InsertWorked statement
         public void InsertWorked(double elapsedTime, Architect archi, Project project, Phase phase)
         {
-            if (OpenConnection())
-            {
-                var cmd = new MySqlCommand(null, _connection);
-                cmd.CommandText = "INSERT INTO r_worked VALUES (TIMESTAMP(NOW()), TIMESTAMP(NOW()), @archi, @project, @phase, @time, @test)";
-                cmd.Prepare();
-                cmd.Parameters.AddWithValue("@archi", archi.Id);
-                cmd.Parameters.AddWithValue("@project", project.Id);
-                cmd.Parameters.AddWithValue("@phase", phase.Id);
-                cmd.Parameters.AddWithValue("@time", elapsedTime);
-                var test = 0;
+            var test = 0;
 #if (DEBUG)
-                Console.WriteLine("Debug mode: row inserted with field \"test\"=1.");
-                test = 1;
+            Console.WriteLine(@"Debug mode: row will be inserted with field ""test""=1.");
+            test = 1;
 #endif
-                cmd.Parameters.AddWithValue("@test", test);
+            Program.VarDump(archi.Id);
+            Program.VarDump(project.Id);
+            Program.VarDump(phase.Id);
+            Program.VarDump(elapsedTime);
+            Program.VarDump(test);
 
-                cmd.ExecuteNonQuery();
-                CloseConnection();
-            }
+            if (!OpenConnection()) return;
+
+            var cmd = new MySqlCommand(null, _connection)
+                {
+                    CommandText =
+                        "INSERT INTO r_worked VALUES (TIMESTAMP(NOW()), TIMESTAMP(NOW()), @archi, @project, @phase, @time, @test)"
+                };
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@archi", archi.Id);
+            cmd.Parameters.AddWithValue("@project", project.Id);
+            cmd.Parameters.AddWithValue("@phase", phase.Id);
+            cmd.Parameters.AddWithValue("@time", elapsedTime);
+            cmd.Parameters.AddWithValue("@test", test);
+            cmd.ExecuteNonQuery();
+            CloseConnection();
         }
 
         //Update statement
