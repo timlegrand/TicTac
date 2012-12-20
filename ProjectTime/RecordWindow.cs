@@ -182,42 +182,42 @@ namespace ProjectTime
             //Program.VarDump(pro);
             //Program.VarDump(ph);
 
-            var myXmlTextWriter = new XmlTextWriter(ConfigFile, System.Text.Encoding.UTF8)
+            var writer = new XmlTextWriter(ConfigFile, System.Text.Encoding.UTF8)
                                       {Formatting = Formatting.Indented};
 
-            myXmlTextWriter.WriteStartDocument(false);
-            myXmlTextWriter.WriteComment("Fichier de sauvegarde de la dernière configuration de ProjectTime.");
-            myXmlTextWriter.WriteStartElement("config");
+            writer.WriteStartDocument(false);
+            writer.WriteComment("Fichier de sauvegarde de la dernière configuration de ProjectTime.");
+            writer.WriteStartElement("config");
 
-            myXmlTextWriter.WriteStartElement("architect");
-            myXmlTextWriter.WriteElementString("id", archi.Id.ToString());
-            myXmlTextWriter.WriteElementString("firstname", archi.FirstName);
-            myXmlTextWriter.WriteElementString("lastname", archi.LastName);
-            myXmlTextWriter.WriteElementString("company", _db.GetCompanyNameFromId(archi.Company));
-            myXmlTextWriter.WriteEndElement();
+            writer.WriteStartElement("architect");
+            writer.WriteElementString("id", archi.Id.ToString());
+            writer.WriteElementString("firstname", archi.FirstName);
+            writer.WriteElementString("lastname", archi.LastName);
+            writer.WriteElementString("company", _db.GetCompanyNameFromId(archi.Company));
+            writer.WriteEndElement();
 
-            myXmlTextWriter.WriteStartElement("project");
-            myXmlTextWriter.WriteElementString("id", pro.Id.ToString());
-            myXmlTextWriter.WriteElementString("name", pro.Name);
-            myXmlTextWriter.WriteEndElement();
+            writer.WriteStartElement("project");
+            writer.WriteElementString("id", pro.Id.ToString());
+            writer.WriteElementString("name", pro.Name);
+            writer.WriteEndElement();
 
-            myXmlTextWriter.WriteStartElement("phase");
-            myXmlTextWriter.WriteElementString("id", ph.Id.ToString());
-            myXmlTextWriter.WriteElementString("name", ph.Name);
-            myXmlTextWriter.WriteEndElement();
+            writer.WriteStartElement("phase");
+            writer.WriteElementString("id", ph.Id.ToString());
+            writer.WriteElementString("name", ph.Name);
+            writer.WriteEndElement();
 
-            myXmlTextWriter.WriteEndElement(); //end config
+            writer.WriteEndElement(); // End "config"
 
             //TODO
             if (0/*stillRunning*/)
             {
-                myXmlTextWriter.WriteStartElement("runningproject");
+                writer.WriteStartElement("runningproject");
                 //myXmlTextWriter.WriteElementString("id", ?);
-                myXmlTextWriter.WriteEndElement();
+                writer.WriteEndElement();
             }
             
-            myXmlTextWriter.Flush();
-            myXmlTextWriter.Close();
+            writer.Flush();
+            writer.Close();
         }
 
         private void LoadConfig()
@@ -256,13 +256,14 @@ namespace ProjectTime
             reader.ReadEndElement(); // End "config"
 
             //TODO
-            if (0/*stillRunning*/)
+            while (reader.Read())
             {
-                myXmlTextWriter.WriteStartElement("runningproject");
-                //myXmlTextWriter.WriteElementString("id", ?);
-                myXmlTextWriter.WriteEndElement();
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "runningproject"))
+                {
+                    this.RunningProjectId = reader.ReadElementString("id");
+                }
             }
-
+            
             reader.Close();
         }
 
