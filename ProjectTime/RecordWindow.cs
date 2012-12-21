@@ -38,17 +38,28 @@ namespace ProjectTime
             comboBoxPhases.Items.AddRange(_phaseList.ToArray());
             
             // Create config
-            _config = new Config(_db) { Architect = null, Project = null, Phase = null };
+            _config = new Config(_db);
             _config.LoadFromXml();
 
             // Select default items
-            comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
-            comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
-            comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
-            if (_config.Architect != null) comboBoxArchitects.SelectedItem = _config.Architect;
-            if (_config.Project != null) comboBoxProjects.SelectedItem = _config.Project;
-            if (_config.Phase != null) comboBoxPhases.SelectedItem = _config.Phase;
+            if (_config.IsValid())
+            {
+                comboBoxArchitects.SelectedItem = _config.Architect;
+                comboBoxProjects.SelectedItem = _config.Project;
+                comboBoxPhases.SelectedItem = _config.Phase;
+            }
+            else
+            {
+                comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
+                comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
+                comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
+                _config.Architect = (Architect) comboBoxArchitects.Items[0];
+                _config.Project = (Project) comboBoxProjects.Items[0];
+                _config.Phase = (Phase) comboBoxPhases.Items[0];
+            }
 
+            Program.VarDump(_config);
+            return;
             InitStartStopButtons();
         }
 
@@ -162,7 +173,7 @@ namespace ProjectTime
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
-            if (!_config.IsSerializable()) return;
+            if (!_config.IsValid()) return;
 
             Console.WriteLine(@"Writing " + Config.ConfigFileName + @"...");
             _config.SaveToXml();

@@ -36,7 +36,7 @@ namespace ProjectTime
             ConfigFilePathAndName = Path.Combine(path, ConfigFileName);
         }
 
-        public bool IsSerializable()
+        public bool IsValid()
         {
             return (Architect != null && Project != null && Phase != null);
         }
