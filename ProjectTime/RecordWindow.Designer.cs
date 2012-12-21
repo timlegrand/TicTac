@@ -32,14 +32,13 @@ namespace ProjectTime
         {
             this.buttonStart = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
+            this.comboBoxArchitects = new System.Windows.Forms.ComboBox();
             this.comboBoxProjects = new System.Windows.Forms.ComboBox();
             this.comboBoxPhases = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBoxArchitects = new System.Windows.Forms.ComboBox();
             this.labelTime = new System.Windows.Forms.Label();
-            this._bgTimer = new System.ComponentModel.BackgroundWorker();
             this.buttonConsult = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -62,6 +61,15 @@ namespace ProjectTime
             this.buttonStop.Text = "Stop";
             this.buttonStop.UseVisualStyleBackColor = true;
             this.buttonStop.Click += new System.EventHandler(this.ButtonStopClick);
+            // 
+            // comboBoxArchitects
+            // 
+            this.comboBoxArchitects.FormattingEnabled = true;
+            this.comboBoxArchitects.Location = new System.Drawing.Point(83, 13);
+            this.comboBoxArchitects.Name = "comboBoxArchitects";
+            this.comboBoxArchitects.Size = new System.Drawing.Size(163, 21);
+            this.comboBoxArchitects.TabIndex = 7;
+            this.comboBoxArchitects.SelectedIndexChanged += new System.EventHandler(this.ComboBoxArchitectsSelectedIndexChanged);
             // 
             // comboBoxProjects
             // 
@@ -108,15 +116,6 @@ namespace ProjectTime
             this.label3.TabIndex = 6;
             this.label3.Text = "Architecte";
             // 
-            // comboBoxArchitects
-            // 
-            this.comboBoxArchitects.FormattingEnabled = true;
-            this.comboBoxArchitects.Location = new System.Drawing.Point(83, 13);
-            this.comboBoxArchitects.Name = "comboBoxArchitects";
-            this.comboBoxArchitects.Size = new System.Drawing.Size(163, 21);
-            this.comboBoxArchitects.TabIndex = 7;
-            this.comboBoxArchitects.SelectedIndexChanged += new System.EventHandler(this.ComboBoxArchitectsSelectedIndexChanged);
-            // 
             // labelTime
             // 
             this.labelTime.AutoSize = true;
@@ -125,10 +124,6 @@ namespace ProjectTime
             this.labelTime.Size = new System.Drawing.Size(58, 13);
             this.labelTime.TabIndex = 8;
             this.labelTime.Text = "Au boulot !";
-            // 
-            // _bgTimer
-            // 
-            this._bgTimer.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BgTimerRunWorkerCompleted);
             // 
             // buttonConsult
             // 

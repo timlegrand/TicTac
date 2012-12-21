@@ -84,48 +84,100 @@ namespace ProjectTime
             }
         }
 
-        //InsertWorked statement
-        public void InsertWorked(double elapsedTime, Architect archi, Project project, Phase phase)
+        //StartWorkSession statement
+        public void StartWorkSession(Config cfg)
         {
             var test = 0;
 #if (DEBUG)
             Console.WriteLine(@"Debug mode: row will be inserted with field ""test""=1.");
             test = 1;
 #endif
-            Program.VarDump(archi.Id);
-            Program.VarDump(project.Id);
-            Program.VarDump(phase.Id);
-            Program.VarDump(elapsedTime);
-            Program.VarDump(test);
 
             if (!OpenConnection()) return;
 
             var cmd = new MySqlCommand(null, _connection)
                 {
-                    CommandText =
-                        "INSERT INTO r_worked VALUES (TIMESTAMP(NOW()), TIMESTAMP(NOW()), @archi, @project, @phase, @time, @test)"
+                    CommandText = "INSERT INTO r_worked " +
+                                  "VALUES ('', NULL, TIMESTAMP(NOW()), @archi, @project, @phase, @test)"
                 };
             cmd.Prepare();
-            cmd.Parameters.AddWithValue("@archi", archi.Id);
-            cmd.Parameters.AddWithValue("@project", project.Id);
-            cmd.Parameters.AddWithValue("@phase", phase.Id);
-            cmd.Parameters.AddWithValue("@time", elapsedTime);
+            cmd.Parameters.AddWithValue("@archi", cfg.Architect.Id);
+            cmd.Parameters.AddWithValue("@project", cfg.Project.Id);
+            cmd.Parameters.AddWithValue("@phase", cfg.Phase.Id);
             cmd.Parameters.AddWithValue("@test", test);
             cmd.ExecuteNonQuery();
             CloseConnection();
         }
 
         //Update statement
-        public void Update()
+        public void EndWorkSession(Config cfg)
         {
-            //TODO
+            var numSessions = StartedWorkSessions(cfg);
+            if (numSessions != 1)
+            {
+                string msg = @"La base de données contient " + numSessions + @" occurence(s) pour la combinaison choisie.";
+                Console.WriteLine(msg);
+                //MessageBox.Show(msg, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!OpenConnection()) return;
+
+            var cmd = new MySqlCommand(null, _connection)
+            {
+                CommandText = "UPDATE r_worked " +
+                              "SET enddate='" + DateTime.Now.ToString() + "' " +
+                              "WHERE " +
+                              "enddate IS NULL"         + " AND " +
+                              "archi=" + cfg.Architect.Id + " AND " +
+                              "project=" + cfg.Project.Id + " AND " +
+                              "phase=" + cfg.Phase.Id + " AND " +
+#if (DEBUG)
+                              "test=1"
+#else
+                              "test=0"
+#endif
+            };
+
+            cmd.ExecuteNonQuery();
+            CloseConnection();
         }
 
-        //Delete statement
-        public void Delete()
+        //Search statement
+        public int StartedWorkSessions(Config cfg)
         {
-            //TODO
+            Program.VarDump(cfg);
+            
+            if (!OpenConnection()) return -1;
+
+            var cmd = new MySqlCommand(null, _connection)
+            {
+                CommandText = "SELECT * FROM r_worked " +
+                              "WHERE " +
+                              "enddate IS NULL" + " AND " +
+                              "archi=" + cfg.Architect.Id + " AND " +
+                              "project=" + cfg.Project.Id + " AND " +
+                              "phase=" + cfg.Phase.Id + " AND " +
+#if (DEBUG)
+                              "test=1"
+#else
+                              "test=0"
+#endif
+            };
+
+            int numRows = 0;
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    numRows++;
+                }
+            }
+
+            CloseConnection();
+            return numRows; 
         }
+
 
         public double GetTimeCount(int? archiId, int? projectId, int? phaseId)
         {

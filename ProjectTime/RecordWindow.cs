@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
-//using System.Reflection;
-//using System.Threading;
-using System.Timers;
 using System.Windows.Forms;
 
-// For timers
-using Timer = System.Timers.Timer;
-
+// tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
+// DOES NOT WORK
+// (first method works)
 
 namespace ProjectTime
 {
@@ -22,55 +17,39 @@ namespace ProjectTime
         private static List<Project> _projectList;
         private static List<Phase> _phaseList;
         private static List<Architect> _architectsList;
-        private Architect _currentArchitect;
-        private Project _currentProject;
-        private Phase _currentPhase;
         private DateTime _startTime;
         private DateTime _stopTime;
-        private TimeSpan _elapsedTime;
-        private static Timer _timer;
-        private BackgroundWorker _bgTimer;
         private readonly Config _config;
         
-        // This delegate enables asynchronous calls for setting the text property on a TextBox control.
-        //delegate void SetTextCallback(string text);
-
 
         public RecordWindow()
         {
             InitializeComponent();
 
+            // Retrieve data from server
             _db = new DbConnect();
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
-
-            _config = new Config(_db) {Architect = null, Project = null, Phase = null};
-
-            buttonStop.Enabled = false;
-
-            // Fill in the Architect, Project and Phases ComboBox
+            
+            // Fill in the ComboBoxes
             comboBoxArchitects.Items.AddRange(_architectsList.ToArray());
-            comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
             comboBoxProjects.Items.AddRange(_projectList.ToArray());
-            comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
             comboBoxPhases.Items.AddRange(_phaseList.ToArray());
+            
+            // Create config
+            _config = new Config(_db) { Architect = null, Project = null, Phase = null };
+            _config.LoadFromXml();
+
+            // Select default items
+            comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
+            comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
             comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
+            if (_config.Architect != null) comboBoxArchitects.SelectedItem = _config.Architect;
+            if (_config.Project != null) comboBoxProjects.SelectedItem = _config.Project;
+            if (_config.Phase != null) comboBoxPhases.SelectedItem = _config.Phase;
 
-            // Create a timer with a one-second interval
-            _timer = new Timer(1000);
-            _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            _timer.Enabled = true;
-            // If the timer is declared in a long-running method, use KeepAlive to prevent garbage collection from occurring before the method ends.
-            GC.KeepAlive(_timer);
-
-            // Create a backgroung worker for inter-thread communications
-            //this._bgTimer = new System.ComponentModel.BackgroundWorker();
-
-            _config.LoadConfig();
-            comboBoxArchitects.SelectedItem = _config.Architect;
-            comboBoxProjects.SelectedItem = _config.Project;
-            comboBoxPhases.SelectedItem = _config.Phase;
+            InitStartStopButtons();
         }
 
         // Accessors
@@ -78,6 +57,22 @@ namespace ProjectTime
         public Project CurrentProject { get; set; }
         public Phase CurrentPhase { get; set; }
         public uint? RunningProjectId { get; set; }
+
+        private void InitStartStopButtons()
+        {
+            // Search for any already-started session
+            if (_db.StartedWorkSessions(_config) == 1)
+            {
+                buttonStart.Enabled = false;
+                buttonStop.Enabled = true;
+            }
+            else // hope that return value is 0 (big problem otherwise)
+            {
+                buttonStart.Enabled = true;
+                buttonStop.Enabled = false;
+            }
+        }
+
 
         // Database queries
         public static Architect GetArchitectFromId(int id)
@@ -105,17 +100,20 @@ namespace ProjectTime
         // ComboBox selection
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _currentArchitect = (Architect) comboBoxArchitects.SelectedItem;
+            _config.Architect = (Architect) comboBoxArchitects.SelectedItem;
+            InitStartStopButtons();
         }
         
         private void ComboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _currentProject = (Project) comboBoxProjects.SelectedItem;
+            _config.Project = (Project) comboBoxProjects.SelectedItem;
+            InitStartStopButtons();
         }
 
         private void ComboBoxPhaseSelectedIndexChanged(object sender, EventArgs e)
         {
-            _currentPhase = (Phase) comboBoxPhases.SelectedItem;
+            _config.Phase = (Phase) comboBoxPhases.SelectedItem;
+            InitStartStopButtons();
         }
 
 
@@ -129,6 +127,15 @@ namespace ProjectTime
                 //throw new Exception("Choisissez un projet et une phase");
             }
             _startTime = DateTime.Now;
+
+            if (Program.IsInternetConnexionAvailable())
+            {
+                _db.StartWorkSession(_config);
+            }
+            else
+            {
+                MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
             buttonStart.Enabled = false;
             buttonStop.Enabled = true;
         }
@@ -136,12 +143,12 @@ namespace ProjectTime
         private void ButtonStopClick(object sender, EventArgs e)
         {
             _stopTime = DateTime.Now;
-            _elapsedTime = _stopTime - _startTime;
-            labelTime.Text = string.Format("{0:00}:{1:00}:{2:00}", _elapsedTime.Hours, _elapsedTime.Minutes,
-                                           _elapsedTime.Seconds);
+            var elapsedTime = _stopTime - _startTime;
+            labelTime.Text = string.Format("{0:00}:{1:00}:{2:00}", elapsedTime.Hours, elapsedTime.Minutes,
+                                           elapsedTime.Seconds);
             if (Program.IsInternetConnexionAvailable())
             {
-                _db.InsertWorked(_elapsedTime.TotalSeconds, _currentArchitect, _currentProject, _currentPhase);
+                _db.EndWorkSession(_config);
             }
             else
             {
@@ -151,28 +158,14 @@ namespace ProjectTime
             buttonStop.Enabled = false;
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            _config.RealTimeElapsed = string.Format("{0:00}:{1:00}:{2:00}", e.SignalTime.Hour, e.SignalTime.Minute, e.SignalTime.Second);
-            Debug.Assert(_bgTimer != null);
-            //_bgTimer.RunWorkerAsync();
-        }
-        
-        private void BgTimerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            // tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
-            // DOES NOT WORK
-            // (first method works)
-            //this.labelTime.Text = _realTimeElapsed;
-        }
-
 
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
-            Debug.Assert(_currentArchitect != null && _currentProject != null && _currentPhase != null);
+            if (!_config.IsSerializable()) return;
+
             Console.WriteLine(@"Writing " + Config.ConfigFileName + @"...");
-            _config.SaveConfig(_currentArchitect, _currentProject, _currentPhase);
+            _config.SaveToXml();
             Console.WriteLine(Config.ConfigFileName + @" written.");
         }
 

@@ -6,6 +6,7 @@ namespace ProjectTime
 {
     class Config
     {
+        private const string Version = "0.1";
         private readonly DbConnect _db;
         private uint? RunningDatabaseEntryId { get; set; }
         public Architect Architect { get; set; }
@@ -23,6 +24,7 @@ namespace ProjectTime
             Architect = null;
             Project = null;
             Phase = null;
+            RealTimeElapsed = "";
 
             // ConfigFile should be saved in "Appdata" folder
             var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ProjectTime\\";
@@ -34,53 +36,49 @@ namespace ProjectTime
             ConfigFilePathAndName = Path.Combine(path, ConfigFileName);
         }
 
-        // Last selection memorization
-        public void SaveConfig(Architect archi, Project pro, Phase ph)
+        public bool IsSerializable()
         {
-            //Program.VarDump(archi);
-            //Program.VarDump(pro);
-            //Program.VarDump(ph);
+            return (Architect != null && Project != null && Phase != null);
+        }
+
+        // Last selection memorization
+        public void SaveToXml()
+        {
             var writer = new XmlTextWriter(ConfigFilePathAndName, System.Text.Encoding.UTF8) { Formatting = Formatting.Indented };
 
             writer.WriteStartDocument(false);
             writer.WriteComment("Fichier de sauvegarde de la dernière configuration de ProjectTime.");
             writer.WriteStartElement("config");
+            writer.WriteAttributeString("version", "0.1");
 
             writer.WriteStartElement("architect");
-            writer.WriteElementString("id", archi.Id.ToString());
-            writer.WriteElementString("firstname", archi.FirstName);
-            writer.WriteElementString("lastname", archi.LastName);
-            writer.WriteElementString("company", _db.GetCompanyNameFromId(archi.Company));
+            writer.WriteAttributeString("id", Architect.Id.ToString());
+            writer.WriteAttributeString("firstname",Architect.FirstName);
+            writer.WriteAttributeString("lastname", Architect.LastName);
+            writer.WriteAttributeString("company", _db.GetCompanyNameFromId(Architect.Company));
             writer.WriteEndElement();
 
             writer.WriteStartElement("project");
-            writer.WriteElementString("id", pro.Id.ToString());
-            writer.WriteElementString("name", pro.Name);
+            writer.WriteAttributeString("id", Project.Id.ToString());
+            writer.WriteAttributeString("name", Project.Name);
             writer.WriteEndElement();
 
             writer.WriteStartElement("phase");
-            writer.WriteElementString("id", ph.Id.ToString());
-            writer.WriteElementString("name", ph.Name);
+            writer.WriteAttributeString("id", Phase.Id.ToString());
+            writer.WriteAttributeString("name", Phase.Name);
             writer.WriteEndElement();
 
             writer.WriteEndElement(); // End "config"
-
-            //TODO
-            if (false/*stillRunning*/)
-            {
-                writer.WriteStartElement("runningdatabaseentry");
-                //myXmlTextWriter.WriteElementString("id", ?);
-                writer.WriteEndElement();
-            }
 
             writer.Flush();
             writer.Close();
         }
 
-        public void LoadConfig()
+        public void LoadFromXml()
         {
             if (!(File.Exists(ConfigFilePathAndName) && (new FileInfo(ConfigFilePathAndName).Length > 100)))
             {
+                Console.WriteLine(@"No config file found or size too low (seems to be empty).");
                 return;
             }
 
@@ -93,38 +91,32 @@ namespace ProjectTime
             var reader = XmlReader.Create(ConfigFilePathAndName, settings);
 
             reader.Read();
-            reader.ReadStartElement("config");
-
-            reader.ReadStartElement("architect");
-            var archiId = int.Parse(reader.ReadElementString("id"));
-            reader.ReadElementString("firstname");
-            reader.ReadElementString("lastname");
-            reader.ReadElementString("company");
-            Architect = RecordWindow.GetArchitectFromId(archiId);
-            reader.ReadEndElement();
-
-            reader.ReadStartElement("project");
-            var projectId = int.Parse(reader.ReadElementString("id"));
-            reader.ReadElementString("name");
-            Project = RecordWindow.GetProjectFromId(projectId);
-            reader.ReadEndElement();
-
-            reader.ReadStartElement("phase");
-            var phaseId = int.Parse(reader.ReadElementString("id"));
-            reader.ReadElementString("name");
-            Phase = RecordWindow.GetPhaseFromId(phaseId);
-            reader.ReadEndElement();
-
-            reader.ReadEndElement(); // End "config"
-
-            //TODO
-            while (reader.Read())
+            reader.ReadToFollowing("config");
+            var version = reader.GetAttribute("version");
+            if (version != Config.Version)
             {
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "runningdatabaseentry"))
-                {
-                    RunningDatabaseEntryId = uint.Parse(reader.ReadElementString("id"));
-                }
+                Console.WriteLine(@"Config file version (" + version + ") doesn't match with current supported version (" + Config.Version + ").");
+                reader.Close();
+                return;
             }
+            Console.WriteLine(@"Config file version " + version);
+
+            reader.ReadToFollowing("architect");
+            var archiId = int.Parse(reader.GetAttribute("id"));
+            //reader.GetAttribute("firstname");
+            //reader.GetAttribute("lastname");
+            //reader.GetAttribute("company");
+            Architect = RecordWindow.GetArchitectFromId(archiId);
+
+            reader.ReadToFollowing("project");
+            var projectId = int.Parse(reader.GetAttribute("id"));
+            reader.GetAttribute("name");
+            Project = RecordWindow.GetProjectFromId(projectId);
+
+            reader.ReadToFollowing("phase");
+            var phaseId = int.Parse(reader.GetAttribute("id"));
+            reader.GetAttribute("name");
+            Phase = RecordWindow.GetPhaseFromId(phaseId);
 
             reader.Close();
         }
