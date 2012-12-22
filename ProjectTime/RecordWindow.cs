@@ -71,6 +71,8 @@ namespace ProjectTime
 
         private void InitStartStopButtons()
         {
+            if (!_config.IsValid()) return;
+
             // Search for any already-started session
             if (_db.StartedWorkSessions(_config) == 1)
             {
