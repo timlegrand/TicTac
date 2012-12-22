@@ -126,7 +126,7 @@ namespace ProjectTime
             var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "UPDATE r_worked " +
-                              "SET enddate='" + DateTime.Now.ToString() + "' " +
+                              "SET enddate=TIMESTAMP(NOW()) " +
                               "WHERE " +
                               "enddate IS NULL"         + " AND " +
                               "archi=" + cfg.Architect.Id + " AND " +
@@ -181,10 +181,10 @@ namespace ProjectTime
 
         public double GetTimeCount(int? archiId, int? projectId, int? phaseId)
         {
-            string where = "";
+            string where = " WHERE enddate IS NOT NULL";
             if ((archiId != null) || (projectId != null) || (phaseId != null))
             {
-                where += " WHERE ";
+                where += " AND ";
             }
             if (archiId != null)
             {
@@ -215,7 +215,12 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    count += (double)dataReader["time"];
+                    var start = System.DateTime.Parse(dataReader["startdate"].ToString());
+                    var end = System.DateTime.Parse(dataReader["enddate"].ToString());
+                    if (end >= start)
+                    {
+                        count += (end - start).TotalSeconds;
+                    }
                 }
 
                 dataReader.Close();
@@ -236,7 +241,12 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    count += (double) dataReader["time"];
+                    var start = System.DateTime.Parse(dataReader["startdate"].ToString());
+                    var end = System.DateTime.Parse(dataReader["enddate"].ToString());
+                    if (end >= start)
+                    {
+                        count += (end - start).TotalSeconds;
+                    }
                 }
 
                 dataReader.Close();
