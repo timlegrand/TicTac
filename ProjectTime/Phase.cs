@@ -9,6 +9,12 @@ namespace ProjectTime
         private int? _id;
         private string _name;
         
+        public Phase()
+        {
+            _id = null;
+            _name = null;
+        }
+
         public Phase(string name)
         {
             _id = null;
@@ -20,7 +26,7 @@ namespace ProjectTime
             _id = id;
             _name = name;
         }
-
+        
 
         // Accessors
         public int? Id
@@ -37,7 +43,7 @@ namespace ProjectTime
 
 
         // Service
-        public bool IsPushable()
+        public bool IsValid()
         {
             return ((_id == null) && (_name != null));
         }

@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 
 namespace ProjectTime
 {
-    class Config
+    class Session
     {
         private const string Version = "0.1";
-        private readonly DbConnect _db;
+        private readonly Database _db;
         private uint? RunningDatabaseEntryId { get; set; }
         public Architect Architect { get; set; }
         public Project Project { get; set; }
@@ -15,9 +16,20 @@ namespace ProjectTime
         public const string ConfigFileName = "config.xml";
         public string ConfigFilePathAndName { get; set; }
         public string RealTimeElapsed{ get; set; }
-        
-        
-        public Config(DbConnect db)
+        public long StartTime { get; set; }
+
+        public Session(int architectId, int projectId, int phaseId)
+        {
+            _db = null;
+            RunningDatabaseEntryId = null;
+            Architect = new Architect(architectId, "", "", -1);
+            Project = new Project(projectId, "");
+            Phase = new Phase(phaseId, "");
+            RealTimeElapsed = "";
+            ConfigFilePathAndName = null;
+        }
+
+        public Session(Database db)
         {
             _db = db;
             RunningDatabaseEntryId = null;
@@ -41,6 +53,29 @@ namespace ProjectTime
             return (Architect != null && Project != null && Phase != null);
         }
 
+        public Config Load()
+        {
+            if (Program.IsDatabaseConnexionAvailable())
+            {
+                return LoadFromDatabase();
+            }
+            else
+            {
+                return LoadFromXml();
+            }
+        }
+
+        //TODO
+        private Config LoadFromDatabase()
+        {
+            var sessions = _db.StartedWorkSessions();
+            if (sessions.Count == 1)
+            {
+                return sessions[0];
+            }
+            throw new Exception();
+        }
+
         // Last selection memorization
         public void SaveToXml()
         {
@@ -53,9 +88,9 @@ namespace ProjectTime
 
             writer.WriteStartElement("architect");
             writer.WriteAttributeString("id", Architect.Id.ToString());
-            writer.WriteAttributeString("firstname",Architect.FirstName);
+            writer.WriteAttributeString("firstname", Architect.FirstName);
             writer.WriteAttributeString("lastname", Architect.LastName);
-            writer.WriteAttributeString("company", _db.GetCompanyNameFromId(Architect.Company));
+            writer.WriteAttributeString("company", _db.GetCompanyFromId(Architect.Company).Name);
             writer.WriteEndElement();
 
             writer.WriteStartElement("project");
@@ -78,7 +113,7 @@ namespace ProjectTime
         {
             if (!(File.Exists(ConfigFilePathAndName) && (new FileInfo(ConfigFilePathAndName).Length > 100)))
             {
-                Console.WriteLine(@"No config file found or size too low (seems to be empty).");
+                Console.WriteLine(@"No Session file found or size too low (seems to be empty).");
                 return;
             }
 
@@ -93,13 +128,13 @@ namespace ProjectTime
             reader.Read();
             reader.ReadToFollowing("config");
             var version = reader.GetAttribute("version");
-            if (version != Config.Version)
+            if (version != Session.Version)
             {
-                Console.WriteLine(@"Config file version (" + version + ") doesn't match with current supported version (" + Config.Version + ").");
+                Console.WriteLine(@"Session file version (" + version + ") doesn't match with current supported version (" + Session.Version + ").");
                 reader.Close();
                 return;
             }
-            Console.WriteLine(@"Config file version " + version);
+            Console.WriteLine(@"Session file version " + version);
 
             reader.ReadToFollowing("architect");
             var archiId = int.Parse(reader.GetAttribute("id"));
@@ -120,5 +155,6 @@ namespace ProjectTime
 
             reader.Close();
         }
+        
     }
 }

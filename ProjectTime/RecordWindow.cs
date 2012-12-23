@@ -13,13 +13,17 @@ namespace ProjectTime
     public partial class RecordWindow : Form
     {
         //private string _title;
-        private readonly DbConnect _db;
+        private readonly Database _db;
         private static List<Project> _projectList;
         private static List<Phase> _phaseList;
         private static List<Architect> _architectsList;
         private DateTime _startTime;
         private DateTime _stopTime;
-        private readonly Config _config;
+        private readonly Session _cfg;
+        //public Architect CurrentArchitect { get; set; }
+        //public Project CurrentProject { get; set; }
+        //public Phase CurrentPhase { get; set; }
+        //public uint? RunningProjectId { get; set; }
         
 
         public RecordWindow()
@@ -27,55 +31,55 @@ namespace ProjectTime
             InitializeComponent();
 
             // Retrieve data from server
-            _db = new DbConnect();
+            _db = new Database();
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
             
             // Fill in the ComboBoxes
-            comboBoxArchitects.Items.AddRange(_architectsList.ToArray());
-            comboBoxProjects.Items.AddRange(_projectList.ToArray());
-            comboBoxPhases.Items.AddRange(_phaseList.ToArray());
-            
-            // Create config
-            _config = new Config(_db);
-            _config.LoadFromXml();
+            if (_architectsList != null) comboBoxArchitects.Items.AddRange(_architectsList.ToArray());
+            if (_projectList != null) comboBoxProjects.Items.AddRange(_projectList.ToArray());
+            if (_phaseList != null) comboBoxPhases.Items.AddRange(_phaseList.ToArray());
 
+            // Try to retreive Architect, Project and Phase
+            _cfg = new Session(_db);
+            _cfg = Load();
+            
             // Select default items
-            if (_config.IsValid())
+            InitComboBoxes();
+            InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
+        }
+
+
+        // Initializers
+        private void InitComboBoxes()
+        {
+            if (_cfg.IsValid())
             {
-                comboBoxArchitects.SelectedItem = _config.Architect;
-                comboBoxProjects.SelectedItem = _config.Project;
-                comboBoxPhases.SelectedItem = _config.Phase;
+                comboBoxArchitects.SelectedItem = _cfg.Architect;
+                comboBoxProjects.SelectedItem = _cfg.Project;
+                comboBoxPhases.SelectedItem = _cfg.Phase;
             }
             else
             {
                 comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
                 comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
                 comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
-                _config.Architect = (Architect) comboBoxArchitects.Items[0];
-                _config.Project = (Project) comboBoxProjects.Items[0];
-                _config.Phase = (Phase) comboBoxPhases.Items[0];
+                _cfg.Architect = (Architect)comboBoxArchitects.Items[0];
+                _cfg.Project = (Project)comboBoxProjects.Items[0];
+                _cfg.Phase = (Phase)comboBoxPhases.Items[0];
             }
-
-            Program.VarDump(_config);
-            return;
-            InitStartStopButtons();
         }
 
-        // Accessors
-        public Architect CurrentArchitect { get; set; }
-        public Project CurrentProject { get; set; }
-        public Phase CurrentPhase { get; set; }
-        public uint? RunningProjectId { get; set; }
-
-        private void InitStartStopButtons()
+        private void InitButtons()
         {
-            if (!_config.IsValid()) return;
+            if (!_cfg.IsValid()) return;
 
-            // Search for any already-started session
-            if (_db.StartedWorkSessions(_config) == 1)
+            //TODO
+            // Search for any already-started session for a given Architect
+            if (_db.StartedWorkSessions(_cfg.Architect).Count == 1)
             {
+                _startTime = new DateTime(_cfg.StartTime);
                 buttonStart.Enabled = false;
                 buttonStop.Enabled = true;
             }
@@ -113,20 +117,20 @@ namespace ProjectTime
         // ComboBox selection
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _config.Architect = (Architect) comboBoxArchitects.SelectedItem;
-            InitStartStopButtons();
+            _cfg.Architect = (Architect) comboBoxArchitects.SelectedItem;
+            InitButtons();
         }
         
         private void ComboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _config.Project = (Project) comboBoxProjects.SelectedItem;
-            InitStartStopButtons();
+            _cfg.Project = (Project) comboBoxProjects.SelectedItem;
+            InitButtons();
         }
 
         private void ComboBoxPhaseSelectedIndexChanged(object sender, EventArgs e)
         {
-            _config.Phase = (Phase) comboBoxPhases.SelectedItem;
-            InitStartStopButtons();
+            _cfg.Phase = (Phase) comboBoxPhases.SelectedItem;
+            InitButtons();
         }
 
 
@@ -141,9 +145,11 @@ namespace ProjectTime
             }
             _startTime = DateTime.Now;
 
-            if (Program.IsInternetConnexionAvailable())
+            if (Program.IsDatabaseConnexionAvailable())
             {
-                _db.StartWorkSession(_config);
+                _db.StartWorkSession(_cfg);
+                comboBoxProjects.Enabled = false;
+                comboBoxPhases.Enabled = false;
             }
             else
             {
@@ -152,20 +158,22 @@ namespace ProjectTime
             buttonStart.Enabled = false;
             buttonStop.Enabled = true;
         }
-
+        
         private void ButtonStopClick(object sender, EventArgs e)
         {
             _stopTime = DateTime.Now;
             var elapsedTime = _stopTime - _startTime;
             labelTime.Text = string.Format("{0:00}:{1:00}:{2:00}", elapsedTime.Hours, elapsedTime.Minutes,
                                            elapsedTime.Seconds);
-            if (Program.IsInternetConnexionAvailable())
+            if (Program.IsDatabaseConnexionAvailable())
             {
-                _db.EndWorkSession(_config);
+                _db.EndWorkSession(_cfg);
+                comboBoxProjects.Enabled = true;
+                comboBoxPhases.Enabled = true;
             }
             else
             {
-                MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(@"Base de données inaccessible.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             buttonStart.Enabled = true;
             buttonStop.Enabled = false;
@@ -175,11 +183,11 @@ namespace ProjectTime
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
-            if (!_config.IsValid()) return;
+            if (!_cfg.IsValid()) return;
 
-            Console.WriteLine(@"Writing " + Config.ConfigFileName + @"...");
-            _config.SaveToXml();
-            Console.WriteLine(Config.ConfigFileName + @" written.");
+            Console.WriteLine(@"Writing " + Session.ConfigFileName + @"...");
+            _cfg.SaveToXml();
+            Console.WriteLine(Session.ConfigFileName + @" written.");
         }
 
         private void ButtonConsultClick(object sender, EventArgs e)

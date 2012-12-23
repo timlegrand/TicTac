@@ -6,7 +6,7 @@ namespace ProjectTime
 {
     public partial class Consult : Form
     {
-        private readonly DbConnect _db;
+        private readonly Database _db;
         private readonly List<Project> _projectList;
         private readonly List<Phase> _phaseList;
         private readonly List<Architect> _architectsList;
@@ -18,7 +18,7 @@ namespace ProjectTime
         public Consult(RecordWindow mainWindow)
         {
             InitializeComponent();
-            _db = new DbConnect();
+            _db = new Database();
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
@@ -100,7 +100,7 @@ namespace ProjectTime
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
         {
 
-            if (comboBoxArchitects.SelectedItem == "Tous")
+            if (comboBoxArchitects.SelectedItem.ToString() == "Tous")
             {
                 _currentArchitect = null;
             }
@@ -124,7 +124,7 @@ namespace ProjectTime
 
         private void ComboBoxPhasesSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxPhases.SelectedItem == "Tous")
+            if (comboBoxPhases.SelectedItem.ToString() == "Tous")
             {
                 _currentPhase = null;
             }

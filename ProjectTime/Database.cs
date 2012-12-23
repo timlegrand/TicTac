@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace ProjectTime
 {
-    class DbConnect
+    class Database
     {
         private MySqlConnection _connection;
         private string _server;
@@ -16,7 +16,7 @@ namespace ProjectTime
         private string _password;
 
         //Constructor
-        public DbConnect()
+        public Database()
         {
             Initialize();
         }
@@ -24,7 +24,7 @@ namespace ProjectTime
         //Initialize values
         private void Initialize()
         {
-            _server = "82.240.213.167";
+            _server = Program.ServerIp;
             _database = "he";
             _uid = "he";
             _password = "mySqlUserPassword";
@@ -36,7 +36,7 @@ namespace ProjectTime
         //open connection to database
         private bool OpenConnection()
         {
-            if (!Program.IsInternetConnexionAvailable())
+            if (!Program.IsDatabaseConnexionAvailable())
             {
                 MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return false;
@@ -85,7 +85,7 @@ namespace ProjectTime
         }
 
         //StartWorkSession statement
-        public void StartWorkSession(Config cfg)
+        public void StartWorkSession(Session cfg)
         {
             var test = 0;
 #if (DEBUG)
@@ -110,12 +110,12 @@ namespace ProjectTime
         }
 
         //Update statement
-        public void EndWorkSession(Config cfg)
+        public void EndWorkSession(Session cfg)
         {
-            var numSessions = StartedWorkSessions(cfg);
-            if (numSessions != 1)
+            var sessions = StartedWorkSessions(cfg.Architect);
+            if (sessions.Count != 1)
             {
-                string msg = @"La base de données contient " + numSessions + @" occurence(s) pour la combinaison choisie.";
+                string msg = @"La base de données contient " + sessions.Count + @" occurence(s) pour la combinaison choisie.";
                 Console.WriteLine(msg);
                 //MessageBox.Show(msg, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -143,21 +143,23 @@ namespace ProjectTime
             CloseConnection();
         }
 
+        //TODO: must return info for a given (or not?) Architect
         //Search statement
-        public int StartedWorkSessions(Config cfg)
+        public List<Session> StartedWorkSessions(Architect archi)
         {
-            Program.VarDump(cfg);
+            Program.VarDump(archi);
+            var li = new List<Session>();
             
-            if (!OpenConnection()) return -1;
+            if (!OpenConnection() || !archi.IsValid()) return null;
 
             var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "SELECT * FROM r_worked " +
                               "WHERE " +
                               "enddate IS NULL" + " AND " +
-                              "archi=" + cfg.Architect.Id + " AND " +
-                              "project=" + cfg.Project.Id + " AND " +
-                              "phase=" + cfg.Phase.Id + " AND " +
+                              "archi=" + archi.Id + " AND " +
+                              //"project=" + cfg.Project.Id + " AND " +
+                              //"phase=" + cfg.Phase.Id + " AND " +
 #if (DEBUG)
                               "test=1"
 #else
@@ -165,17 +167,24 @@ namespace ProjectTime
 #endif
             };
 
-            int numRows = 0;
             using (var reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    numRows++;
+                    var archiId = (int)reader["archi"];
+                    var projectId = (int)reader["project"];
+                    var phaseId = (int)reader["phase"];
+                    li.Add(new Session(archiId, projectId, phaseId));
                 }
             }
 
+            if (li.Count == 1)
+            {
+                //TODO
+            }
+
             CloseConnection();
-            return numRows; 
+            return li; 
         }
 
 
@@ -255,10 +264,10 @@ namespace ProjectTime
             return count;
         }
 
-        public string GetArchitectFullNameFromId(int id)
+        public Architect GetArchitectFromId(int id)
         {
             string query = "SELECT * FROM e_architect WHERE ID=\"" + id + "\"";
-            string name = null;
+            var archi = new Architect();
 
             if (OpenConnection())
             {
@@ -266,21 +275,20 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    var fn = (string)dataReader["firstname"];
-                    var ln = (string)dataReader["lastname"];
-                    name = fn + " " + ln;
+                    archi.FirstName = (string)dataReader["firstname"];
+                    archi.LastName = (string)dataReader["lastname"];
                 }
                 dataReader.Close();
                 CloseConnection();
             }
 
-            return name;
+            return archi;
         }
 
-        public string GetProjectNameFromId(int id)
+        public Project GetProjectFromId(int id)
         {
             string query = "SELECT * FROM e_project WHERE ID=\"" + id + "\"";
-            string name = null;
+            var pro = new Project();
 
             if (OpenConnection())
             {
@@ -288,19 +296,20 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    name = (string)dataReader["name"];
+                    pro.Id = (int)dataReader["id"];
+                    pro.Name = (string)dataReader["name"];
                 }
                 dataReader.Close();
                 CloseConnection();
             }
 
-            return name;
+            return pro;
         }
 
-        public string GetPhaseNameFromId(int id)
+        public Phase GetPhaseFromId(int id)
         {
             string query = "SELECT * FROM e_phase WHERE ID=\"" + id + "\"";
-            string name = null;
+            var phase = new Phase();
 
             if (OpenConnection())
             {
@@ -308,19 +317,20 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    name = (string)dataReader["name"];
+                    phase.Id = (int)dataReader["id"];
+                    phase.Name = (string)dataReader["name"];
                 }
                 dataReader.Close();
                 CloseConnection();
             }
 
-            return name;
+            return phase;
         }
 
-        public string GetCompanyNameFromId(int id)
+        public Company GetCompanyFromId(int id)
         {
             string query = "SELECT * FROM e_company WHERE ID=\"" + id + "\"";
-            string name = null;
+            var co = new Company();
 
             if (OpenConnection())
             {
@@ -328,13 +338,14 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    name = (string) dataReader["name"];
+                    co.Id = (int)dataReader["id"]; 
+                    co.Name = (string)dataReader["name"];
                 }
                 dataReader.Close();
                 CloseConnection();
             }
 
-            return name;
+            return co;
         }
 
         public List<Architect> SelectAllArchitects()

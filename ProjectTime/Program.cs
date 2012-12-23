@@ -7,6 +7,8 @@ namespace ProjectTime
 {
     static class Program
     {
+        public static readonly string ServerIp = "82.240.213.167";
+
         [STAThread]
         static void Main()
         {
@@ -23,19 +25,19 @@ namespace ProjectTime
         }
 
 
-        public static bool IsInternetConnexionAvailable()
+        public static bool IsDatabaseConnexionAvailable()
         {
             var req = new System.Net.NetworkInformation.Ping();
             System.Net.NetworkInformation.PingReply rep;
             try
             {
-                rep = req.Send("www.google.com");
+                rep = req.Send(ServerIp);
             }
             catch (System.Net.NetworkInformation.PingException e)
             {
                 using (var logFile = new System.IO.StreamWriter("log.txt", true))
                 {
-                    logFile.WriteLine(System.DateTime.Now + ": User attempted to access the remote database but no Internet connection was available.");
+                    logFile.WriteLine(System.DateTime.Now + ": Remote database unreachable (" + e.Message + ")");
                 }
                 return false;
             }

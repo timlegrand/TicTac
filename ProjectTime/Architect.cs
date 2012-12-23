@@ -61,9 +61,9 @@ namespace ProjectTime
         }
 
         // Service
-        public bool IsPushable()
+        public bool IsValid()
         {
-            return ((_id == null) && (_firstName != null) && (_lastName != null) && (_company != null));
+            return ((_id == null) && (_firstName != null) && (_lastName != null) && (_company != -1));
         }
 
         public override string ToString()
