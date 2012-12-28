@@ -19,21 +19,6 @@ namespace ProjectTime
             _company = -1;
         }
 
-        public Architect(string firstName, string lastName, int company)
-        {
-            _id = null;
-            _firstName = firstName;
-            _lastName = lastName;
-            _company = company;
-        }
-
-        public Architect(int id, string firstName, string lastName, int company)
-        {
-            _id = id;
-            _firstName = firstName;
-            _lastName = lastName;
-            _company = company;
-        }
 
         // Accessors
         public int? Id
@@ -63,7 +48,7 @@ namespace ProjectTime
         // Service
         public bool IsValid()
         {
-            return ((_id == null) && (_firstName != null) && (_lastName != null) && (_company != -1));
+            return ((_id != null) && (_firstName != null) && (_lastName != null) && (_company != -1));
         }
 
         public override string ToString()

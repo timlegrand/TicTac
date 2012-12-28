@@ -86,7 +86,7 @@
     </Compile>
     <Compile Include="Company.cs" />
     <Compile Include="Session.cs" />
-    <Compile Include="Database.cs" />
+    <Compile Include="DbConnection.cs" />
     <Compile Include="Consult.cs">
       <SubType>Form</SubType>
     </Compile>

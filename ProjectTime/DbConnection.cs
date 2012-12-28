@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace ProjectTime
 {
-    class Database
+    class DbConnection
     {
         private MySqlConnection _connection;
         private string _server;
@@ -16,7 +16,7 @@ namespace ProjectTime
         private string _password;
 
         //Constructor
-        public Database()
+        public DbConnection()
         {
             Initialize();
         }
@@ -36,12 +36,6 @@ namespace ProjectTime
         //open connection to database
         private bool OpenConnection()
         {
-            if (!Program.IsDatabaseConnexionAvailable())
-            {
-                MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return false;
-            }
-
             if (_connection.State == ConnectionState.Open)
             {
                 return true;
@@ -110,28 +104,21 @@ namespace ProjectTime
         }
 
         //Update statement
-        public void EndWorkSession(Session cfg)
+        public void EndWorkSession(Session s)
         {
-            var sessions = StartedWorkSessions(cfg.Architect);
-            if (sessions.Count != 1)
-            {
-                string msg = @"La base de données contient " + sessions.Count + @" occurence(s) pour la combinaison choisie.";
-                Console.WriteLine(msg);
-                //MessageBox.Show(msg, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
+            if (s == null) throw new ArgumentNullException("s");
+            if (!s.IsValid() || !s.IsTerminated()) throw new Exception();
             if (!OpenConnection()) return;
 
             var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "UPDATE r_worked " +
-                              "SET enddate=TIMESTAMP(NOW()) " +
+                              "SET enddate='" + s.StopTime + "' " +
                               "WHERE " +
                               "enddate IS NULL"         + " AND " +
-                              "archi=" + cfg.Architect.Id + " AND " +
-                              "project=" + cfg.Project.Id + " AND " +
-                              "phase=" + cfg.Phase.Id + " AND " +
+                              "archi=" + s.Architect.Id + " AND " +
+                              "project=" + s.Project.Id + " AND " +
+                              "phase=" + s.Phase.Id + " AND " +
 #if (DEBUG)
                               "test=1"
 #else
@@ -143,23 +130,20 @@ namespace ProjectTime
             CloseConnection();
         }
 
-        //TODO: must return info for a given (or not?) Architect
-        //Search statement
+        //TODO: must return info for a given Architect
         public List<Session> StartedWorkSessions(Architect archi)
         {
-            Program.VarDump(archi);
-            var li = new List<Session>();
-            
-            if (!OpenConnection() || !archi.IsValid()) return null;
+            if (!OpenConnection() || archi.Id == null) return null;
 
+            var li = new List<Session>();
             var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "SELECT * FROM r_worked " +
                               "WHERE " +
                               "enddate IS NULL" + " AND " +
                               "archi=" + archi.Id + " AND " +
-                              //"project=" + cfg.Project.Id + " AND " +
-                              //"phase=" + cfg.Phase.Id + " AND " +
+                              //"project=" + s.Project.Id + " AND " +
+                              //"phase=" + s.Phase.Id + " AND " +
 #if (DEBUG)
                               "test=1"
 #else
@@ -171,10 +155,20 @@ namespace ProjectTime
             {
                 while (reader.Read())
                 {
-                    var archiId = (int)reader["archi"];
-                    var projectId = (int)reader["project"];
-                    var phaseId = (int)reader["phase"];
-                    li.Add(new Session(archiId, projectId, phaseId));
+                    var id = uint.Parse(reader["id"].ToString());
+                    var archiId = int.Parse(reader["archi"].ToString());
+                    var projectId = int.Parse(reader["project"].ToString());
+                    var phaseId = int.Parse(reader["phase"].ToString());
+                    var startTime = DateTime.Parse(reader["startdate"].ToString());
+                    var tempConnexion = new DbConnection();
+                    li.Add(new Session()
+                        {
+                            Architect = tempConnexion.GetArchitectFromId(archiId),
+                            Project = tempConnexion.GetProjectFromId(projectId),
+                            Phase = tempConnexion.GetPhaseFromId(phaseId),
+                            RunningSessionId = id,
+                            StartTime = startTime
+                        });
                 }
             }
 
@@ -224,8 +218,8 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    var start = System.DateTime.Parse(dataReader["startdate"].ToString());
-                    var end = System.DateTime.Parse(dataReader["enddate"].ToString());
+                    var start = DateTime.Parse(dataReader["startdate"].ToString());
+                    var end = DateTime.Parse(dataReader["enddate"].ToString());
                     if (end >= start)
                     {
                         count += (end - start).TotalSeconds;
@@ -275,8 +269,10 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
+                    archi.Id = int.Parse(dataReader["id"].ToString()); 
                     archi.FirstName = (string)dataReader["firstname"];
                     archi.LastName = (string)dataReader["lastname"];
+                    archi.Company = int.Parse(dataReader["id"].ToString());
                 }
                 dataReader.Close();
                 CloseConnection();
@@ -363,7 +359,7 @@ namespace ProjectTime
                     var fn = (string) dataReader["firstname"];
                     var ln = (string) dataReader["lastname"];
                     var co = (int) dataReader["company"];
-                    architects.Add(new Architect(id, fn, ln, co));
+                    architects.Add(new Architect() { Id = id, FirstName = fn, LastName = ln, Company = co });
                 }
                 dataReader.Close();
                 CloseConnection();

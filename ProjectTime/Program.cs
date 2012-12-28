@@ -12,6 +12,12 @@ namespace ProjectTime
         [STAThread]
         static void Main()
         {
+            // Check if an Internet connection is available
+            if (!Program.IsDatabaseConnexionAvailable())
+            {
+                MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
             // Create time recording window and launch application
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -47,6 +53,10 @@ namespace ProjectTime
 
         public static void VarDump(object obj)
         {
+            if (obj == null)
+            {
+                throw new ArgumentNullException();
+            }
             // If native (atomic) type
             if (obj.GetType().GetProperties().Length == 0)
             {
@@ -62,7 +72,10 @@ namespace ProjectTime
             {
                 try
                 {
-                    Console.WriteLine("  [\"{0}\"] => ({1}) \"{2}\"", p.Name, p.GetValue(obj, null).GetType()/*"unknown"*/, p.GetValue(obj, null));
+                    Console.WriteLine("  [\"{0}\"] => ({1}) \"{2}\"",
+                        p.Name,
+                        (p.GetValue(obj, null) != null) ? p.GetValue(obj, null).GetType().ToString() : "unknown",
+                        p.GetValue(obj, null) ?? "null");
                 }
                 catch (Exception e)
                 {

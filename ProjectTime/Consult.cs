@@ -6,7 +6,7 @@ namespace ProjectTime
 {
     public partial class Consult : Form
     {
-        private readonly Database _db;
+        private readonly DbConnection _db;
         private readonly List<Project> _projectList;
         private readonly List<Phase> _phaseList;
         private readonly List<Architect> _architectsList;
@@ -18,7 +18,7 @@ namespace ProjectTime
         public Consult(RecordWindow mainWindow)
         {
             InitializeComponent();
-            _db = new Database();
+            _db = new DbConnection();
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
