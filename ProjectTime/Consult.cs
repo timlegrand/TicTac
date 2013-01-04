@@ -75,9 +75,11 @@ namespace ProjectTime
             var projectId = (_currentProject != null) ? _currentProject.Id : null;
             var phaseId = (_currentPhase != null) ? _currentPhase.Id : null;
 
-            var countSeconds = _db.GetTimeCount(archiId, projectId, phaseId);
-            textBoxCountHours.Text = String.Format("{0:0.00}", (countSeconds / 3600));
-            textBoxCountManMonth.Text = String.Format("{0:0.00}", (countSeconds / (3600*7*20)));
+            var timeSpan = _db.GetTimeCount(archiId, projectId, phaseId);
+            textBoxCountHours.Text = String.Format("{0:0.00}",timeSpan.TotalHours);
+            textBoxCountManMonth.Text = String.Format("{0:0.00}",timeSpan.TotalDays);
+            Console.WriteLine(textBoxCountHours.Text);
+            Console.WriteLine(textBoxCountManMonth.Text);
             pictureBox.Hide();
         }
 

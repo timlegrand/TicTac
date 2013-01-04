@@ -109,11 +109,13 @@ namespace ProjectTime
             if (s == null) throw new ArgumentNullException("s");
             if (!s.IsValid() || !s.IsTerminated()) throw new Exception();
             if (!OpenConnection()) return;
+            var formattedDate = String.Format("{0:yyyy/MM/dd HH:mm:ss}", s.StopTime);
+            Console.WriteLine(formattedDate);
 
             var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "UPDATE r_worked " +
-                              "SET enddate='" + s.StopTime + "' " +
+                              "SET enddate='" + formattedDate + "' " +
                               "WHERE " +
                               "enddate IS NULL"         + " AND " +
                               "archi=" + s.Architect.Id + " AND " +
@@ -182,7 +184,7 @@ namespace ProjectTime
         }
 
 
-        public double GetTimeCount(int? archiId, int? projectId, int? phaseId)
+        public TimeSpan GetTimeCount(int? archiId, int? projectId, int? phaseId)
         {
             string where = " WHERE enddate IS NOT NULL";
             if ((archiId != null) || (projectId != null) || (phaseId != null))
@@ -211,7 +213,7 @@ namespace ProjectTime
             }
             
             string query = "SELECT * FROM r_worked" + where;
-            double count = 0;
+            var count = TimeSpan.Zero;
             if (OpenConnection())
             {
                 var cmd = new MySqlCommand(query, _connection);
@@ -222,7 +224,7 @@ namespace ProjectTime
                     var end = DateTime.Parse(dataReader["enddate"].ToString());
                     if (end >= start)
                     {
-                        count += (end - start).TotalSeconds;
+                        count += (end - start);
                     }
                 }
 
