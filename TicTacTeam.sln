@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTime", "ProjectTime\ProjectTime.csproj", "{CC717AD6-54D5-4EDA-B9E8-46D7A4917173}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacTeam", "ProjectTime\TicTacTeam.csproj", "{CC717AD6-54D5-4EDA-B9E8-46D7A4917173}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
