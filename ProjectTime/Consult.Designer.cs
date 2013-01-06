@@ -195,6 +195,7 @@
             this.deletePhaseButton.TabIndex = 18;
             this.deletePhaseButton.Text = "-";
             this.deletePhaseButton.UseVisualStyleBackColor = true;
+            this.deletePhaseButton.Click += new System.EventHandler(this.DeletePhaseButtonClick);
             // 
             // deleteProjectButton
             // 
@@ -204,6 +205,7 @@
             this.deleteProjectButton.TabIndex = 17;
             this.deleteProjectButton.Text = "-";
             this.deleteProjectButton.UseVisualStyleBackColor = true;
+            this.deleteProjectButton.Click += new System.EventHandler(this.DeleteProjectButtonClick);
             // 
             // deleteArchitectButton
             // 

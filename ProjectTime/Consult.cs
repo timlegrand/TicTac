@@ -80,11 +80,13 @@ namespace ProjectTime
         private void AddProjectClick(object sender, EventArgs e)
         {
             //TODO
+            throw new NotImplementedException();
         }
 
         private void AddPhaseClick(object sender, EventArgs e)
         {
             //TODO
+            throw new NotImplementedException();
         }
 
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
@@ -128,11 +130,6 @@ namespace ProjectTime
         {
             Screen scn = Screen.FromPoint(this.Location);
             /*
-            if (DoSnap(this.Left, scn.WorkingArea.Left)) this.Left = scn.WorkingArea.Left;
-            if (DoSnap(this.Top, scn.WorkingArea.Top)) this.Top = scn.WorkingArea.Top;
-            if (DoSnap(scn.WorkingArea.Right, this.Right)) this.Left = scn.WorkingArea.Right - this.Width;
-            if (DoSnap(scn.WorkingArea.Bottom, this.Bottom)) this.Top = scn.WorkingArea.Bottom - this.Height;
-             * */
             if (closeEnough(this, _mainWindow))
             {
                 if (DoSnap(this.Top, _mainWindow.Bottom)) this.Top = _mainWindow.Bottom;
@@ -144,6 +141,7 @@ namespace ProjectTime
                 if (DoSnap(this.Left, _mainWindow.Left)) this.Left = _mainWindow.Left;
                 if (DoSnap(this.Right, _mainWindow.Right)) this.Left = _mainWindow.Right - this.Width;
             }
+            */
         }
 
         private bool closeEnough(Consult consult, RecordWindow mainWindow)
@@ -151,15 +149,30 @@ namespace ProjectTime
             var rwCenter = new Point((mainWindow.Top + mainWindow.Bottom)/2, (mainWindow.Left + mainWindow.Right)/2);
             var cwCenter = new Point((consult.Top + consult.Bottom) / 2, (consult.Left + consult.Right) / 2);
             var dist = Math.Sqrt(Math.Pow(rwCenter.X - cwCenter.X, 2) + Math.Pow(rwCenter.Y - cwCenter.Y, 2));
-            //Console.WriteLine(rwCenter.ToString());
-            //Console.WriteLine(cwCenter.ToString());
-            //Console.WriteLine(dist);
             return dist <= 400;
         }
 
         private void DeleteArchitectButtonClick(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Êtes vous sûr de vouloir supprimer " + _currentArchitect.ToString() + "?", "Confirm delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show("Êtes vous sûr de vouloir supprimer l'achitecte " + _currentArchitect.ToString() + " ?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+        }
+
+        private void DeleteProjectButtonClick(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Êtes vous sûr de vouloir supprimer le projet " + _currentProject.ToString() + "?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+        }
+
+        private void DeletePhaseButtonClick(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Êtes vous sûr de vouloir supprimer la phase " + _currentPhase.ToString() + "?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 //TODO
                 throw new NotImplementedException();
