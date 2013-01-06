@@ -39,17 +39,20 @@
             this.textBoxCountHours = new System.Windows.Forms.TextBox();
             this.textBoxCountManMonth = new System.Windows.Forms.TextBox();
             this.labelTotalCountManMonth = new System.Windows.Forms.Label();
-            this.addPhase = new System.Windows.Forms.Button();
-            this.addProject = new System.Windows.Forms.Button();
-            this.addArchitect = new System.Windows.Forms.Button();
             this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.addArchitect = new System.Windows.Forms.Button();
+            this.addProject = new System.Windows.Forms.Button();
+            this.addPhase = new System.Windows.Forms.Button();
+            this.deletePhaseButton = new System.Windows.Forms.Button();
+            this.deleteProjectButton = new System.Windows.Forms.Button();
+            this.deleteArchitectButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBoxArchitects
             // 
             this.comboBoxArchitects.FormattingEnabled = true;
-            this.comboBoxArchitects.Location = new System.Drawing.Point(116, 18);
+            this.comboBoxArchitects.Location = new System.Drawing.Point(92, 18);
             this.comboBoxArchitects.Name = "comboBoxArchitects";
             this.comboBoxArchitects.Size = new System.Drawing.Size(158, 21);
             this.comboBoxArchitects.TabIndex = 0;
@@ -58,7 +61,7 @@
             // comboBoxProjects
             // 
             this.comboBoxProjects.FormattingEnabled = true;
-            this.comboBoxProjects.Location = new System.Drawing.Point(116, 46);
+            this.comboBoxProjects.Location = new System.Drawing.Point(92, 46);
             this.comboBoxProjects.Name = "comboBoxProjects";
             this.comboBoxProjects.Size = new System.Drawing.Size(158, 21);
             this.comboBoxProjects.TabIndex = 1;
@@ -67,7 +70,7 @@
             // comboBoxPhases
             // 
             this.comboBoxPhases.FormattingEnabled = true;
-            this.comboBoxPhases.Location = new System.Drawing.Point(116, 74);
+            this.comboBoxPhases.Location = new System.Drawing.Point(92, 74);
             this.comboBoxPhases.Name = "comboBoxPhases";
             this.comboBoxPhases.Size = new System.Drawing.Size(158, 21);
             this.comboBoxPhases.TabIndex = 2;
@@ -76,7 +79,7 @@
             // labelArchitect
             // 
             this.labelArchitect.AutoSize = true;
-            this.labelArchitect.Location = new System.Drawing.Point(44, 21);
+            this.labelArchitect.Location = new System.Drawing.Point(14, 21);
             this.labelArchitect.Name = "labelArchitect";
             this.labelArchitect.Size = new System.Drawing.Size(55, 13);
             this.labelArchitect.TabIndex = 3;
@@ -85,7 +88,7 @@
             // labelProject
             // 
             this.labelProject.AutoSize = true;
-            this.labelProject.Location = new System.Drawing.Point(44, 49);
+            this.labelProject.Location = new System.Drawing.Point(14, 49);
             this.labelProject.Name = "labelProject";
             this.labelProject.Size = new System.Drawing.Size(34, 13);
             this.labelProject.TabIndex = 4;
@@ -94,7 +97,7 @@
             // labelPhase
             // 
             this.labelPhase.AutoSize = true;
-            this.labelPhase.Location = new System.Drawing.Point(44, 77);
+            this.labelPhase.Location = new System.Drawing.Point(14, 77);
             this.labelPhase.Name = "labelPhase";
             this.labelPhase.Size = new System.Drawing.Size(37, 13);
             this.labelPhase.TabIndex = 5;
@@ -102,7 +105,7 @@
             // 
             // buttonValidate
             // 
-            this.buttonValidate.Location = new System.Drawing.Point(199, 101);
+            this.buttonValidate.Location = new System.Drawing.Point(173, 101);
             this.buttonValidate.Name = "buttonValidate";
             this.buttonValidate.Size = new System.Drawing.Size(75, 23);
             this.buttonValidate.TabIndex = 6;
@@ -144,29 +147,19 @@
             this.labelTotalCountManMonth.TabIndex = 9;
             this.labelTotalCountManMonth.Text = "Total homme.jour";
             // 
-            // addPhase
+            // pictureBox
             // 
-            this.addPhase.Location = new System.Drawing.Point(12, 73);
-            this.addPhase.Name = "addPhase";
-            this.addPhase.Size = new System.Drawing.Size(20, 21);
-            this.addPhase.TabIndex = 14;
-            this.addPhase.Text = "+";
-            this.addPhase.UseVisualStyleBackColor = true;
-            this.addPhase.Click += new System.EventHandler(this.AddPhaseClick);
-            // 
-            // addProject
-            // 
-            this.addProject.Location = new System.Drawing.Point(12, 46);
-            this.addProject.Name = "addProject";
-            this.addProject.Size = new System.Drawing.Size(20, 21);
-            this.addProject.TabIndex = 13;
-            this.addProject.Text = "+";
-            this.addProject.UseVisualStyleBackColor = true;
-            this.addProject.Click += new System.EventHandler(this.AddProjectClick);
+            this.pictureBox.Image = global::ProjectTime.Properties.Resources.loading;
+            this.pictureBox.Location = new System.Drawing.Point(146, 102);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(21, 21);
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox.TabIndex = 15;
+            this.pictureBox.TabStop = false;
             // 
             // addArchitect
             // 
-            this.addArchitect.Location = new System.Drawing.Point(12, 19);
+            this.addArchitect.Location = new System.Drawing.Point(257, 19);
             this.addArchitect.Name = "addArchitect";
             this.addArchitect.Size = new System.Drawing.Size(20, 21);
             this.addArchitect.TabIndex = 12;
@@ -174,21 +167,62 @@
             this.addArchitect.UseVisualStyleBackColor = true;
             this.addArchitect.Click += new System.EventHandler(this.AddArchitectClick);
             // 
-            // pictureBox
+            // addProject
             // 
-            this.pictureBox.Image = global::ProjectTime.Properties.Resources.loading;
-            this.pictureBox.Location = new System.Drawing.Point(172, 102);
-            this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(21, 21);
-            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox.TabIndex = 15;
-            this.pictureBox.TabStop = false;
+            this.addProject.Location = new System.Drawing.Point(257, 46);
+            this.addProject.Name = "addProject";
+            this.addProject.Size = new System.Drawing.Size(20, 21);
+            this.addProject.TabIndex = 13;
+            this.addProject.Text = "+";
+            this.addProject.UseVisualStyleBackColor = true;
+            this.addProject.Click += new System.EventHandler(this.AddProjectClick);
+            // 
+            // addPhase
+            // 
+            this.addPhase.Location = new System.Drawing.Point(257, 73);
+            this.addPhase.Name = "addPhase";
+            this.addPhase.Size = new System.Drawing.Size(20, 21);
+            this.addPhase.TabIndex = 14;
+            this.addPhase.Text = "+";
+            this.addPhase.UseVisualStyleBackColor = true;
+            this.addPhase.Click += new System.EventHandler(this.AddPhaseClick);
+            // 
+            // deletePhaseButton
+            // 
+            this.deletePhaseButton.Location = new System.Drawing.Point(282, 74);
+            this.deletePhaseButton.Name = "deletePhaseButton";
+            this.deletePhaseButton.Size = new System.Drawing.Size(20, 21);
+            this.deletePhaseButton.TabIndex = 18;
+            this.deletePhaseButton.Text = "-";
+            this.deletePhaseButton.UseVisualStyleBackColor = true;
+            // 
+            // deleteProjectButton
+            // 
+            this.deleteProjectButton.Location = new System.Drawing.Point(282, 46);
+            this.deleteProjectButton.Name = "deleteProjectButton";
+            this.deleteProjectButton.Size = new System.Drawing.Size(20, 21);
+            this.deleteProjectButton.TabIndex = 17;
+            this.deleteProjectButton.Text = "-";
+            this.deleteProjectButton.UseVisualStyleBackColor = true;
+            // 
+            // deleteArchitectButton
+            // 
+            this.deleteArchitectButton.Location = new System.Drawing.Point(282, 18);
+            this.deleteArchitectButton.Name = "deleteArchitectButton";
+            this.deleteArchitectButton.Size = new System.Drawing.Size(20, 21);
+            this.deleteArchitectButton.TabIndex = 16;
+            this.deleteArchitectButton.Text = "-";
+            this.deleteArchitectButton.UseVisualStyleBackColor = true;
+            this.deleteArchitectButton.Click += new System.EventHandler(this.DeleteArchitectButtonClick);
             // 
             // Consult
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(286, 220);
+            this.ClientSize = new System.Drawing.Size(313, 220);
+            this.Controls.Add(this.deletePhaseButton);
+            this.Controls.Add(this.deleteProjectButton);
+            this.Controls.Add(this.deleteArchitectButton);
             this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.addPhase);
             this.Controls.Add(this.addProject);
@@ -207,6 +241,7 @@
             this.MaximizeBox = false;
             this.Name = "Consult";
             this.Text = "Consulter";
+            this.Move += new System.EventHandler(this.Consult_Move);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -226,9 +261,12 @@
         private System.Windows.Forms.TextBox textBoxCountHours;
         private System.Windows.Forms.TextBox textBoxCountManMonth;
         private System.Windows.Forms.Label labelTotalCountManMonth;
-        private System.Windows.Forms.Button addPhase;
-        private System.Windows.Forms.Button addProject;
-        private System.Windows.Forms.Button addArchitect;
         private System.Windows.Forms.PictureBox pictureBox;
+        private System.Windows.Forms.Button addArchitect;
+        private System.Windows.Forms.Button addProject;
+        private System.Windows.Forms.Button addPhase;
+        private System.Windows.Forms.Button deletePhaseButton;
+        private System.Windows.Forms.Button deleteProjectButton;
+        private System.Windows.Forms.Button deleteArchitectButton;
     }
 }

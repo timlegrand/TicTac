@@ -40,11 +40,12 @@ namespace ProjectTime
             this.label3 = new System.Windows.Forms.Label();
             this.labelTime = new System.Windows.Forms.Label();
             this.buttonConsult = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(94, 109);
+            this.buttonStart.Location = new System.Drawing.Point(90, 119);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(75, 23);
             this.buttonStart.TabIndex = 0;
@@ -54,7 +55,7 @@ namespace ProjectTime
             // 
             // buttonStop
             // 
-            this.buttonStop.Location = new System.Drawing.Point(187, 109);
+            this.buttonStop.Location = new System.Drawing.Point(171, 119);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(75, 23);
             this.buttonStop.TabIndex = 1;
@@ -101,7 +102,7 @@ namespace ProjectTime
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 67);
+            this.label2.Location = new System.Drawing.Point(12, 70);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 13);
             this.label2.TabIndex = 5;
@@ -119,7 +120,7 @@ namespace ProjectTime
             // labelTime
             // 
             this.labelTime.AutoSize = true;
-            this.labelTime.Location = new System.Drawing.Point(12, 114);
+            this.labelTime.Location = new System.Drawing.Point(100, 97);
             this.labelTime.Name = "labelTime";
             this.labelTime.Size = new System.Drawing.Size(58, 13);
             this.labelTime.TabIndex = 8;
@@ -127,19 +128,30 @@ namespace ProjectTime
             // 
             // buttonConsult
             // 
-            this.buttonConsult.Location = new System.Drawing.Point(187, 131);
+            this.buttonConsult.Location = new System.Drawing.Point(9, 120);
             this.buttonConsult.Name = "buttonConsult";
             this.buttonConsult.Size = new System.Drawing.Size(75, 21);
             this.buttonConsult.TabIndex = 9;
-            this.buttonConsult.Text = "Consulter";
+            this.buttonConsult.Text = "Database";
             this.buttonConsult.UseVisualStyleBackColor = true;
             this.buttonConsult.Click += new System.EventHandler(this.ButtonConsultClick);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(44, 97);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(37, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Total :";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // RecordWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(282, 157);
+            this.ClientSize = new System.Drawing.Size(258, 151);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.buttonConsult);
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.comboBoxArchitects);
@@ -172,6 +184,7 @@ namespace ProjectTime
         private System.Windows.Forms.ComboBox comboBoxArchitects;
         private System.Windows.Forms.Label labelTime;
         private System.Windows.Forms.Button buttonConsult;
+        private System.Windows.Forms.Label label4;
     }
 }
 

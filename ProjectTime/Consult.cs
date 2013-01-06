@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace ProjectTime
@@ -18,7 +19,7 @@ namespace ProjectTime
         public Consult(RecordWindow mainWindow)
         {
             InitializeComponent();
-            _db = new DbConnection();
+            _db = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
@@ -43,7 +44,7 @@ namespace ProjectTime
             _mainWindow = mainWindow;
         }
 
-        private const int SnapDist = 200;
+        private const int SnapDist = 20;
         private bool DoSnap(int pos1, int pos2)
         {
             int delta = Math.Abs(pos1 - pos2);
@@ -53,18 +54,7 @@ namespace ProjectTime
         protected override void OnResizeEnd(EventArgs e)
         {
             base.OnResizeEnd(e);
-            Screen scn = Screen.FromPoint(this.Location);
-            /*
-            if (DoSnap(this.Left, scn.WorkingArea.Left)) this.Left = scn.WorkingArea.Left;
-            if (DoSnap(this.Top, scn.WorkingArea.Top)) this.Top = scn.WorkingArea.Top;
-            if (DoSnap(scn.WorkingArea.Right, this.Right)) this.Left = scn.WorkingArea.Right - this.Width;
-            if (DoSnap(scn.WorkingArea.Bottom, this.Bottom)) this.Top = scn.WorkingArea.Bottom - this.Height;
-             * */
-            if (DoSnap(this.Top, _mainWindow.Bottom)) this.Top = _mainWindow.Bottom;
-            if (DoSnap(this.Bottom, _mainWindow.Top)) this.Top = _mainWindow.Top - this.Height;
-            if (DoSnap(this.Left, _mainWindow.Right)) this.Left = _mainWindow.Right;
-            if (DoSnap(this.Right, _mainWindow.Left)) this.Left = _mainWindow.Left - this.Width;
-            
+           
         }
 
         private void ButtonValidateClick(object sender, EventArgs e)
@@ -78,8 +68,6 @@ namespace ProjectTime
             var timeSpan = _db.GetTimeCount(archiId, projectId, phaseId);
             textBoxCountHours.Text = String.Format("{0:0.00}",timeSpan.TotalHours);
             textBoxCountManMonth.Text = String.Format("{0:0.00}",timeSpan.TotalDays);
-            Console.WriteLine(textBoxCountHours.Text);
-            Console.WriteLine(textBoxCountManMonth.Text);
             pictureBox.Hide();
         }
 
@@ -133,6 +121,48 @@ namespace ProjectTime
             else
             {
                 _currentPhase = (Phase) comboBoxPhases.SelectedItem;
+            }
+        }
+
+        private void Consult_Move(object sender, EventArgs e)
+        {
+            Screen scn = Screen.FromPoint(this.Location);
+            /*
+            if (DoSnap(this.Left, scn.WorkingArea.Left)) this.Left = scn.WorkingArea.Left;
+            if (DoSnap(this.Top, scn.WorkingArea.Top)) this.Top = scn.WorkingArea.Top;
+            if (DoSnap(scn.WorkingArea.Right, this.Right)) this.Left = scn.WorkingArea.Right - this.Width;
+            if (DoSnap(scn.WorkingArea.Bottom, this.Bottom)) this.Top = scn.WorkingArea.Bottom - this.Height;
+             * */
+            if (closeEnough(this, _mainWindow))
+            {
+                if (DoSnap(this.Top, _mainWindow.Bottom)) this.Top = _mainWindow.Bottom;
+                if (DoSnap(this.Bottom, _mainWindow.Top)) this.Top = _mainWindow.Top - this.Height;
+                if (DoSnap(this.Left, _mainWindow.Right)) this.Left = _mainWindow.Right;
+                if (DoSnap(this.Right, _mainWindow.Left)) this.Left = _mainWindow.Left - this.Width;
+                if (DoSnap(this.Top, _mainWindow.Top)) this.Top = _mainWindow.Top;
+                if (DoSnap(this.Bottom, _mainWindow.Bottom)) this.Top = _mainWindow.Bottom - this.Height;
+                if (DoSnap(this.Left, _mainWindow.Left)) this.Left = _mainWindow.Left;
+                if (DoSnap(this.Right, _mainWindow.Right)) this.Left = _mainWindow.Right - this.Width;
+            }
+        }
+
+        private bool closeEnough(Consult consult, RecordWindow mainWindow)
+        {
+            var rwCenter = new Point((mainWindow.Top + mainWindow.Bottom)/2, (mainWindow.Left + mainWindow.Right)/2);
+            var cwCenter = new Point((consult.Top + consult.Bottom) / 2, (consult.Left + consult.Right) / 2);
+            var dist = Math.Sqrt(Math.Pow(rwCenter.X - cwCenter.X, 2) + Math.Pow(rwCenter.Y - cwCenter.Y, 2));
+            //Console.WriteLine(rwCenter.ToString());
+            //Console.WriteLine(cwCenter.ToString());
+            //Console.WriteLine(dist);
+            return dist <= 400;
+        }
+
+        private void DeleteArchitectButtonClick(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Êtes vous sûr de vouloir supprimer " + _currentArchitect.ToString() + "?", "Confirm delete", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                //TODO
+                throw new NotImplementedException();
             }
         }
     }

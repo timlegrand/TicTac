@@ -25,7 +25,7 @@ namespace ProjectTime
             InitializeComponent();
 
             // Retrieve data from server
-            _db = new DbConnection();
+            _db = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
@@ -136,7 +136,9 @@ namespace ProjectTime
         {
             _ws.StopTime = DateTime.Now;
             var elapsedTime = _ws.StopTime - _ws.StartTime;
-            labelTime.Text = string.Format("{0:00}:{1:00}:{2:00}", 
+            labelTime.Text =
+                string.Format("{0:0}j {1:00}:{2:00}:{3:00}",
+                elapsedTime.TotalDays,
                 elapsedTime.Hours, 
                 elapsedTime.Minutes,
                 elapsedTime.Seconds);
@@ -166,6 +168,11 @@ namespace ProjectTime
             var consultForm = new Consult(this)
                                   { FormBorderStyle = FormBorderStyle.FixedSingle };
             consultForm.Show();
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -16,20 +16,19 @@ namespace ProjectTime
         private string _password;
 
         //Constructor
-        public DbConnection()
+        public DbConnection(string server, string database, string uid, string password)
         {
+            _server = server;
+            _database = database;
+            _uid = uid;
+            _password = password;
             Initialize();
         }
 
         //Initialize values
         private void Initialize()
         {
-            _server = Program.ServerIp;
-            _database = "he";
-            _uid = "he";
-            _password = "mySqlUserPassword";
             string connectionString = "SERVER=" + _server + ";" + "DATABASE=" + _database + ";" + "UID=" + _uid + ";" + "PASSWORD=" + _password + ";";
-
             _connection = new MySqlConnection(connectionString);
         }
 
@@ -110,8 +109,7 @@ namespace ProjectTime
             if (!s.IsValid() || !s.IsTerminated()) throw new Exception();
             if (!OpenConnection()) return;
             var formattedDate = String.Format("{0:yyyy/MM/dd HH:mm:ss}", s.StopTime);
-            Console.WriteLine(formattedDate);
-
+            
             var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "UPDATE r_worked " +
@@ -162,7 +160,7 @@ namespace ProjectTime
                     var projectId = int.Parse(reader["project"].ToString());
                     var phaseId = int.Parse(reader["phase"].ToString());
                     var startTime = DateTime.Parse(reader["startdate"].ToString());
-                    var tempConnexion = new DbConnection();
+                    var tempConnexion = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
                     li.Add(new Session()
                         {
                             Architect = tempConnexion.GetArchitectFromId(archiId),
