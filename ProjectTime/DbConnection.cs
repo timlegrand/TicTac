@@ -381,7 +381,7 @@ namespace ProjectTime
                 {
                     var id = (int) dataReader["id"];
                     var na = (string)dataReader["name"];
-                    projects.Add(new Project(id, na));
+                    projects.Add(new Project() { Id = id, Name = na });
                 }
                 dataReader.Close();
                 CloseConnection();
@@ -437,7 +437,7 @@ namespace ProjectTime
         public int InsertArchitect(Architect a)
         {
             var insertedRowId = -1;
-            if (!OpenConnection()) return insertedRowId;
+            if (!a.IsValid() || !OpenConnection()) return insertedRowId;
 
             using (var cmd = new MySqlCommand(null, _connection)
                                 {
@@ -464,16 +464,18 @@ namespace ProjectTime
         public int InsertProject(Project p)
         {
             var insertedRowId = -1;
-            if (!OpenConnection()) return insertedRowId;
+            if (!p.IsValid() || !OpenConnection()) return insertedRowId;
 
             using (var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "INSERT INTO e_project " +
-                                "VALUES ('', @name)"
+                                "VALUES ('', @name, @description)"
             })
             {
                 cmd.Prepare();
                 cmd.Parameters.AddWithValue("@name", p.Name);
+                cmd.Parameters.AddWithValue("@description", p.Description);
+                //cmd.Parameters.AddWithValue("@totaltime", /*TODO*/);
                 cmd.ExecuteNonQuery();
 
                 // Get the last inserted id
@@ -489,7 +491,7 @@ namespace ProjectTime
         public int InsertPhase(Phase p)
         {
             var insertedRowId = -1;
-            if (!OpenConnection()) return insertedRowId;
+            if (!p.IsValid() || !OpenConnection()) return insertedRowId;
 
             using (var cmd = new MySqlCommand(null, _connection)
             {

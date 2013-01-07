@@ -87,17 +87,15 @@ namespace ProjectTime
 
         private void AddProjectClick(object sender, EventArgs e)
         {
-            //TODO
-            throw new NotImplementedException();
-            //var form = new AddProject(_mainWindow);
-            //form.Show();
+            var form = new AddProject(this);
+            form.Show();
         }
 
         private void AddPhaseClick(object sender, EventArgs e)
         {
             //TODO
             throw new NotImplementedException();
-            //var form = new AddPhase(_mainWindow);
+            //var form = new AddPhase(this);
             //form.Show();
         }
 

@@ -6,50 +6,27 @@ namespace ProjectTime
     [Serializable()]
     public class Project
     {
-        private int? _id;
-        private string _name;
+        public int? Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
 
         public Project()
         {
-            _id = null;
-            _name = null;
+            Id = null;
+            Name = null;
+            Description = null;
         }
 
-        public Project(string name)
-        {
-            _id = null;
-            _name = name;
-        }
-
-        public Project(int id, string name)
-        {
-            _id = id;
-            _name = name;
-        }
-
-
-        // Accessors
-        public int? Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
 
         // Service
         public bool IsValid()
         {
-            return ((_id == null) && (_name != null));
+            return ((Id == null) && (Name != null));
         }
         
         public override string ToString()
         {
-            return _name;
+            return Name;
         }
     }
 }
