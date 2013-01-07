@@ -403,7 +403,8 @@ namespace ProjectTime
                 {
                     var id = (int)dataReader["id"];
                     var na = (string)dataReader["name"];
-                    phases.Add(new Phase(id, na));
+                    var d = (string)dataReader["description"].ToString();
+                    phases.Add(new Phase() { Id = id, Name = na, Description = d });
                 }
                 dataReader.Close();
                 CloseConnection();
@@ -496,11 +497,12 @@ namespace ProjectTime
             using (var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "INSERT INTO e_phase " +
-                                "VALUES ('', @name)"
+                                "VALUES ('', @name, @description)"
             })
             {
                 cmd.Prepare();
                 cmd.Parameters.AddWithValue("@name", p.Name);
+                cmd.Parameters.AddWithValue("@description", p.Description);
                 cmd.ExecuteNonQuery();
 
                 // Get the last inserted id

@@ -3,21 +3,21 @@ using System.Windows.Forms;
 
 namespace ProjectTime
 {
-    public partial class AddProject : Form
+    public partial class AddPhase : Form
     {
         private readonly DbConnection _db;
         private readonly Consult _parent;
 
-        public AddProject(Consult parent)
+        public AddPhase(Consult parent)
         {
             InitializeComponent();
             _db = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
             _parent = parent;
         }
 
-        private void SaveClick(object sender, EventArgs e)
+        private void SaveClick(object sender, System.EventArgs e)
         {
-            var n = textBoxProjectName.Text;
+            var n = textBoxPhaseName.Text;
             var d = textBoxDescription.Text;
             if (n.Length == 0)
             {
@@ -25,7 +25,7 @@ namespace ProjectTime
                 return;
             }
 
-            var id = _db.InsertProject(new Project() { Name = n, Description = d });
+            var id = _db.InsertPhase(new Phase() { Name = n, Description = d });
             Console.WriteLine("Project inserted id = {0}", id);
 
             _parent.UpdateData();

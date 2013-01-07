@@ -93,10 +93,8 @@ namespace ProjectTime
 
         private void AddPhaseClick(object sender, EventArgs e)
         {
-            //TODO
-            throw new NotImplementedException();
-            //var form = new AddPhase(this);
-            //form.Show();
+            var form = new AddPhase(this);
+            form.Show();
         }
 
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
