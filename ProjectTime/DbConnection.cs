@@ -412,5 +412,154 @@ namespace ProjectTime
             return phases;
         }
 
+        public List<Company> SelectAllCompanies()
+        {
+            const string query = "SELECT * FROM e_company";
+            var l = new List<Company>();
+
+            if (OpenConnection())
+            {
+                var cmd = new MySqlCommand(query, _connection);
+                var dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    var id = (int)dataReader["id"];
+                    var na = (string)dataReader["name"];
+                    l.Add(new Company(id, na));
+                }
+                dataReader.Close();
+                CloseConnection();
+            }
+
+            return l;
+        }
+
+        public int InsertArchitect(Architect a)
+        {
+            var insertedRowId = -1;
+            if (!OpenConnection()) return insertedRowId;
+
+            using (var cmd = new MySqlCommand(null, _connection)
+                                {
+                                    CommandText = "INSERT INTO e_architect " +
+                                                    "VALUES ('', @firstname, @lastname, @company)"
+                                })
+            {
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@firstname", a.FirstName);
+                cmd.Parameters.AddWithValue("@lastname", a.LastName);
+                cmd.Parameters.AddWithValue("@company", a.Company);
+                cmd.ExecuteNonQuery();
+
+                // Get the last inserted id
+                cmd.Parameters.Clear();
+                cmd.CommandText = "SELECT @@IDENTITY";
+                insertedRowId = Convert.ToInt32(cmd.ExecuteScalar());    
+            }
+            
+            CloseConnection();
+            return insertedRowId;
+        }
+
+        public int InsertProject(Project p)
+        {
+            var insertedRowId = -1;
+            if (!OpenConnection()) return insertedRowId;
+
+            using (var cmd = new MySqlCommand(null, _connection)
+            {
+                CommandText = "INSERT INTO e_project " +
+                                "VALUES ('', @name)"
+            })
+            {
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@name", p.Name);
+                cmd.ExecuteNonQuery();
+
+                // Get the last inserted id
+                cmd.Parameters.Clear();
+                cmd.CommandText = "SELECT @@IDENTITY";
+                insertedRowId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            CloseConnection();
+            return insertedRowId;
+        }
+
+        public int InsertPhase(Phase p)
+        {
+            var insertedRowId = -1;
+            if (!OpenConnection()) return insertedRowId;
+
+            using (var cmd = new MySqlCommand(null, _connection)
+            {
+                CommandText = "INSERT INTO e_phase " +
+                                "VALUES ('', @name)"
+            })
+            {
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("@name", p.Name);
+                cmd.ExecuteNonQuery();
+
+                // Get the last inserted id
+                cmd.Parameters.Clear();
+                cmd.CommandText = "SELECT @@IDENTITY";
+                insertedRowId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            CloseConnection();
+            return insertedRowId;
+        }
+
+        public bool DeleteArchitect(Architect a)
+        {
+            if (a == null || a.Id == null) return false;
+            string query = "DELETE FROM e_architect WHERE ID=\"" + a.Id + "\"";
+            
+            if (OpenConnection())
+            {
+                using (var cmd = new MySqlCommand(query, _connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                
+                CloseConnection();
+            }
+            return true;
+        }
+
+        public bool DeleteProject(Project p)
+        {
+            if (p == null || p.Id == null) return false;
+            string query = "DELETE FROM e_project WHERE ID=\"" + p.Id + "\"";
+
+            if (OpenConnection())
+            {
+                using (var cmd = new MySqlCommand(query, _connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                CloseConnection();
+            }
+            return true;
+        }
+
+        public bool DeletePhase(Phase p)
+        {
+            if (p == null || p.Id == null) return false;
+            string query = "DELETE FROM e_phase WHERE ID=\"" + p.Id + "\"";
+
+            if (OpenConnection())
+            {
+                using (var cmd = new MySqlCommand(query, _connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                CloseConnection();
+            }
+            return true;
+        }
     }
 }

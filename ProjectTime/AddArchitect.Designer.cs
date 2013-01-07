@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.Save = new System.Windows.Forms.Button();
-            this.firstName = new System.Windows.Forms.TextBox();
-            this.lastName = new System.Windows.Forms.TextBox();
-            this.company = new System.Windows.Forms.TextBox();
+            this.textBoxFirstName = new System.Windows.Forms.TextBox();
+            this.textBoxLastName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.comboBoxCompany = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // Save
@@ -47,26 +47,19 @@
             this.Save.UseVisualStyleBackColor = true;
             this.Save.Click += new System.EventHandler(this.SaveClick);
             // 
-            // firstName
+            // textBoxFirstName
             // 
-            this.firstName.Location = new System.Drawing.Point(107, 15);
-            this.firstName.Name = "firstName";
-            this.firstName.Size = new System.Drawing.Size(141, 20);
-            this.firstName.TabIndex = 1;
+            this.textBoxFirstName.Location = new System.Drawing.Point(107, 15);
+            this.textBoxFirstName.Name = "textBoxFirstName";
+            this.textBoxFirstName.Size = new System.Drawing.Size(141, 20);
+            this.textBoxFirstName.TabIndex = 1;
             // 
-            // lastName
+            // textBoxLastName
             // 
-            this.lastName.Location = new System.Drawing.Point(107, 41);
-            this.lastName.Name = "lastName";
-            this.lastName.Size = new System.Drawing.Size(141, 20);
-            this.lastName.TabIndex = 2;
-            // 
-            // company
-            // 
-            this.company.Location = new System.Drawing.Point(107, 67);
-            this.company.Name = "company";
-            this.company.Size = new System.Drawing.Size(141, 20);
-            this.company.TabIndex = 3;
+            this.textBoxLastName.Location = new System.Drawing.Point(107, 41);
+            this.textBoxLastName.Name = "textBoxLastName";
+            this.textBoxLastName.Size = new System.Drawing.Size(141, 20);
+            this.textBoxLastName.TabIndex = 2;
             // 
             // label1
             // 
@@ -95,19 +88,28 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Company";
             // 
+            // comboBoxCompany
+            // 
+            this.comboBoxCompany.FormattingEnabled = true;
+            this.comboBoxCompany.Location = new System.Drawing.Point(107, 68);
+            this.comboBoxCompany.Name = "comboBoxCompany";
+            this.comboBoxCompany.Size = new System.Drawing.Size(141, 21);
+            this.comboBoxCompany.TabIndex = 7;
+            // 
             // AddArchitect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(260, 121);
+            this.Controls.Add(this.comboBoxCompany);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.company);
-            this.Controls.Add(this.lastName);
-            this.Controls.Add(this.firstName);
+            this.Controls.Add(this.textBoxLastName);
+            this.Controls.Add(this.textBoxFirstName);
             this.Controls.Add(this.Save);
             this.Name = "AddArchitect";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Architect";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -117,11 +119,11 @@
         #endregion
 
         private System.Windows.Forms.Button Save;
-        private System.Windows.Forms.TextBox firstName;
-        private System.Windows.Forms.TextBox lastName;
-        private System.Windows.Forms.TextBox company;
+        private System.Windows.Forms.TextBox textBoxFirstName;
+        private System.Windows.Forms.TextBox textBoxLastName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBoxCompany;
     }
 }

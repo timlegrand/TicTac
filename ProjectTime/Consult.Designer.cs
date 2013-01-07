@@ -242,8 +242,9 @@
             this.Controls.Add(this.comboBoxArchitects);
             this.MaximizeBox = false;
             this.Name = "Consult";
-            this.Text = "Consulter";
-            this.Move += new System.EventHandler(this.Consult_Move);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Consulter / éditer la base";
+            this.Move += new System.EventHandler(this.OnMove);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -8,9 +9,9 @@ namespace ProjectTime
     public partial class Consult : Form
     {
         private readonly DbConnection _db;
-        private readonly List<Project> _projectList;
-        private readonly List<Phase> _phaseList;
-        private readonly List<Architect> _architectsList;
+        private List<Project> _projectList;
+        private List<Phase> _phaseList;
+        private List<Architect> _architectsList;
         private Architect _currentArchitect;
         private Project _currentProject;
         private Phase _currentPhase;
@@ -20,6 +21,15 @@ namespace ProjectTime
         {
             InitializeComponent();
             _db = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
+            InitializeData();
+
+            pictureBox.Hide();
+            _mainWindow = mainWindow;
+        }
+
+        private void InitializeData()
+        {
+            
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
@@ -27,21 +37,25 @@ namespace ProjectTime
             _currentArchitect = null;
             _currentProject = null;
             _currentPhase = null;
-            
+
             // Fill in the Architect, Project and Phases ComboBox
+            comboBoxArchitects.Items.Clear();
             comboBoxArchitects.Items.Add("Tous");
             comboBoxArchitects.Items.AddRange(_architectsList.ToArray());
             comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
+            comboBoxProjects.Items.Clear();
             comboBoxProjects.Items.Add("Tous");
             comboBoxProjects.Items.AddRange(_projectList.ToArray());
             comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
+            comboBoxPhases.Items.Clear();
             comboBoxPhases.Items.Add("Tous");
             comboBoxPhases.Items.AddRange(_phaseList.ToArray());
             comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
+        }
 
-            pictureBox.Hide();
-
-            _mainWindow = mainWindow;
+        public void UpdateData()
+        {
+            InitializeData();
         }
 
         private const int SnapDist = 20;
@@ -49,12 +63,6 @@ namespace ProjectTime
         {
             int delta = Math.Abs(pos1 - pos2);
             return delta <= SnapDist;
-        }
-
-        protected override void OnResizeEnd(EventArgs e)
-        {
-            base.OnResizeEnd(e);
-           
         }
 
         private void ButtonValidateClick(object sender, EventArgs e)
@@ -73,20 +81,24 @@ namespace ProjectTime
 
         private void AddArchitectClick(object sender, EventArgs e)
         {
-            var addForm = new AddArchitect(_architectsList, _mainWindow);
-            addForm.Show();
+            var form = new AddArchitect(this);
+            form.Show();
         }
 
         private void AddProjectClick(object sender, EventArgs e)
         {
             //TODO
             throw new NotImplementedException();
+            //var form = new AddProject(_mainWindow);
+            //form.Show();
         }
 
         private void AddPhaseClick(object sender, EventArgs e)
         {
             //TODO
             throw new NotImplementedException();
+            //var form = new AddPhase(_mainWindow);
+            //form.Show();
         }
 
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
@@ -126,10 +138,10 @@ namespace ProjectTime
             }
         }
 
-        private void Consult_Move(object sender, EventArgs e)
+        private void OnMove(object sender, EventArgs e)
         {
-            Screen scn = Screen.FromPoint(this.Location);
             /*
+            Screen scn = Screen.FromPoint(this.Location);
             if (closeEnough(this, _mainWindow))
             {
                 if (DoSnap(this.Top, _mainWindow.Bottom)) this.Top = _mainWindow.Bottom;
@@ -156,8 +168,9 @@ namespace ProjectTime
         {
             if (MessageBox.Show("Êtes vous sûr de vouloir supprimer l'achitecte " + _currentArchitect.ToString() + " ?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                //TODO
-                throw new NotImplementedException();
+                var success = _db.DeleteArchitect(_currentArchitect);
+                if (!success) throw new DataException();
+                UpdateData();
             }
         }
 
@@ -165,8 +178,9 @@ namespace ProjectTime
         {
             if (MessageBox.Show("Êtes vous sûr de vouloir supprimer le projet " + _currentProject.ToString() + "?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                //TODO
-                throw new NotImplementedException();
+                var success = _db.DeleteProject(_currentProject);
+                if (!success) throw new DataException();
+                UpdateData();
             }
         }
 
@@ -174,8 +188,9 @@ namespace ProjectTime
         {
             if (MessageBox.Show("Êtes vous sûr de vouloir supprimer la phase " + _currentPhase.ToString() + "?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                //TODO
-                throw new NotImplementedException();
+                var success = _db.DeletePhase(_currentPhase);
+                if (!success) throw new DataException();
+                UpdateData();
             }
         }
     }

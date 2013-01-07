@@ -21,8 +21,6 @@ namespace ProjectTime
             // Create time recording window and launch application
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var centerPoint = new Point(Screen.PrimaryScreen.WorkingArea.Width/2,
-                                        Screen.PrimaryScreen.WorkingArea.Height/2);
             var mainWindow = new RecordWindow
                                  {
                                      FormBorderStyle = FormBorderStyle.FixedSingle
