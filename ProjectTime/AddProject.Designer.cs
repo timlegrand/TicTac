@@ -90,7 +90,7 @@
             this.Controls.Add(this.Save);
             this.Name = "AddProject";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "AddProject";
+            this.Text = "Add Project";
             this.ResumeLayout(false);
             this.PerformLayout();
 
