@@ -97,6 +97,12 @@
     <Compile Include="AddPhase.Designer.cs">
       <DependentUpon>AddPhase.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigureDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigureDatabase.Designer.cs">
+      <DependentUpon>ConfigureDatabase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Session.cs" />
     <Compile Include="DbConnection.cs" />
     <Compile Include="Consult.cs">
@@ -126,6 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddPhase.resx">
       <DependentUpon>AddPhase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigureDatabase.resx">
+      <DependentUpon>ConfigureDatabase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RecordWindow.resx">
       <DependentUpon>RecordWindow.cs</DependentUpon>

@@ -46,6 +46,9 @@
             this.deletePhaseButton = new System.Windows.Forms.Button();
             this.deleteProjectButton = new System.Windows.Forms.Button();
             this.deleteArchitectButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.editDatabaseButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -116,36 +119,38 @@
             // labelTotalCountHours
             // 
             this.labelTotalCountHours.AutoSize = true;
-            this.labelTotalCountHours.Location = new System.Drawing.Point(12, 152);
+            this.labelTotalCountHours.Location = new System.Drawing.Point(92, 152);
             this.labelTotalCountHours.Name = "labelTotalCountHours";
-            this.labelTotalCountHours.Size = new System.Drawing.Size(66, 13);
+            this.labelTotalCountHours.Size = new System.Drawing.Size(37, 13);
             this.labelTotalCountHours.TabIndex = 7;
-            this.labelTotalCountHours.Text = "Total heures";
+            this.labelTotalCountHours.Text = "Total :";
             // 
             // textBoxCountHours
             // 
-            this.textBoxCountHours.Location = new System.Drawing.Point(116, 149);
+            this.textBoxCountHours.Location = new System.Drawing.Point(135, 149);
             this.textBoxCountHours.Name = "textBoxCountHours";
             this.textBoxCountHours.ReadOnly = true;
-            this.textBoxCountHours.Size = new System.Drawing.Size(158, 20);
+            this.textBoxCountHours.Size = new System.Drawing.Size(92, 20);
             this.textBoxCountHours.TabIndex = 8;
+            this.textBoxCountHours.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // textBoxCountManMonth
             // 
-            this.textBoxCountManMonth.Location = new System.Drawing.Point(116, 179);
+            this.textBoxCountManMonth.Location = new System.Drawing.Point(135, 179);
             this.textBoxCountManMonth.Name = "textBoxCountManMonth";
             this.textBoxCountManMonth.ReadOnly = true;
-            this.textBoxCountManMonth.Size = new System.Drawing.Size(158, 20);
+            this.textBoxCountManMonth.Size = new System.Drawing.Size(92, 20);
             this.textBoxCountManMonth.TabIndex = 10;
+            this.textBoxCountManMonth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // labelTotalCountManMonth
             // 
             this.labelTotalCountManMonth.AutoSize = true;
-            this.labelTotalCountManMonth.Location = new System.Drawing.Point(12, 182);
+            this.labelTotalCountManMonth.Location = new System.Drawing.Point(104, 182);
             this.labelTotalCountManMonth.Name = "labelTotalCountManMonth";
-            this.labelTotalCountManMonth.Size = new System.Drawing.Size(88, 13);
+            this.labelTotalCountManMonth.Size = new System.Drawing.Size(25, 13);
             this.labelTotalCountManMonth.TabIndex = 9;
-            this.labelTotalCountManMonth.Text = "Total homme.jour";
+            this.labelTotalCountManMonth.Text = "ou :";
             // 
             // pictureBox
             // 
@@ -217,11 +222,42 @@
             this.deleteArchitectButton.UseVisualStyleBackColor = true;
             this.deleteArchitectButton.Click += new System.EventHandler(this.DeleteArchitectButtonClick);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(233, 182);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "homme * jour";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(233, 152);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(39, 13);
+            this.label2.TabIndex = 19;
+            this.label2.Text = "heures";
+            // 
+            // editDatabaseButton
+            // 
+            this.editDatabaseButton.Location = new System.Drawing.Point(12, 177);
+            this.editDatabaseButton.Name = "editDatabaseButton";
+            this.editDatabaseButton.Size = new System.Drawing.Size(75, 23);
+            this.editDatabaseButton.TabIndex = 21;
+            this.editDatabaseButton.Text = "Configure";
+            this.editDatabaseButton.UseVisualStyleBackColor = true;
+            this.editDatabaseButton.Click += new System.EventHandler(this.editDatabaseButton_Click);
+            // 
             // Consult
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(313, 220);
+            this.ClientSize = new System.Drawing.Size(313, 208);
+            this.Controls.Add(this.editDatabaseButton);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.deletePhaseButton);
             this.Controls.Add(this.deleteProjectButton);
             this.Controls.Add(this.deleteArchitectButton);
@@ -271,5 +307,8 @@
         private System.Windows.Forms.Button deletePhaseButton;
         private System.Windows.Forms.Button deleteProjectButton;
         private System.Windows.Forms.Button deleteArchitectButton;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button editDatabaseButton;
     }
 }

@@ -7,7 +7,11 @@ namespace ProjectTime
 {
     static class Program
     {
-        public static readonly string ServerIp = "82.240.213.167";
+        public static string DbServerIp = "82.240.213.167";
+        public static string DbName = "he";
+        public static string DbUserName = "he";
+        public static string DbPassword = "mySqlUserPassword";
+        public static DbConnection Db { get; set; }
 
         [STAThread]
         static void Main()
@@ -35,7 +39,7 @@ namespace ProjectTime
             System.Net.NetworkInformation.PingReply rep;
             try
             {
-                rep = req.Send(ServerIp);
+                rep = req.Send(DbServerIp);
             }
             catch (System.Net.NetworkInformation.PingException e)
             {

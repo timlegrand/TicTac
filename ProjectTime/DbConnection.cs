@@ -10,18 +10,19 @@ namespace ProjectTime
     class DbConnection
     {
         private MySqlConnection _connection;
-        private string _server;
-        private string _database;
-        private string _uid;
-        private string _password;
+        private readonly string _server;
+        private readonly string _database;
+        private readonly string _uid;
+        private readonly string _password;
 
         //Constructor
-        public DbConnection(string server, string database, string uid, string password)
+        public DbConnection()
         {
-            _server = server;
-            _database = database;
-            _uid = uid;
-            _password = password;
+            _server = Program.DbServerIp;
+            _database = Program.DbName;
+            _uid = Program.DbUserName;
+            _password = Program.DbPassword;
+
             Initialize();
         }
 
@@ -113,7 +114,7 @@ namespace ProjectTime
             var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "UPDATE r_worked " +
-                              "SET enddate='" + formattedDate + "' " +
+                              "SET enddate=TIMESTAMP(NOW()) " +
                               "WHERE " +
                               "enddate IS NULL"         + " AND " +
                               "archi=" + s.Architect.Id + " AND " +
@@ -160,7 +161,7 @@ namespace ProjectTime
                     var projectId = int.Parse(reader["project"].ToString());
                     var phaseId = int.Parse(reader["phase"].ToString());
                     var startTime = DateTime.Parse(reader["startdate"].ToString());
-                    var tempConnexion = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
+                    var tempConnexion = new DbConnection();
                     li.Add(new Session()
                         {
                             Architect = tempConnexion.GetArchitectFromId(archiId),

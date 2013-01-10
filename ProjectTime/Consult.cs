@@ -20,7 +20,7 @@ namespace ProjectTime
         public Consult(RecordWindow mainWindow)
         {
             InitializeComponent();
-            _db = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
+            _db = new DbConnection();
             InitializeData();
 
             pictureBox.Hide();
@@ -188,6 +188,12 @@ namespace ProjectTime
                 if (!success) throw new DataException();
                 UpdateData();
             }
+        }
+
+        private void editDatabaseButton_Click(object sender, EventArgs e)
+        {
+            var configureForm = new ConfigureDatabase() { FormBorderStyle = FormBorderStyle.FixedSingle };
+            configureForm.Show();
         }
     }
 }

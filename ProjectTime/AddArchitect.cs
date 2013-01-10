@@ -13,7 +13,7 @@ namespace ProjectTime
         public AddArchitect(Consult parent)
         {
             InitializeComponent();
-            _db = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
+            _db = new DbConnection();
             _parent = parent;
             _companyList = _db.SelectAllCompanies();
             if (_companyList != null && _companyList.Count != 0) comboBoxCompany.Items.AddRange(_companyList.ToArray());

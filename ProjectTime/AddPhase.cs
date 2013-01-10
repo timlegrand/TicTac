@@ -11,7 +11,7 @@ namespace ProjectTime
         public AddPhase(Consult parent)
         {
             InitializeComponent();
-            _db = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
+            _db = new DbConnection();
             _parent = parent;
         }
 

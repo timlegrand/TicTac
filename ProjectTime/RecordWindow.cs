@@ -25,7 +25,7 @@ namespace ProjectTime
             InitializeComponent();
 
             // Retrieve data from server
-            _db = new DbConnection(Program.ServerIp, "he", "he", "mySqlUserPassword");
+            _db = new DbConnection();
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
@@ -168,11 +168,6 @@ namespace ProjectTime
             var consultForm = new Consult(this)
                                   { FormBorderStyle = FormBorderStyle.FixedSingle };
             consultForm.Show();
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
