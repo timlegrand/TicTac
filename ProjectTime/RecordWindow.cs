@@ -13,7 +13,7 @@ namespace ProjectTime
     public partial class RecordWindow : Form
     {
         //private string _title;
-        private readonly DbConnection _db;
+        private DbConnection _db;
         private static List<Project> _projectList;
         private static List<Phase> _phaseList;
         private static List<Architect> _architectsList;
@@ -23,7 +23,11 @@ namespace ProjectTime
         public RecordWindow()
         {
             InitializeComponent();
+            Initialize();
+        }
 
+        private void Initialize()
+        {
             // Retrieve data from server
             _db = new DbConnection();
             _architectsList = _db.SelectAllArchitects();
@@ -37,7 +41,7 @@ namespace ProjectTime
             comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
             comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
             comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0]; // Must be done LAST
-            
+
             InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
         }
 
@@ -168,6 +172,11 @@ namespace ProjectTime
             var consultForm = new Consult(this)
                                   { FormBorderStyle = FormBorderStyle.FixedSingle };
             consultForm.Show();
+        }
+
+        public void UpdateDb()
+        {
+            _db = new DbConnection();
         }
     }
 }

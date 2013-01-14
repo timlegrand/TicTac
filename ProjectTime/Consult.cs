@@ -8,14 +8,14 @@ namespace ProjectTime
 {
     public partial class Consult : Form
     {
-        private readonly DbConnection _db;
+        private DbConnection _db;
         private List<Project> _projectList;
         private List<Phase> _phaseList;
         private List<Architect> _architectsList;
         private Architect _currentArchitect;
         private Project _currentProject;
         private Phase _currentPhase;
-        private readonly RecordWindow _mainWindow;
+        private readonly RecordWindow _parent;
 
         public Consult(RecordWindow mainWindow)
         {
@@ -24,12 +24,12 @@ namespace ProjectTime
             InitializeData();
 
             pictureBox.Hide();
-            _mainWindow = mainWindow;
+            _parent = mainWindow;
         }
 
         private void InitializeData()
         {
-            
+
             _architectsList = _db.SelectAllArchitects();
             _projectList = _db.SelectAllProjects();
             _phaseList = _db.SelectAllPhases();
@@ -59,6 +59,7 @@ namespace ProjectTime
         }
 
         private const int SnapDist = 20;
+
         private bool DoSnap(int pos1, int pos2)
         {
             int delta = Math.Abs(pos1 - pos2);
@@ -74,8 +75,8 @@ namespace ProjectTime
             var phaseId = (_currentPhase != null) ? _currentPhase.Id : null;
 
             var timeSpan = _db.GetTimeCount(archiId, projectId, phaseId);
-            textBoxCountHours.Text = String.Format("{0:0.00}",timeSpan.TotalHours);
-            textBoxCountManMonth.Text = String.Format("{0:0.00}",timeSpan.TotalDays);
+            textBoxCountHours.Text = String.Format("{0:0.00}", timeSpan.TotalHours);
+            textBoxCountManMonth.Text = String.Format("{0:0.00}", timeSpan.TotalDays);
             pictureBox.Hide();
         }
 
@@ -155,14 +156,17 @@ namespace ProjectTime
         private bool closeEnough(Consult consult, RecordWindow mainWindow)
         {
             var rwCenter = new Point((mainWindow.Top + mainWindow.Bottom)/2, (mainWindow.Left + mainWindow.Right)/2);
-            var cwCenter = new Point((consult.Top + consult.Bottom) / 2, (consult.Left + consult.Right) / 2);
+            var cwCenter = new Point((consult.Top + consult.Bottom)/2, (consult.Left + consult.Right)/2);
             var dist = Math.Sqrt(Math.Pow(rwCenter.X - cwCenter.X, 2) + Math.Pow(rwCenter.Y - cwCenter.Y, 2));
             return dist <= 400;
         }
 
         private void DeleteArchitectButtonClick(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Êtes vous sûr de vouloir supprimer l'achitecte " + _currentArchitect.ToString() + " ?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (
+                MessageBox.Show(
+                    "Êtes vous sûr de vouloir supprimer l'achitecte " + _currentArchitect.ToString() + " ?",
+                    "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 var success = _db.DeleteArchitect(_currentArchitect);
                 if (!success) throw new DataException();
@@ -172,7 +176,9 @@ namespace ProjectTime
 
         private void DeleteProjectButtonClick(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Êtes vous sûr de vouloir supprimer le projet " + _currentProject.ToString() + "?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (
+                MessageBox.Show("Êtes vous sûr de vouloir supprimer le projet " + _currentProject.ToString() + "?",
+                                "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 var success = _db.DeleteProject(_currentProject);
                 if (!success) throw new DataException();
@@ -182,7 +188,9 @@ namespace ProjectTime
 
         private void DeletePhaseButtonClick(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Êtes vous sûr de vouloir supprimer la phase " + _currentPhase.ToString() + "?", "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (
+                MessageBox.Show("Êtes vous sûr de vouloir supprimer la phase " + _currentPhase.ToString() + "?",
+                                "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 var success = _db.DeletePhase(_currentPhase);
                 if (!success) throw new DataException();
@@ -192,8 +200,14 @@ namespace ProjectTime
 
         private void editDatabaseButton_Click(object sender, EventArgs e)
         {
-            var configureForm = new ConfigureDatabase() { FormBorderStyle = FormBorderStyle.FixedSingle };
+            var configureForm = new ConfigureDatabase(this) {FormBorderStyle = FormBorderStyle.FixedSingle};
             configureForm.Show();
+        }
+
+        public void UpdateDb()
+        {
+            _db = new DbConnection();
+            _parent.UpdateDb();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ProjectTime
         static void Main()
         {
             // Check if an Internet connection is available
-            if (!Program.IsDatabaseConnexionAvailable())
+            if (!Program.IsDatabaseConnexionAvailable(null))
             {
                 MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -33,13 +33,14 @@ namespace ProjectTime
         }
 
 
-        public static bool IsDatabaseConnexionAvailable()
+        public static bool IsDatabaseConnexionAvailable(string serverAddress)
         {
+            var server = serverAddress ?? Program.DbServerIp;
             var req = new System.Net.NetworkInformation.Ping();
             System.Net.NetworkInformation.PingReply rep;
             try
             {
-                rep = req.Send(DbServerIp);
+                rep = req.Send(server);
             }
             catch (System.Net.NetworkInformation.PingException e)
             {

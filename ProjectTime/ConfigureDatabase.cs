@@ -6,11 +6,13 @@ namespace ProjectTime
     public partial class ConfigureDatabase : Form
     {
         private DbConnection _db;
+        private readonly Consult _parent;
 
-        public ConfigureDatabase()
+        public ConfigureDatabase(Consult consult)
         {
             InitializeComponent();
 
+            _parent = consult;
             textBoxServer.Text = Program.DbServerIp;
             textBoxDatabase.Text = Program.DbName;
             textBoxUserName.Text = Program.DbUserName;
@@ -24,13 +26,11 @@ namespace ProjectTime
                 MessageBox.Show(@"Veuillez renseigner tous les champs", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-
-            /*_db = new DbConnection(
-                labelServerNameOrIp.Text,
-                labelDatabaseName.Text,
-                labelUserName.Text,
-                labelPassword.Text);
-            Program.VarDump(_db);*/
+            if (!Program.IsDatabaseConnexionAvailable(textBoxServer.Text))
+            {
+                MessageBox.Show(@"Base de données inaccessible. Vérifiez l'adresse ou le nom du serveur, ou bien vérifiez que celui-ci est démarré.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
 
             PropagateDatabaseConfiguration();
             Hide();
@@ -38,11 +38,11 @@ namespace ProjectTime
 
         private void PropagateDatabaseConfiguration()
         {
-            //Program.Db = _db;
             Program.DbServerIp = textBoxServer.Text;
             Program.DbName = textBoxDatabase.Text;
             Program.DbUserName = textBoxUserName.Text;
             Program.DbPassword = textBoxPassword.Text;
+            _parent.UpdateDb();
         }
 
         private bool IsValid()
