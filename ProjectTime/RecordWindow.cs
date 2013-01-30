@@ -28,25 +28,62 @@ namespace ProjectTime
 
         private void Initialize()
         {
-            // Retrieve data from server
+            // Load configuration, including Database information
+            var cfg = new Config(this);
+            cfg.LoadFromXml();
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Location = (System.Drawing.Point) cfg.StartPosition;
             _db = new DbConnection();
-            _architectsList = _db.SelectAllArchitects();
-            _projectList = _db.SelectAllProjects();
-            _phaseList = _db.SelectAllPhases();
+
+            InitComboboxes();
+            InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
+        }
+
+        // Retrieve Comboboxes data
+        private void InitComboboxes()
+        {
+            // Retrieve data from server
+            if (Program.IsDatabaseConnexionAvailable(null))
+            {
+                _architectsList = _db.SelectAllArchitects();
+                _projectList = _db.SelectAllProjects();
+                _phaseList = _db.SelectAllPhases();
+            }
+            else
+            {
+                //TODO: unserialize from file
+                //throw new NotImplementedException();
+                _architectsList = new List<Architect>();
+                _projectList = new List<Project>();
+                _phaseList = new List<Phase>();
+                _architectsList.Add(new Architect() { FirstName = "roger", LastName = "alier", Company = 0, Id = 0});
+                _projectList.Add(new Project() { Description = "encore un super projet", Id = 0, Name = "Projet1"});
+                _phaseList.Add(new Phase() { Description = "Une nouvelle phase", Id = 0, Name = "Phase1"});
+            }
 
             // Fill in the ComboBoxes
-            if (_architectsList != null && _architectsList.Count() != 0) comboBoxArchitects.Items.AddRange(_architectsList.ToArray());
-            if (_projectList != null && _projectList.Count() != 0) comboBoxProjects.Items.AddRange(_projectList.ToArray());
-            if (_phaseList != null && _phaseList.Count() != 0) comboBoxPhases.Items.AddRange(_phaseList.ToArray());
-            comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
-            comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
-            comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0]; // Must be done LAST
+            if (_projectList != null && _projectList.Count() != 0)
+            {
+                comboBoxProjects.Items.AddRange(_projectList.ToArray());
+                comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
+            }
 
-            InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
+            if (_phaseList != null && _phaseList.Count() != 0)
+            {
+                comboBoxPhases.Items.AddRange(_phaseList.ToArray());
+                comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
+            }
+
+            if (_architectsList != null && _architectsList.Count() != 0)
+            {
+                comboBoxArchitects.Items.AddRange(_architectsList.ToArray());
+                comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0]; // Must be done LAST because of event management
+            }
         }
 
         private Session RestoreSession(Architect archi)
         {
+            if (!Program.IsDatabaseConnexionAvailable(null)) return null;
             // 1- Try to retrieve one single open Session in DB
             var sessions = _db.StartedWorkSessions(archi);
             var session = sessions.Count == 1 ? sessions[0] : null;
@@ -79,7 +116,7 @@ namespace ProjectTime
         {
             // Search for any already-started session for a given Architect
             var sessions = _db.StartedWorkSessions((Architect)comboBoxArchitects.SelectedItem);
-            var session = sessions.Count == 1 ? sessions[0] : null;
+            var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
             if (session != null)
             {
                 _ws = session;
@@ -159,12 +196,18 @@ namespace ProjectTime
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
-            if (!_ws.IsValid()) return;
-            /*
-            Console.WriteLine(@"Writing " + Session.SessionFileName + @"...");
-            _ws.SaveToXml();
-            Console.WriteLine(Session.SessionFileName + @" written.");
-            */
+            var cfg = new Config(this)
+                {
+                    StartPosition = this.Location,
+                    Architect = (Architect) this.comboBoxArchitects.SelectedItem,
+                    Db = _db
+                };
+            if (!cfg.IsValid()) return;
+            
+            Console.WriteLine(@"Writing " + Config.ConfigFileName + @"...");
+            cfg.SaveToXml();
+            Console.WriteLine(Config.ConfigFileName + @" written.");
+            
         }
 
         private void ButtonConsultClick(object sender, EventArgs e)

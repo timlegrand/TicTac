@@ -7,20 +7,16 @@ namespace ProjectTime
 {
     static class Program
     {
-        public static string DbServerIp = "82.240.213.167";
-        public static string DbName = "he";
-        public static string DbUserName = "he";
-        public static string DbPassword = "mySqlUserPassword";
         public static DbConnection Db { get; set; }
 
         [STAThread]
         static void Main()
         {
             // Check if an Internet connection is available
-            if (!Program.IsDatabaseConnexionAvailable(null))
-            {
-                MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
+            //if (!Program.IsDatabaseConnexionAvailable(null))
+            //{
+            //    MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            //}
 
             // Create time recording window and launch application
             Application.EnableVisualStyles();
@@ -35,7 +31,7 @@ namespace ProjectTime
 
         public static bool IsDatabaseConnexionAvailable(string serverAddress)
         {
-            var server = serverAddress ?? Program.DbServerIp;
+            var server = serverAddress ?? Defaults.DbServerIp;
             var req = new System.Net.NetworkInformation.Ping();
             System.Net.NetworkInformation.PingReply rep;
             try
@@ -87,6 +83,11 @@ namespace ProjectTime
             }
             Console.WriteLine("}");
             Console.WriteLine();
+        }
+
+        public static bool IsDatabaseConfigAvailable()
+        {
+            return false;
         }
     }
 }

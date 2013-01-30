@@ -13,10 +13,10 @@ namespace ProjectTime
             InitializeComponent();
 
             _parent = consult;
-            textBoxServer.Text = Program.DbServerIp;
-            textBoxDatabase.Text = Program.DbName;
-            textBoxUserName.Text = Program.DbUserName;
-            textBoxPassword.Text = Program.DbPassword;
+            textBoxServer.Text = Defaults.DbServerIp;
+            textBoxDatabase.Text = Defaults.DbName;
+            textBoxUserName.Text = Defaults.DbUserName;
+            textBoxPassword.Text = Defaults.DbPassword;
         }
 
         private void ButtonSaveClick(object sender, EventArgs e)
@@ -38,10 +38,10 @@ namespace ProjectTime
 
         private void PropagateDatabaseConfiguration()
         {
-            Program.DbServerIp = textBoxServer.Text;
-            Program.DbName = textBoxDatabase.Text;
-            Program.DbUserName = textBoxUserName.Text;
-            Program.DbPassword = textBoxPassword.Text;
+            Defaults.DbServerIp = textBoxServer.Text;
+            Defaults.DbName = textBoxDatabase.Text;
+            Defaults.DbUserName = textBoxUserName.Text;
+            Defaults.DbPassword = textBoxPassword.Text;
             _parent.UpdateDb();
         }
 

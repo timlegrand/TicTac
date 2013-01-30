@@ -90,6 +90,8 @@
     <Compile Include="AddArchitect.Designer.cs">
       <DependentUpon>AddArchitect.cs</DependentUpon>
     </Compile>
+    <Compile Include="Defaults.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="AddPhase.cs">
       <SubType>Form</SubType>

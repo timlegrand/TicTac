@@ -10,26 +10,35 @@ namespace ProjectTime
     class DbConnection
     {
         private MySqlConnection _connection;
-        private readonly string _server;
-        private readonly string _database;
-        private readonly string _uid;
-        private readonly string _password;
+        public string Server    { get; set; } //TODO: WANT A PRIVATE SET
+        public string Database  { get; set; } //TODO: WANT A PRIVATE SET
+        public string Uid       { get; set; } //TODO: WANT A PRIVATE SET
+        public string Password  { get; set; } //TODO: WANT A PRIVATE SET
 
         //Constructor
         public DbConnection()
         {
-            _server = Program.DbServerIp;
-            _database = Program.DbName;
-            _uid = Program.DbUserName;
-            _password = Program.DbPassword;
-
+            Server = null;
+            Database = null;
+            Uid = null;
+            Password = null;
+            
+            //If not initialized
+            if (Server == null)
+            {
+                Server =    Defaults.DbServerIp;
+                Database =  Defaults.DbName;
+                Uid =       Defaults.DbUserName;
+                Password =  Defaults.DbPassword;
+            }
+            
             Initialize();
         }
 
         //Initialize values
         private void Initialize()
         {
-            string connectionString = "SERVER=" + _server + ";" + "DATABASE=" + _database + ";" + "UID=" + _uid + ";" + "PASSWORD=" + _password + ";";
+            string connectionString = "SERVER=" + Server + ";" + "DATABASE=" + Database + ";" + "UID=" + Uid + ";" + "PASSWORD=" + Password + ";";
             _connection = new MySqlConnection(connectionString);
         }
 
@@ -109,7 +118,7 @@ namespace ProjectTime
             if (s == null) throw new ArgumentNullException("s");
             if (!s.IsValid() || !s.IsTerminated()) throw new Exception();
             if (!OpenConnection()) return;
-            var formattedDate = String.Format("{0:yyyy/MM/dd HH:mm:ss}", s.StopTime);
+            //var formattedDate = String.Format("{0:yyyy/MM/dd HH:mm:ss}", s.StopTime);
             
             var cmd = new MySqlCommand(null, _connection)
             {
@@ -162,7 +171,7 @@ namespace ProjectTime
                     var phaseId = int.Parse(reader["phase"].ToString());
                     var startTime = DateTime.Parse(reader["startdate"].ToString());
                     var tempConnexion = new DbConnection();
-                    li.Add(new Session()
+                    li.Add(new Session
                         {
                             Architect = tempConnexion.GetArchitectFromId(archiId),
                             Project = tempConnexion.GetProjectFromId(projectId),
@@ -175,7 +184,7 @@ namespace ProjectTime
 
             if (li.Count == 1)
             {
-                //TODO
+                //TODO ?
             }
 
             CloseConnection();
@@ -245,8 +254,8 @@ namespace ProjectTime
                 var dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    var start = System.DateTime.Parse(dataReader["startdate"].ToString());
-                    var end = System.DateTime.Parse(dataReader["enddate"].ToString());
+                    var start = DateTime.Parse(dataReader["startdate"].ToString());
+                    var end = DateTime.Parse(dataReader["enddate"].ToString());
                     if (end >= start)
                     {
                         count += (end - start).TotalSeconds;
@@ -360,7 +369,7 @@ namespace ProjectTime
                     var fn = (string) dataReader["firstname"];
                     var ln = (string) dataReader["lastname"];
                     var co = (int) dataReader["company"];
-                    architects.Add(new Architect() { Id = id, FirstName = fn, LastName = ln, Company = co });
+                    architects.Add(new Architect{ Id = id, FirstName = fn, LastName = ln, Company = co });
                 }
                 dataReader.Close();
                 CloseConnection();
@@ -382,7 +391,7 @@ namespace ProjectTime
                 {
                     var id = (int) dataReader["id"];
                     var na = (string)dataReader["name"];
-                    projects.Add(new Project() { Id = id, Name = na });
+                    projects.Add(new Project{ Id = id, Name = na });
                 }
                 dataReader.Close();
                 CloseConnection();
@@ -404,8 +413,8 @@ namespace ProjectTime
                 {
                     var id = (int)dataReader["id"];
                     var na = (string)dataReader["name"];
-                    var d = (string)dataReader["description"].ToString();
-                    phases.Add(new Phase() { Id = id, Name = na, Description = d });
+                    var d = dataReader["description"].ToString();
+                    phases.Add(new Phase{ Id = id, Name = na, Description = d });
                 }
                 dataReader.Close();
                 CloseConnection();
