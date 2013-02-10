@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+//using System.Runtime.Serialization.Formatters.Soap; // doesn't work LOL
 using System.Windows.Forms;
 
 // tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
@@ -17,7 +19,7 @@ namespace ProjectTime
         private DbConnection _db;
         private static List<Project> _projectList;
         private static List<Phase> _phaseList;
-        private static List<Architect> _architectsList;
+        private static List<Architect> _architectList;
         public Architect LastArchitect { get; private set; }
         private Session _ws;
         
@@ -37,7 +39,7 @@ namespace ProjectTime
             Location = cfg.LastStartPosition.HasValue ? (Point)cfg.LastStartPosition : new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
             LastArchitect = cfg.LastArchitect;
 
-            if (Program.ConnectedMode)
+            //if (Program.ConnectedMode)
             {
                 _db = new DbConnection();
             }
@@ -49,21 +51,37 @@ namespace ProjectTime
         // Retrieve Comboboxes data
         private void InitComboboxes()
         {
-            // Retrieve data from server
             if (Program.ConnectedMode)
             {
-                _architectsList = _db.SelectAllArchitects();
+                // Retrieve data from server
+                _architectList = _db.SelectAllArchitects();
                 _projectList = _db.SelectAllProjects();
                 _phaseList = _db.SelectAllPhases();
             }
             else
             {
-                _architectsList = new List<Architect>();
+                // Deserialize from file if any
+                _architectList = new List<Architect>();
                 _projectList = new List<Project>();
                 _phaseList = new List<Phase>();
-                //_architectsList.Add(new Architect() { FirstName = "roger", LastName = "alier", Company = 0, Id = 0 });
-                //_projectList.Add(new Project() { Description = "encore un super projet", Id = 0, Name = "Projet1" });
-                //_phaseList.Add(new Phase() { Description = "Une nouvelle phase", Id = 0, Name = "Phase1" });
+
+                // Use serialization to files until real DB
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                using (var architectsFile = File.Open("Architects.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des architectes (depuis un fichier)");
+                    _architectList = (List<Architect>)formatter.Deserialize(architectsFile);
+                }
+                using (var projectsFile = File.Open("Projects.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des projets (depuis un fichier)");
+                    _projectList = (List<Project>)formatter.Deserialize(projectsFile);
+                }
+                using (var phasesFile = File.Open("Phases.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des phases (depuis un fichier)");
+                    _phaseList = (List<Phase>)formatter.Deserialize(phasesFile);
+                }
             }
 
             // Fill in the ComboBoxes
@@ -79,9 +97,9 @@ namespace ProjectTime
                 comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
             }
 
-            if (_architectsList != null && _architectsList.Count() != 0)
+            if (_architectList != null && _architectList.Count() != 0)
             {
-                comboBoxArchitects.Items.AddRange(_architectsList.ToArray());
+                comboBoxArchitects.Items.AddRange(_architectList.ToArray());
                 comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0]; // Must be done LAST because of event management
             }
         }
@@ -213,6 +231,24 @@ namespace ProjectTime
             Console.WriteLine(@"Writing " + Config.ConfigFileName + @"...");
             cfg.SaveToXml();
             Console.WriteLine(Config.ConfigFileName + @" written.");
+
+            // Serialize and save comboboxes in files
+            var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            using (var architectsFile = File.Open("Architects.osl", FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des architectes (dans un fichier)");
+                formatter.Serialize(architectsFile, _architectList);
+            }
+            using (var projectsFile = File.Open("Projects.osl", FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des projets (dans un fichier)");
+                formatter.Serialize(projectsFile, _projectList);
+            }
+            using (var phasesFile = File.Open("Phases.osl", FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des phases (dans un fichier)");
+                formatter.Serialize(phasesFile, _phaseList);
+            }
             
         }
 

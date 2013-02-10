@@ -143,7 +143,7 @@ namespace ProjectTime
         //TODO: must return info for a given Architect
         public List<Session> StartedWorkSessions(Architect archi)
         {
-            if (!OpenConnection() || archi.Id == null) return null;
+            if (!OpenConnection() || archi == null || archi.Id == null) return null;
 
             var li = new List<Session>();
             var cmd = new MySqlCommand(null, _connection)
