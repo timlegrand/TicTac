@@ -182,13 +182,8 @@ namespace ProjectTime
                 }
             }
 
-            if (li.Count == 1)
-            {
-                //TODO ?
-            }
-
             CloseConnection();
-            return li; 
+            return li;
         }
 
 
@@ -486,6 +481,7 @@ namespace ProjectTime
                 cmd.Prepare();
                 cmd.Parameters.AddWithValue("@name", p.Name);
                 cmd.Parameters.AddWithValue("@description", p.Description);
+                // TODO: possibility to add a project with an non null working time
                 //cmd.Parameters.AddWithValue("@totaltime", /*TODO*/);
                 cmd.ExecuteNonQuery();
 

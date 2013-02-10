@@ -3,28 +3,27 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml;
 
 namespace ProjectTime
 {
     class Config
     {
-        private const string Version = "0.3";
+        private const string Version = "0.4";
         public const string ConfigFileName = "config.xml";
         public static string ConfigFilePathAndName { get; set; }
 
-        public Point? StartPosition { get; set; }
-        public Architect Architect { get; set; }
-        public DbConnection Db { get; set; }
+        public Point? LastStartPosition { get; set; }
+        public Architect LastArchitect { get; set; }
+        public DbConnection LastDb { get; set; }
         private readonly RecordWindow _parent;
 
         public Config(RecordWindow recordWindow)
         {
             _parent = recordWindow;
-            StartPosition = new Point(recordWindow.Location.X, recordWindow.Location.Y);
-            Architect = null;
-            Db = null;
+            LastStartPosition = new Point(recordWindow.Location.X, recordWindow.Location.Y);
+            LastArchitect = null;
+            LastDb = null;
 
             // ConfigFile should be saved in "AppData" folder
             var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
@@ -57,10 +56,10 @@ namespace ProjectTime
             writer.WriteAttributeString("version", Version);
 
             writer.WriteStartElement("architect");
-            writer.WriteAttributeString("id", Architect.Id.ToString());
-            writer.WriteAttributeString("firstname", Architect.FirstName);
-            writer.WriteAttributeString("lastname", Architect.LastName);
-            writer.WriteAttributeString("company", Db.GetCompanyFromId(Architect.Company).Name);
+            writer.WriteAttributeString("id", LastArchitect.Id.ToString());
+            writer.WriteAttributeString("firstname", LastArchitect.FirstName);
+            writer.WriteAttributeString("lastname", LastArchitect.LastName);
+            writer.WriteAttributeString("company", LastDb.GetCompanyFromId(LastArchitect.Company).Name);
             writer.WriteEndElement();
 
             writer.WriteStartElement("position");
@@ -70,10 +69,10 @@ namespace ProjectTime
             
             
             writer.WriteStartElement("database");
-            writer.WriteAttributeString("server", Db.Server);
-            writer.WriteAttributeString("database", Db.Database);
-            writer.WriteAttributeString("uid", Db.Uid);
-            writer.WriteAttributeString("password", Db.Password);
+            writer.WriteAttributeString("server", LastDb.Server);
+            writer.WriteAttributeString("database", LastDb.Database);
+            writer.WriteAttributeString("uid", LastDb.Uid);
+            writer.WriteAttributeString("password", LastDb.Password);
             writer.WriteEndElement();
 
             writer.WriteEndElement(); // End "config"
@@ -121,14 +120,14 @@ namespace ProjectTime
             reader.ReadToFollowing("position");
             var x = Int32.Parse(reader.GetAttribute("x") ?? "-1");
             var y = Int32.Parse(reader.GetAttribute("y") ?? "-1");
-            StartPosition = (x == -1 || y == -1) ? (Point?) null : new Point(x,y);
+            LastStartPosition = (x == -1 || y == -1) ? (Point?) null : new Point(x,y);
 
             reader.ReadToFollowing("database");
             var server =    reader.GetAttribute("server");
             var database =  reader.GetAttribute("database");
             var uid =       reader.GetAttribute("uid");
             var password =  reader.GetAttribute("password");
-            Db = new DbConnection
+            LastDb = new DbConnection
                 {
                     Server = server,
                     Database = database,
@@ -137,7 +136,7 @@ namespace ProjectTime
                 };
 
             // Now Db is initialized, we can use it
-            Architect = Db.GetArchitectFromId(archiId);
+            LastArchitect = LastDb.GetArchitectFromId(archiId);
 
             reader.Close();
 
@@ -146,7 +145,7 @@ namespace ProjectTime
 
         public bool IsValid()
         {
-            return StartPosition != null && Db != null && Architect != null;
+            return LastStartPosition != null && LastDb != null && LastArchitect != null;
         }
     }
 }

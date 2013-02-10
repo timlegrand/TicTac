@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -8,15 +7,19 @@ namespace ProjectTime
     static class Program
     {
         public static DbConnection Db { get; set; }
+        public static bool ConnectedMode { get; private set; }
 
         [STAThread]
         static void Main()
         {
             // Check if an Internet connection is available
-            //if (!Program.IsDatabaseConnexionAvailable(null))
-            //{
-            //    MessageBox.Show(@"Vous devez être connecté à Internet pour ajouter des entrées dans la base de données.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            //}
+            ConnectedMode = true;
+            if (!IsDatabaseConnexionAvailable(null))
+            {
+                ConnectedMode = false;
+                const string msg = @"Il est préférable d'être connecté à Internet pour utiliser TitTacTeam. Certaines fonctionnalités peuvent ne pas fonctionner correctement.";
+                MessageBox.Show(msg, @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
 
             // Create time recording window and launch application
             Application.EnableVisualStyles();
@@ -42,7 +45,7 @@ namespace ProjectTime
             {
                 using (var logFile = new System.IO.StreamWriter("log.txt", true))
                 {
-                    logFile.WriteLine(System.DateTime.Now + ": Remote database unreachable (" + e.Message + ")");
+                    logFile.WriteLine(DateTime.Now + ": Remote database unreachable (" + e.Message + ")");
                 }
                 return false;
             }
@@ -65,7 +68,7 @@ namespace ProjectTime
 
             // Else if complex / user-defined type
             Console.WriteLine(obj.GetType().ToString());
-            Console.WriteLine("{");
+            Console.WriteLine(@"{");
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo p in props)
             {
@@ -81,7 +84,7 @@ namespace ProjectTime
                     Console.WriteLine(e);   
                 }
             }
-            Console.WriteLine("}");
+            Console.WriteLine(@"}");
             Console.WriteLine();
         }
 

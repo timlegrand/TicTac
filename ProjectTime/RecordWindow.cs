@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -17,6 +18,7 @@ namespace ProjectTime
         private static List<Project> _projectList;
         private static List<Phase> _phaseList;
         private static List<Architect> _architectsList;
+        public Architect LastArchitect { get; private set; }
         private Session _ws;
         
 
@@ -31,10 +33,15 @@ namespace ProjectTime
             // Load configuration, including Database information
             var cfg = new Config(this);
             cfg.LoadFromXml();
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Location = (System.Drawing.Point) cfg.StartPosition;
-            _db = new DbConnection();
+            StartPosition = FormStartPosition.Manual;
+            Location = cfg.LastStartPosition.HasValue ? (Point)cfg.LastStartPosition : new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
+            LastArchitect = cfg.LastArchitect;
 
+            if (Program.ConnectedMode)
+            {
+                _db = new DbConnection();
+            }
+            
             InitComboboxes();
             InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
         }
@@ -43,7 +50,7 @@ namespace ProjectTime
         private void InitComboboxes()
         {
             // Retrieve data from server
-            if (Program.IsDatabaseConnexionAvailable(null))
+            if (Program.ConnectedMode)
             {
                 _architectsList = _db.SelectAllArchitects();
                 _projectList = _db.SelectAllProjects();
@@ -51,14 +58,12 @@ namespace ProjectTime
             }
             else
             {
-                //TODO: unserialize from file
-                //throw new NotImplementedException();
                 _architectsList = new List<Architect>();
                 _projectList = new List<Project>();
                 _phaseList = new List<Phase>();
-                _architectsList.Add(new Architect() { FirstName = "roger", LastName = "alier", Company = 0, Id = 0});
-                _projectList.Add(new Project() { Description = "encore un super projet", Id = 0, Name = "Projet1"});
-                _phaseList.Add(new Phase() { Description = "Une nouvelle phase", Id = 0, Name = "Phase1"});
+                //_architectsList.Add(new Architect() { FirstName = "roger", LastName = "alier", Company = 0, Id = 0 });
+                //_projectList.Add(new Project() { Description = "encore un super projet", Id = 0, Name = "Projet1" });
+                //_phaseList.Add(new Phase() { Description = "Une nouvelle phase", Id = 0, Name = "Phase1" });
             }
 
             // Fill in the ComboBoxes
@@ -86,7 +91,8 @@ namespace ProjectTime
             if (!Program.IsDatabaseConnexionAvailable(null)) return null;
             // 1- Try to retrieve one single open Session in DB
             var sessions = _db.StartedWorkSessions(archi);
-            var session = sessions.Count == 1 ? sessions[0] : null;
+            var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
+            //var session = (Session) from s in sessions where s.Architect.Id == LastArchitect.Id select s;
             if (session == null)
             {
                 //TODO 2- If none try to retrieve last work Session info from XML
@@ -95,18 +101,18 @@ namespace ProjectTime
             }
             else if(session.IsValid())
             {
-                Console.WriteLine("Running session found:");
+                Console.WriteLine(@"Running session found:");
                 Program.VarDump(session);
-                var matchingProjects = from proj in _projectList where proj.Id == session.Project.Id select proj;
+                var matchingProjects = (List<Project>) from proj in _projectList where proj.Id == session.Project.Id select proj;
                 if (matchingProjects.Count() != 1) throw new DataException();
                 comboBoxProjects.SelectedItem = matchingProjects.First();
-                var matchingPhases = from phase in _phaseList where phase.Id == session.Phase.Id select phase;
+                var matchingPhases = (List<Phase>) from phase in _phaseList where phase.Id == session.Phase.Id select phase;
                 if (matchingPhases.Count() != 1) throw new DataException();
                 comboBoxPhases.SelectedItem = matchingPhases.First();
                 comboBoxProjects.Enabled = false;
                 comboBoxPhases.Enabled = false;
             }
-            // 3- If not let set all to defaults //TODO to make sure
+            // 3- If not let set all to defaults //TODO to make sure about behavior
             InitButtons();
             return session;
         }
@@ -134,7 +140,7 @@ namespace ProjectTime
         // ComboBox selection
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _ws = RestoreSession((Architect)comboBoxArchitects.SelectedItem) ?? new Session()
+            _ws = RestoreSession((Architect)comboBoxArchitects.SelectedItem) ?? new Session
                 {
                     Architect = (Architect)comboBoxArchitects.SelectedItem,
                     Project = (Project)comboBoxProjects.SelectedItem,
@@ -198,9 +204,9 @@ namespace ProjectTime
         {
             var cfg = new Config(this)
                 {
-                    StartPosition = this.Location,
-                    Architect = (Architect) this.comboBoxArchitects.SelectedItem,
-                    Db = _db
+                    LastStartPosition = Location,
+                    LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
+                    LastDb = _db
                 };
             if (!cfg.IsValid()) return;
             
