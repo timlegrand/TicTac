@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 //using System.Runtime.Serialization.Formatters.Soap; // doesn't work LOL
 using System.Windows.Forms;
+using TicTac;
 
 // tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
 // DOES NOT WORK

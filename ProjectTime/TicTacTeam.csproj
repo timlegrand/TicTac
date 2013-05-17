@@ -8,8 +8,8 @@
     <ProjectGuid>{CC717AD6-54D5-4EDA-B9E8-46D7A4917173}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProjectTime</RootNamespace>
-    <AssemblyName>ProjectTime</AssemblyName>
+    <RootNamespace>TicTac</RootNamespace>
+    <AssemblyName>TicTac Team</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>

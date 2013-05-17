@@ -4,8 +4,9 @@ using System.Data;
 using System.Diagnostics;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using ProjectTime;
 
-namespace ProjectTime
+namespace TicTac
 {
     class DbConnection
     {
