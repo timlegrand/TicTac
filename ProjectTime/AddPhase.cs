@@ -5,13 +5,13 @@ namespace TicTac
 {
     public partial class AddPhase : Form
     {
-        private readonly DbClient _db;
+        private readonly DAOClient _db;
         private readonly Consult _parent;
 
         public AddPhase(Consult parent)
         {
             InitializeComponent();
-            _db = new DbClient();
+            _db = new DAOClient();
             _parent = parent;
         }
 

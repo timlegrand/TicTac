@@ -6,14 +6,14 @@ namespace TicTac
 {
     public partial class AddArchitect : Form
     {
-        private readonly DbClient _db;
+        private readonly DAOClient _db;
         private readonly List<Company> _companyList;
         private readonly Consult _parent;
 
         public AddArchitect(Consult parent)
         {
             InitializeComponent();
-            _db = new DbClient();
+            _db = new DAOClient();
             _parent = parent;
             _companyList = _db.SelectAllCompanies();
             if (_companyList != null && _companyList.Count != 0) comboBoxCompany.Items.AddRange(_companyList.ToArray());

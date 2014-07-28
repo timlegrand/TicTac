@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TicTac
 {
-    class FileCacheClient
+    class FileClient
     {
     }
 }

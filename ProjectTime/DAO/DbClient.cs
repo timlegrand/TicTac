@@ -141,7 +141,7 @@ namespace TicTac
         }
 
         //TODO: must return info for a given Architect
-        public List<Session> GetStartedWorkSessions(Architect archi)
+        public List<Session> SelectStartedWorkSessions(Architect archi)
         {
             if (!OpenConnection() || archi == null || archi.Id == null) return null;
 
@@ -173,9 +173,9 @@ namespace TicTac
                     var tempConnexion = new DbClient();
                     li.Add(new Session
                         {
-                            Architect = tempConnexion.GetArchitectFromId(archiId),
-                            Project = tempConnexion.GetProjectFromId(projectId),
-                            Phase = tempConnexion.GetPhaseFromId(phaseId),
+                            Architect = tempConnexion.SelectArchitectFromId(archiId),
+                            Project = tempConnexion.SelectProjectFromId(projectId),
+                            Phase = tempConnexion.SelectPhaseFromId(phaseId),
                             RunningSessionId = id,
                             StartTime = startTime
                         });
@@ -187,7 +187,7 @@ namespace TicTac
         }
 
 
-        public TimeSpan GetTimeCount(int? archiId, int? projectId, int? phaseId)
+        public TimeSpan SelectTimeCount(int? archiId, int? projectId, int? phaseId)
         {
             string where = " WHERE enddate IS NOT NULL";
             if ((archiId != null) || (projectId != null) || (phaseId != null))
@@ -237,7 +237,7 @@ namespace TicTac
             return count;
         }
 
-        public double GetTimeCountFromProjectId(int? id)
+        public double SelectTimeCountFromProjectId(int? id)
         {
             Debug.Assert(id != null);
                 
@@ -263,7 +263,7 @@ namespace TicTac
             return count;
         }
 
-        public Architect GetArchitectFromId(int id)
+        public Architect SelectArchitectFromId(int id)
         {
             string query = "SELECT * FROM e_architect WHERE ID=\"" + id + "\"";
             var archi = new Architect();
@@ -286,7 +286,7 @@ namespace TicTac
             return archi;
         }
 
-        public Project GetProjectFromId(int id)
+        public Project SelectProjectFromId(int id)
         {
             string query = "SELECT * FROM e_project WHERE ID=\"" + id + "\"";
             var pro = new Project();
@@ -307,7 +307,7 @@ namespace TicTac
             return pro;
         }
 
-        public Phase GetPhaseFromId(int id)
+        public Phase SelectPhaseFromId(int id)
         {
             string query = "SELECT * FROM e_phase WHERE ID=\"" + id + "\"";
             var phase = new Phase();
@@ -328,7 +328,7 @@ namespace TicTac
             return phase;
         }
 
-        public Company GetCompanyFromId(int id)
+        public Company SelectCompanyFromId(int id)
         {
             string query = "SELECT * FROM e_company WHERE ID=\"" + id + "\"";
             var co = new Company();

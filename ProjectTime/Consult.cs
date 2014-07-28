@@ -8,7 +8,7 @@ namespace TicTac
 {
     public partial class Consult : Form
     {
-        private DbClient _db;
+        private DAOClient _db;
         private List<Project> _projectList;
         private List<Phase> _phaseList;
         private List<Architect> _architectsList;
@@ -20,7 +20,7 @@ namespace TicTac
         public Consult(RecordWindow mainWindow)
         {
             InitializeComponent();
-            _db = new DbClient();
+            _db = new DAOClient();
             InitializeData();
 
             pictureBox.Hide();
@@ -74,7 +74,7 @@ namespace TicTac
             var projectId = (_currentProject != null) ? _currentProject.Id : null;
             var phaseId = (_currentPhase != null) ? _currentPhase.Id : null;
 
-            var timeSpan = _db.GetTimeCount(archiId, projectId, phaseId);
+            var timeSpan = _db.SelectTimeCount(archiId, projectId, phaseId);
             textBoxCountHours.Text = String.Format("{0:0.00}", timeSpan.TotalHours);
             textBoxCountManMonth.Text = String.Format("{0:0.00}", timeSpan.TotalDays);
             pictureBox.Hide();
@@ -206,7 +206,7 @@ namespace TicTac
 
         public void UpdateDb()
         {
-            _db = new DbClient();
+            _db = new DAOClient();
             _parent.UpdateDb();
         }
     }

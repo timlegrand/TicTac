@@ -105,7 +105,7 @@
     <Compile Include="ConfigureDatabase.Designer.cs">
       <DependentUpon>ConfigureDatabase.cs</DependentUpon>
     </Compile>
-    <Compile Include="DAO\FileCacheClient.cs" />
+    <Compile Include="DAO\FileClient.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="DAO\DbClient.cs" />
     <Compile Include="Consult.cs">

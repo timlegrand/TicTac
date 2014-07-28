@@ -16,7 +16,7 @@ namespace TicTac
     public partial class RecordWindow : Form
     {
         //private string _title;
-        private DbClient _dao;
+        private DAOClient _dao;
         private static List<Project> _projectList;
         private static List<Phase> _phaseList;
         private static List<Architect> _architectList;
@@ -41,7 +41,7 @@ namespace TicTac
 
             //if (Program.ConnectedMode)
             {
-                _dao = new DbClient();
+                _dao = new DAOClient();
             }
             
             InitComboboxes();
@@ -108,7 +108,7 @@ namespace TicTac
         {
             if (!Program.IsDatabaseConnexionAvailable(null)) return null;
             // 1- Try to retrieve one single open Session in DB
-            var sessions = _dao.GetStartedWorkSessions(archi);
+            var sessions = _dao.SelectStartedWorkSessions(archi);
             var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
             //var session = (Session) from s in sessions where s.Architect.Id == LastArchitect.Id select s;
             if (session == null)
@@ -139,7 +139,7 @@ namespace TicTac
         private void InitButtons()
         {
             // Search for any already-started session for a given Architect
-            var sessions = _dao.GetStartedWorkSessions((Architect)comboBoxArchitects.SelectedItem);
+            var sessions = _dao.SelectStartedWorkSessions((Architect)comboBoxArchitects.SelectedItem);
             var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
             if (session != null)
             {
@@ -224,7 +224,7 @@ namespace TicTac
                 {
                     LastStartPosition = Location,
                     LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
-                    LastDb = _dao
+                    LastDb = _dao.getDb()
                 };
             if (!cfg.IsValid()) return;
             
@@ -261,7 +261,7 @@ namespace TicTac
 
         public void UpdateDb()
         {
-            _dao = new DbClient();
+            _dao = new DAOClient();
         }
     }
 }

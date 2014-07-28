@@ -29,9 +29,9 @@ namespace TicTac
             {
                 return false;
             }
-            Architect = _dao.GetArchitectFromId((int)Architect.Id);
-            Project = _dao.GetProjectFromId((int)Project.Id);
-            Phase = _dao.GetPhaseFromId((int)Phase.Id);
+            Architect = _dao.SelectArchitectFromId((int)Architect.Id);
+            Project = _dao.SelectProjectFromId((int)Project.Id);
+            Phase = _dao.SelectPhaseFromId((int)Phase.Id);
             return IsValid();
         }
         */

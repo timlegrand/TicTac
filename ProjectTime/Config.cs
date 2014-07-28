@@ -59,7 +59,7 @@ namespace TicTac
             writer.WriteAttributeString("id", LastArchitect.Id.ToString());
             writer.WriteAttributeString("firstname", LastArchitect.FirstName);
             writer.WriteAttributeString("lastname", LastArchitect.LastName);
-            writer.WriteAttributeString("company", LastDb.GetCompanyFromId(LastArchitect.Company).Name);
+            writer.WriteAttributeString("company", LastDb.SelectCompanyFromId(LastArchitect.Company).Name);
             writer.WriteEndElement();
 
             writer.WriteStartElement("position");
@@ -114,7 +114,7 @@ namespace TicTac
             //reader.GetAttribute("firstname");
             //reader.GetAttribute("lastname");
             //reader.GetAttribute("company");
-            //TODO: else configure Db BEFORE USING IT
+            //TODO: else configure DAO BEFORE USING IT
             //...
 
             reader.ReadToFollowing("position");
@@ -135,8 +135,8 @@ namespace TicTac
                     Password = password
                 };
 
-            // Now Db is initialized, we can use it
-            LastArchitect = LastDb.GetArchitectFromId(archiId);
+            // Now DAO is initialized, we can use it
+            LastArchitect = LastDb.SelectArchitectFromId(archiId);
 
             reader.Close();
 
