@@ -4,7 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
-using ProjectTime;
 
 namespace TicTac
 {
@@ -27,10 +26,10 @@ namespace TicTac
             //If not initialized
             if (Server == null)
             {
-                Server =    Defaults.DbServerIp;
-                Database =  Defaults.DbName;
-                Uid =       Defaults.DbUserName;
-                Password =  Defaults.DbPassword;
+                Server =    TicTac.Database.DbServerIp;
+                Database =  TicTac.Database.DbName;
+                Uid =       TicTac.Database.DbUserName;
+                Password =  TicTac.Database.DbPassword;
             }
             
             Initialize();

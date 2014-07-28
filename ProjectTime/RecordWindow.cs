@@ -6,13 +6,12 @@ using System.IO;
 using System.Linq;
 //using System.Runtime.Serialization.Formatters.Soap; // doesn't work LOL
 using System.Windows.Forms;
-using TicTac;
 
 // tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
 // DOES NOT WORK
 // (first method works)
 
-namespace ProjectTime
+namespace TicTac
 {
     public partial class RecordWindow : Form
     {
@@ -33,7 +32,7 @@ namespace ProjectTime
 
         private void Initialize()
         {
-            // Load configuration, including Database information
+            // Load configuration, including Default information
             var cfg = new Config(this);
             cfg.LoadFromXml();
             StartPosition = FormStartPosition.Manual;

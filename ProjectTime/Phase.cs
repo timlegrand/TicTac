@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace ProjectTime
+namespace TicTac
 {
     [Serializable()]
     public class Phase

@@ -1,4 +1,4 @@
-﻿namespace ProjectTime
+﻿namespace TicTac
 {
     partial class Consult
     {
@@ -154,7 +154,7 @@
             // 
             // pictureBox
             // 
-            this.pictureBox.Image = global::ProjectTime.Properties.Resources.loading;
+            this.pictureBox.Image = global::TicTac.Properties.Resources.loading;
             this.pictureBox.Location = new System.Drawing.Point(146, 102);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(21, 21);

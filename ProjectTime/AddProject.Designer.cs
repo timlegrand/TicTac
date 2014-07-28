@@ -1,4 +1,4 @@
-﻿namespace ProjectTime
+﻿namespace TicTac
 {
     partial class AddProject
     {

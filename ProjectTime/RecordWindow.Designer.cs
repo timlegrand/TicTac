@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace ProjectTime
+namespace TicTac
 {
     partial class RecordWindow
     {
@@ -132,7 +132,7 @@ namespace ProjectTime
             this.buttonConsult.Name = "buttonConsult";
             this.buttonConsult.Size = new System.Drawing.Size(75, 21);
             this.buttonConsult.TabIndex = 9;
-            this.buttonConsult.Text = "Database";
+            this.buttonConsult.Text = "Default";
             this.buttonConsult.UseVisualStyleBackColor = true;
             this.buttonConsult.Click += new System.EventHandler(this.ButtonConsultClick);
             // 
@@ -164,7 +164,7 @@ namespace ProjectTime
             this.MaximizeBox = false;
             this.Name = "RecordWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ProjectTime";
+            this.Text = "TicTac";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.RecordWindowFormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();

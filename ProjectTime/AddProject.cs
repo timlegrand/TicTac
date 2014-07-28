@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using TicTac;
 
-namespace ProjectTime
+namespace TicTac
 {
     public partial class AddProject : Form
     {

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows.Forms;
-using TicTac;
 
-namespace ProjectTime
+namespace TicTac
 {
     static class Program
     {
@@ -35,7 +34,7 @@ namespace ProjectTime
 
         public static bool IsDatabaseConnexionAvailable(string serverAddress)
         {
-            var server = serverAddress ?? Defaults.DbServerIp;
+            var server = serverAddress ?? Database.DbServerIp;
             var req = new System.Net.NetworkInformation.Ping();
             System.Net.NetworkInformation.PingReply rep;
             try

@@ -1,4 +1,4 @@
-﻿namespace ProjectTime
+﻿namespace TicTac
 {
     partial class ConfigureDatabase
     {
@@ -64,7 +64,7 @@
             this.labelDatabaseName.Name = "labelDatabaseName";
             this.labelDatabaseName.Size = new System.Drawing.Size(82, 13);
             this.labelDatabaseName.TabIndex = 8;
-            this.labelDatabaseName.Text = "Database name";
+            this.labelDatabaseName.Text = "Default name";
             // 
             // buttonSave
             // 

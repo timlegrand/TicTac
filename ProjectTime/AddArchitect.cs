@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using TicTac;
 
-namespace ProjectTime
+namespace TicTac
 {
     public partial class AddArchitect : Form
     {

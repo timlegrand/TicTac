@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using TicTac;
 
-namespace ProjectTime
+namespace TicTac
 {
     public partial class ConfigureDatabase : Form
     {
@@ -14,10 +13,10 @@ namespace ProjectTime
             InitializeComponent();
 
             _parent = consult;
-            textBoxServer.Text = Defaults.DbServerIp;
-            textBoxDatabase.Text = Defaults.DbName;
-            textBoxUserName.Text = Defaults.DbUserName;
-            textBoxPassword.Text = Defaults.DbPassword;
+            textBoxServer.Text = Database.DbServerIp;
+            textBoxDatabase.Text = Database.DbName;
+            textBoxUserName.Text = Database.DbUserName;
+            textBoxPassword.Text = Database.DbPassword;
         }
 
         private void ButtonSaveClick(object sender, EventArgs e)
@@ -39,10 +38,10 @@ namespace ProjectTime
 
         private void PropagateDatabaseConfiguration()
         {
-            Defaults.DbServerIp = textBoxServer.Text;
-            Defaults.DbName = textBoxDatabase.Text;
-            Defaults.DbUserName = textBoxUserName.Text;
-            Defaults.DbPassword = textBoxPassword.Text;
+            Database.DbServerIp = textBoxServer.Text;
+            Database.DbName = textBoxDatabase.Text;
+            Database.DbUserName = textBoxUserName.Text;
+            Database.DbPassword = textBoxPassword.Text;
             _parent.UpdateDb();
         }
 

@@ -4,9 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
-using TicTac;
 
-namespace ProjectTime
+namespace TicTac
 {
     class Config
     {
