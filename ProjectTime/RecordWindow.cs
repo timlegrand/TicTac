@@ -16,7 +16,7 @@ namespace TicTac
     public partial class RecordWindow : Form
     {
         //private string _title;
-        private DbConnection _db;
+        private DbClient _dao;
         private static List<Project> _projectList;
         private static List<Phase> _phaseList;
         private static List<Architect> _architectList;
@@ -41,7 +41,7 @@ namespace TicTac
 
             //if (Program.ConnectedMode)
             {
-                _db = new DbConnection();
+                _dao = new DbClient();
             }
             
             InitComboboxes();
@@ -54,9 +54,9 @@ namespace TicTac
             if (Program.ConnectedMode)
             {
                 // Retrieve data from server
-                _architectList = _db.SelectAllArchitects();
-                _projectList = _db.SelectAllProjects();
-                _phaseList = _db.SelectAllPhases();
+                _architectList = _dao.SelectAllArchitects();
+                _projectList = _dao.SelectAllProjects();
+                _phaseList = _dao.SelectAllPhases();
             }
             else
             {
@@ -108,7 +108,7 @@ namespace TicTac
         {
             if (!Program.IsDatabaseConnexionAvailable(null)) return null;
             // 1- Try to retrieve one single open Session in DB
-            var sessions = _db.StartedWorkSessions(archi);
+            var sessions = _dao.GetStartedWorkSessions(archi);
             var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
             //var session = (Session) from s in sessions where s.Architect.Id == LastArchitect.Id select s;
             if (session == null)
@@ -121,10 +121,10 @@ namespace TicTac
             {
                 Console.WriteLine(@"Running session found:");
                 Program.VarDump(session);
-                var matchingProjects = (List<Project>) from proj in _projectList where proj.Id == session.Project.Id select proj;
+                var matchingProjects = (from proj in _projectList where proj.Id == session.Project.Id select proj).ToList();
                 if (matchingProjects.Count() != 1) throw new DataException();
                 comboBoxProjects.SelectedItem = matchingProjects.First();
-                var matchingPhases = (List<Phase>) from phase in _phaseList where phase.Id == session.Phase.Id select phase;
+                var matchingPhases = (from phase in _phaseList where phase.Id == session.Phase.Id select phase).ToList();
                 if (matchingPhases.Count() != 1) throw new DataException();
                 comboBoxPhases.SelectedItem = matchingPhases.First();
                 comboBoxProjects.Enabled = false;
@@ -139,7 +139,7 @@ namespace TicTac
         private void InitButtons()
         {
             // Search for any already-started session for a given Architect
-            var sessions = _db.StartedWorkSessions((Architect)comboBoxArchitects.SelectedItem);
+            var sessions = _dao.GetStartedWorkSessions((Architect)comboBoxArchitects.SelectedItem);
             var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
             if (session != null)
             {
@@ -189,7 +189,7 @@ namespace TicTac
             }
             _ws.StartTime = DateTime.Now;
 
-            _db.StartWorkSession(_ws);
+            _dao.StartWorkSession(_ws);
             comboBoxProjects.Enabled = false;
             comboBoxPhases.Enabled = false;
             
@@ -208,7 +208,7 @@ namespace TicTac
                 elapsedTime.Minutes,
                 elapsedTime.Seconds);
             
-            _db.EndWorkSession(_ws);
+            _dao.EndWorkSession(_ws);
 
             comboBoxProjects.Enabled = true;
             comboBoxPhases.Enabled = true;
@@ -224,7 +224,7 @@ namespace TicTac
                 {
                     LastStartPosition = Location,
                     LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
-                    LastDb = _db
+                    LastDb = _dao
                 };
             if (!cfg.IsValid()) return;
             
@@ -261,7 +261,7 @@ namespace TicTac
 
         public void UpdateDb()
         {
-            _db = new DbConnection();
+            _dao = new DbClient();
         }
     }
 }

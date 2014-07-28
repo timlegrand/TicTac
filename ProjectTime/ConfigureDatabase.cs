@@ -5,7 +5,7 @@ namespace TicTac
 {
     public partial class ConfigureDatabase : Form
     {
-        private DbConnection _db;
+        private DbClient _db;
         private readonly Consult _parent;
 
         public ConfigureDatabase(Consult consult)

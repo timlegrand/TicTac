@@ -15,7 +15,7 @@ namespace TicTac
 
         public Point? LastStartPosition { get; set; }
         public Architect LastArchitect { get; set; }
-        public DbConnection LastDb { get; set; }
+        public DbClient LastDb { get; set; }
         private readonly RecordWindow _parent;
 
         public Config(RecordWindow recordWindow)
@@ -127,7 +127,7 @@ namespace TicTac
             var database =  reader.GetAttribute("database");
             var uid =       reader.GetAttribute("uid");
             var password =  reader.GetAttribute("password");
-            LastDb = new DbConnection
+            LastDb = new DbClient
                 {
                     Server = server,
                     Database = database,

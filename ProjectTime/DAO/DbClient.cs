@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace TicTac
 {
-    class DbConnection
+    class DbClient
     {
         private MySqlConnection _connection;
         public string Server    { get; set; } //TODO: WANT A PRIVATE SET
@@ -16,7 +16,7 @@ namespace TicTac
         public string Password  { get; set; } //TODO: WANT A PRIVATE SET
 
         //Constructor
-        public DbConnection()
+        public DbClient()
         {
             Server = null;
             Database = null;
@@ -141,7 +141,7 @@ namespace TicTac
         }
 
         //TODO: must return info for a given Architect
-        public List<Session> StartedWorkSessions(Architect archi)
+        public List<Session> GetStartedWorkSessions(Architect archi)
         {
             if (!OpenConnection() || archi == null || archi.Id == null) return null;
 
@@ -170,7 +170,7 @@ namespace TicTac
                     var projectId = int.Parse(reader["project"].ToString());
                     var phaseId = int.Parse(reader["phase"].ToString());
                     var startTime = DateTime.Parse(reader["startdate"].ToString());
-                    var tempConnexion = new DbConnection();
+                    var tempConnexion = new DbClient();
                     li.Add(new Session
                         {
                             Architect = tempConnexion.GetArchitectFromId(archiId),

@@ -8,7 +8,7 @@ namespace TicTac
 {
     public partial class Consult : Form
     {
-        private DbConnection _db;
+        private DbClient _db;
         private List<Project> _projectList;
         private List<Phase> _phaseList;
         private List<Architect> _architectsList;
@@ -20,7 +20,7 @@ namespace TicTac
         public Consult(RecordWindow mainWindow)
         {
             InitializeComponent();
-            _db = new DbConnection();
+            _db = new DbClient();
             InitializeData();
 
             pictureBox.Hide();
@@ -206,7 +206,7 @@ namespace TicTac
 
         public void UpdateDb()
         {
-            _db = new DbConnection();
+            _db = new DbClient();
             _parent.UpdateDb();
         }
     }

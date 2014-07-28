@@ -5,13 +5,13 @@ namespace TicTac
 {
     public partial class AddProject : Form
     {
-        private readonly DbConnection _db;
+        private readonly DbClient _db;
         private readonly Consult _parent;
 
         public AddProject(Consult parent)
         {
             InitializeComponent();
-            _db = new DbConnection();
+            _db = new DbClient();
             _parent = parent;
         }
 

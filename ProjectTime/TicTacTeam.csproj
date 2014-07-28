@@ -89,7 +89,8 @@
     <Compile Include="AddArchitect.Designer.cs">
       <DependentUpon>AddArchitect.cs</DependentUpon>
     </Compile>
-    <Compile Include="Defaults.cs" />
+    <Compile Include="DAO\DAOClient.cs" />
+    <Compile Include="DAO\Defaults.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="AddPhase.cs">
@@ -104,8 +105,9 @@
     <Compile Include="ConfigureDatabase.Designer.cs">
       <DependentUpon>ConfigureDatabase.cs</DependentUpon>
     </Compile>
+    <Compile Include="DAO\FileCacheClient.cs" />
     <Compile Include="Session.cs" />
-    <Compile Include="DbConnection.cs" />
+    <Compile Include="DAO\DbClient.cs" />
     <Compile Include="Consult.cs">
       <SubType>Form</SubType>
     </Compile>

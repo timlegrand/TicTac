@@ -6,7 +6,7 @@ namespace TicTac
 {
     static class Program
     {
-        public static DbConnection Db { get; set; }
+        public static DbClient Db { get; set; }
         public static bool ConnectedMode { get; private set; }
 
         [STAThread]
