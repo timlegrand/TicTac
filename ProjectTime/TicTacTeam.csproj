@@ -90,6 +90,7 @@
       <DependentUpon>AddArchitect.cs</DependentUpon>
     </Compile>
     <Compile Include="DAO\DAOClient.cs" />
+    <Compile Include="DAO\DAOClientClass.cs" />
     <Compile Include="DAO\Defaults.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Company.cs" />

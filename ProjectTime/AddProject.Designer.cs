@@ -40,9 +40,9 @@
             this.labelProjectName.AutoSize = true;
             this.labelProjectName.Location = new System.Drawing.Point(12, 15);
             this.labelProjectName.Name = "labelProjectName";
-            this.labelProjectName.Size = new System.Drawing.Size(69, 13);
+            this.labelProjectName.Size = new System.Drawing.Size(73, 13);
             this.labelProjectName.TabIndex = 7;
-            this.labelProjectName.Text = "Project name";
+            this.labelProjectName.Text = "Nom du projet";
             // 
             // textBoxProjectName
             // 
@@ -90,7 +90,7 @@
             this.Controls.Add(this.Save);
             this.Name = "AddProject";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Add Project";
+            this.Text = "Ajouter un projet";
             this.ResumeLayout(false);
             this.PerformLayout();
 

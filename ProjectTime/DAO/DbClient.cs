@@ -4,10 +4,11 @@ using System.Data;
 using System.Diagnostics;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using TicTac.DAO;
 
-namespace TicTac
+namespace TicTac.DAO
 {
-    class DbClient
+    class DbClient : DAOClientClass
     {
         private MySqlConnection _connection;
         public string Server    { get; set; } //TODO: WANT A PRIVATE SET
@@ -88,7 +89,7 @@ namespace TicTac
         }
 
         //StartWorkSession statement
-        public void StartWorkSession(Session cfg)
+        public override void StartWorkSession(Session cfg)
         {
             var test = 0;
 #if (DEBUG)
@@ -113,7 +114,7 @@ namespace TicTac
         }
 
         //Update statement
-        public void EndWorkSession(Session s)
+        public override void EndWorkSession(Session s)
         {
             if (s == null) throw new ArgumentNullException("s");
             if (!s.IsValid() || !s.IsTerminated()) throw new Exception();
@@ -141,7 +142,7 @@ namespace TicTac
         }
 
         //TODO: must return info for a given Architect
-        public List<Session> SelectStartedWorkSessions(Architect archi)
+        public override List<Session> SelectStartedWorkSessions(Architect archi)
         {
             if (!OpenConnection() || archi == null || archi.Id == null) return null;
 
@@ -187,7 +188,7 @@ namespace TicTac
         }
 
 
-        public TimeSpan SelectTimeCount(int? archiId, int? projectId, int? phaseId)
+        public override TimeSpan SelectTimeCount(int? archiId, int? projectId, int? phaseId)
         {
             string where = " WHERE enddate IS NOT NULL";
             if ((archiId != null) || (projectId != null) || (phaseId != null))
@@ -237,7 +238,7 @@ namespace TicTac
             return count;
         }
 
-        public double SelectTimeCountFromProjectId(int? id)
+        public override double SelectTimeCountFromProjectId(int? id)
         {
             Debug.Assert(id != null);
                 
@@ -263,7 +264,7 @@ namespace TicTac
             return count;
         }
 
-        public Architect SelectArchitectFromId(int id)
+        public override Architect SelectArchitectFromId(int id)
         {
             string query = "SELECT * FROM e_architect WHERE ID=\"" + id + "\"";
             var archi = new Architect();
@@ -286,7 +287,7 @@ namespace TicTac
             return archi;
         }
 
-        public Project SelectProjectFromId(int id)
+        public override Project SelectProjectFromId(int id)
         {
             string query = "SELECT * FROM e_project WHERE ID=\"" + id + "\"";
             var pro = new Project();
@@ -307,7 +308,7 @@ namespace TicTac
             return pro;
         }
 
-        public Phase SelectPhaseFromId(int id)
+        public override Phase SelectPhaseFromId(int id)
         {
             string query = "SELECT * FROM e_phase WHERE ID=\"" + id + "\"";
             var phase = new Phase();
@@ -328,7 +329,7 @@ namespace TicTac
             return phase;
         }
 
-        public Company SelectCompanyFromId(int id)
+        public override Company SelectCompanyFromId(int id)
         {
             string query = "SELECT * FROM e_company WHERE ID=\"" + id + "\"";
             var co = new Company();
@@ -349,7 +350,7 @@ namespace TicTac
             return co;
         }
 
-        public List<Architect> SelectAllArchitects()
+        public override List<Architect> SelectAllArchitects()
         {
             const string query = "SELECT * FROM e_architect";
             var architects = new List<Architect>();
@@ -373,7 +374,7 @@ namespace TicTac
             return architects;
         }
 
-        public List<Project> SelectAllProjects()
+        public override List<Project> SelectAllProjects()
         {
             const string query = "SELECT * FROM e_project";
             var projects = new List<Project>();
@@ -395,7 +396,7 @@ namespace TicTac
             return projects;
         }
 
-        public List<Phase> SelectAllPhases()
+        public override List<Phase> SelectAllPhases()
         {
             const string query = "SELECT * FROM e_phase";
             var phases = new List<Phase>();
@@ -418,7 +419,7 @@ namespace TicTac
             return phases;
         }
 
-        public List<Company> SelectAllCompanies()
+        public override List<Company> SelectAllCompanies()
         {
             const string query = "SELECT * FROM e_company";
             var l = new List<Company>();
@@ -440,7 +441,7 @@ namespace TicTac
             return l;
         }
 
-        public int InsertArchitect(Architect a)
+        public override int InsertArchitect(Architect a)
         {
             var insertedRowId = -1;
             if (!a.IsValid() || !OpenConnection()) return insertedRowId;
@@ -467,7 +468,7 @@ namespace TicTac
             return insertedRowId;
         }
 
-        public int InsertProject(Project p)
+        public override int InsertProject(Project p)
         {
             var insertedRowId = -1;
             if (!p.IsValid() || !OpenConnection()) return insertedRowId;
@@ -495,7 +496,7 @@ namespace TicTac
             return insertedRowId;
         }
 
-        public int InsertPhase(Phase p)
+        public override int InsertPhase(Phase p)
         {
             var insertedRowId = -1;
             if (!p.IsValid() || !OpenConnection()) return insertedRowId;
@@ -521,7 +522,7 @@ namespace TicTac
             return insertedRowId;
         }
 
-        public bool DeleteArchitect(Architect a)
+        public override bool DeleteArchitect(Architect a)
         {
             if (a == null || a.Id == null) return false;
             string query = "DELETE FROM e_architect WHERE ID=\"" + a.Id + "\"";
@@ -538,7 +539,7 @@ namespace TicTac
             return true;
         }
 
-        public bool DeleteProject(Project p)
+        public override bool DeleteProject(Project p)
         {
             if (p == null || p.Id == null) return false;
             string query = "DELETE FROM e_project WHERE ID=\"" + p.Id + "\"";
@@ -555,7 +556,7 @@ namespace TicTac
             return true;
         }
 
-        public bool DeletePhase(Phase p)
+        public override bool DeletePhase(Phase p)
         {
             if (p == null || p.Id == null) return false;
             string query = "DELETE FROM e_phase WHERE ID=\"" + p.Id + "\"";

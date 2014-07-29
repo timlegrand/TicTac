@@ -246,7 +246,7 @@
             this.editDatabaseButton.Name = "editDatabaseButton";
             this.editDatabaseButton.Size = new System.Drawing.Size(75, 23);
             this.editDatabaseButton.TabIndex = 21;
-            this.editDatabaseButton.Text = "Configure";
+            this.editDatabaseButton.Text = "Configurer";
             this.editDatabaseButton.UseVisualStyleBackColor = true;
             this.editDatabaseButton.Click += new System.EventHandler(this.editDatabaseButton_Click);
             // 

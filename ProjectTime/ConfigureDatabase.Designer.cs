@@ -39,32 +39,32 @@
             this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // labelServer
+            // labelServerNameOrIp
             // 
             this.labelServerNameOrIp.AutoSize = true;
             this.labelServerNameOrIp.Location = new System.Drawing.Point(12, 16);
             this.labelServerNameOrIp.Name = "labelServerNameOrIp";
-            this.labelServerNameOrIp.Size = new System.Drawing.Size(57, 13);
+            this.labelServerNameOrIp.Size = new System.Drawing.Size(64, 13);
             this.labelServerNameOrIp.TabIndex = 10;
-            this.labelServerNameOrIp.Text = "Server (IP)";
+            this.labelServerNameOrIp.Text = "Adresse (IP)";
             // 
-            // labelUser
+            // labelUserName
             // 
             this.labelUserName.AutoSize = true;
             this.labelUserName.Location = new System.Drawing.Point(12, 70);
             this.labelUserName.Name = "labelUserName";
-            this.labelUserName.Size = new System.Drawing.Size(58, 13);
+            this.labelUserName.Size = new System.Drawing.Size(84, 13);
             this.labelUserName.TabIndex = 9;
-            this.labelUserName.Text = "User name";
+            this.labelUserName.Text = "Nom d\'utilisateur";
             // 
-            // labelName
+            // labelDatabaseName
             // 
             this.labelDatabaseName.AutoSize = true;
             this.labelDatabaseName.Location = new System.Drawing.Point(12, 43);
             this.labelDatabaseName.Name = "labelDatabaseName";
-            this.labelDatabaseName.Size = new System.Drawing.Size(82, 13);
+            this.labelDatabaseName.Size = new System.Drawing.Size(81, 13);
             this.labelDatabaseName.TabIndex = 8;
-            this.labelDatabaseName.Text = "Default name";
+            this.labelDatabaseName.Text = "Nom de la base";
             // 
             // buttonSave
             // 
@@ -72,7 +72,7 @@
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
             this.buttonSave.TabIndex = 7;
-            this.buttonSave.Text = "Save";
+            this.buttonSave.Text = "Enregistrer";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.ButtonSaveClick);
             // 
@@ -81,9 +81,9 @@
             this.labelPassword.AutoSize = true;
             this.labelPassword.Location = new System.Drawing.Point(12, 98);
             this.labelPassword.Name = "labelPassword";
-            this.labelPassword.Size = new System.Drawing.Size(53, 13);
+            this.labelPassword.Size = new System.Drawing.Size(71, 13);
             this.labelPassword.TabIndex = 11;
-            this.labelPassword.Text = "Password";
+            this.labelPassword.Text = "Mot de passe";
             // 
             // textBoxServer
             // 

@@ -57,9 +57,9 @@
             this.labelPhaseName.AutoSize = true;
             this.labelPhaseName.Location = new System.Drawing.Point(12, 15);
             this.labelPhaseName.Name = "labelPhaseName";
-            this.labelPhaseName.Size = new System.Drawing.Size(66, 13);
+            this.labelPhaseName.Size = new System.Drawing.Size(87, 13);
             this.labelPhaseName.TabIndex = 12;
-            this.labelPhaseName.Text = "Phase name";
+            this.labelPhaseName.Text = "Nom de la phase";
             // 
             // textBoxPhaseName
             // 
@@ -90,7 +90,7 @@
             this.Controls.Add(this.Save);
             this.Name = "AddPhase";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Add Phase";
+            this.Text = "Ajouter une phase";
             this.ResumeLayout(false);
             this.PerformLayout();
 

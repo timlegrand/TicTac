@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
+using TicTac.DAO;
 
 namespace TicTac
 {
     public partial class ConfigureDatabase : Form
     {
-        private DbClient _db;
+        //private DbClient _db;
         private readonly Consult _parent;
 
         public ConfigureDatabase(Consult consult)
@@ -13,7 +14,7 @@ namespace TicTac
             InitializeComponent();
 
             _parent = consult;
-            textBoxServer.Text = Database.DbServerIp;
+            textBoxServer.Text   = Database.DbServerIp;
             textBoxDatabase.Text = Database.DbName;
             textBoxUserName.Text = Database.DbUserName;
             textBoxPassword.Text = Database.DbPassword;
@@ -39,7 +40,7 @@ namespace TicTac
         private void PropagateDatabaseConfiguration()
         {
             Database.DbServerIp = textBoxServer.Text;
-            Database.DbName = textBoxDatabase.Text;
+            Database.DbName     = textBoxDatabase.Text;
             Database.DbUserName = textBoxUserName.Text;
             Database.DbPassword = textBoxPassword.Text;
             _parent.UpdateDb();
@@ -47,7 +48,7 @@ namespace TicTac
 
         private bool IsValid()
         {
-            return textBoxServer.Text != string.Empty &&
+            return textBoxServer.Text   != string.Empty &&
                    textBoxDatabase.Text != string.Empty &&
                    textBoxUserName.Text != string.Empty &&
                    textBoxPassword.Text != string.Empty;

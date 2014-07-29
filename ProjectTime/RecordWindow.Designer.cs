@@ -132,7 +132,7 @@ namespace TicTac
             this.buttonConsult.Name = "buttonConsult";
             this.buttonConsult.Size = new System.Drawing.Size(75, 21);
             this.buttonConsult.TabIndex = 9;
-            this.buttonConsult.Text = "Default";
+            this.buttonConsult.Text = "Éditer";
             this.buttonConsult.UseVisualStyleBackColor = true;
             this.buttonConsult.Click += new System.EventHandler(this.ButtonConsultClick);
             // 
