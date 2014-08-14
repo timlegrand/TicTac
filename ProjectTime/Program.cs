@@ -6,7 +6,7 @@ namespace TicTac
 {
     static class Program
     {
-        public static DAOClient DAO { get; set; }
+        //public static DAOClient DAO { get; set; }
         public static bool ConnectedMode { get; private set; }
 
         [STAThread]
@@ -90,7 +90,8 @@ namespace TicTac
 
         public static bool IsDatabaseConfigAvailable()
         {
-            return false;
+            //return false;
+            throw new NotImplementedException();
         }
     }
 }

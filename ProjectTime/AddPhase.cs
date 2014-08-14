@@ -6,9 +6,9 @@ namespace TicTac
     public partial class AddPhase : Form
     {
         private readonly DAOClient _db;
-        private readonly Consult _parent;
+        private readonly DatabaseViewer _parent;
 
-        public AddPhase(Consult parent)
+        public AddPhase(DatabaseViewer parent)
         {
             InitializeComponent();
             _db = new DAOClient();

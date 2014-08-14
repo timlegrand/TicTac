@@ -6,16 +6,16 @@ namespace TicTac
 {
     public partial class AddArchitect : Form
     {
-        private readonly DAOClient _db;
+        private readonly Service _service;
         private readonly List<Company> _companyList;
-        private readonly Consult _parent;
+        private readonly DatabaseViewer _parent;
 
-        public AddArchitect(Consult parent)
+        public AddArchitect(DatabaseViewer parent)
         {
             InitializeComponent();
-            _db = new DAOClient();
+            _service = new Service();
             _parent = parent;
-            _companyList = _db.SelectAllCompanies();
+            _companyList = _service.GetAllCompanies();
             if (_companyList != null && _companyList.Count != 0) comboBoxCompany.Items.AddRange(_companyList.ToArray());
             comboBoxCompany.SelectedItem = comboBoxCompany.Items[0];
         }
@@ -30,8 +30,8 @@ namespace TicTac
                 MessageBox.Show(@"Please fill-in every fields", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            
-            var id = _db.InsertArchitect(new Architect(){Company = (int) cp.Id, FirstName = fn, LastName = ln});
+
+            var id = _service.AddArchitect(new Architect() { Company = (int)cp.Id, FirstName = fn, LastName = ln });
             Console.WriteLine("inserted id = {0}", id);
 
             _parent.UpdateData();

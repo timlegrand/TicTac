@@ -16,7 +16,8 @@ namespace TicTac
     public partial class RecordWindow : Form
     {
         //private string _title;
-        private DAOClient _dao;
+        private DAOClient _dao; // Remains for save&close only
+        private Service _service;
         private static List<Project> _projectList;
         private static List<Phase> _phaseList;
         private static List<Architect> _architectList;
@@ -41,6 +42,7 @@ namespace TicTac
 
             //if (Program.ConnectedMode)
             {
+                _service = new Service();
                 _dao = new DAOClient();
             }
             
@@ -54,9 +56,9 @@ namespace TicTac
             if (Program.ConnectedMode)
             {
                 // Retrieve data from server
-                _architectList = _dao.SelectAllArchitects();
-                _projectList = _dao.SelectAllProjects();
-                _phaseList = _dao.SelectAllPhases();
+                _architectList = _service.SelectAllArchitects();
+                _projectList = _service.SelectAllProjects();
+                _phaseList = _service.SelectAllPhases();
             }
             else
             {
@@ -108,7 +110,7 @@ namespace TicTac
         {
             if (!Program.IsDatabaseConnexionAvailable(null)) return null;
             // 1- Try to retrieve one single open Session in DB
-            var sessions = _dao.SelectStartedWorkSessions(archi);
+            var sessions = _service.GetStartedWorkSessions(archi);
             var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
             //var session = (Session) from s in sessions where s.Architect.Id == LastArchitect.Id select s;
             if (session == null)
@@ -139,7 +141,7 @@ namespace TicTac
         private void InitButtons()
         {
             // Search for any already-started session for a given Architect
-            var sessions = _dao.SelectStartedWorkSessions((Architect)comboBoxArchitects.SelectedItem);
+            var sessions = _service.GetStartedWorkSessions((Architect)comboBoxArchitects.SelectedItem);
             var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
             if (session != null)
             {
@@ -189,7 +191,7 @@ namespace TicTac
             }
             _ws.StartTime = DateTime.Now;
 
-            _dao.StartWorkSession(_ws);
+            _service.StartWorkSession(_ws);
             comboBoxProjects.Enabled = false;
             comboBoxPhases.Enabled = false;
             
@@ -208,7 +210,7 @@ namespace TicTac
                 elapsedTime.Minutes,
                 elapsedTime.Seconds);
             
-            _dao.EndWorkSession(_ws);
+            _service.EndWorkSession(_ws);
 
             comboBoxProjects.Enabled = true;
             comboBoxPhases.Enabled = true;
@@ -254,14 +256,9 @@ namespace TicTac
 
         private void ButtonConsultClick(object sender, EventArgs e)
         {
-            var consultForm = new Consult(this)
+            var consultForm = new DatabaseViewer(this)
                                   { FormBorderStyle = FormBorderStyle.FixedSingle };
             consultForm.Show();
-        }
-
-        public void UpdateDb()
-        {
-            _dao = new DAOClient();
         }
     }
 }

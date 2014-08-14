@@ -6,9 +6,9 @@ namespace TicTac
     public partial class AddProject : Form
     {
         private readonly DAOClient _db;
-        private readonly Consult _parent;
+        private readonly DatabaseViewer _parent;
 
-        public AddProject(Consult parent)
+        public AddProject(DatabaseViewer parent)
         {
             InitializeComponent();
             _db = new DAOClient();

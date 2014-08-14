@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TicTac.DAO
 {
     abstract class DAOClientClass
     {
         // Work-session management
-        abstract public void StartWorkSession(Session cfg);
-        abstract public void EndWorkSession(Session s);
+        abstract public void InsertWorkSession(Session cfg);
+        abstract public void UpdateWorkSession(Session s);
 
         // Get statistics
         abstract public List<Session> SelectStartedWorkSessions(Architect archi);

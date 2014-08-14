@@ -1,0 +1,22 @@
+# git ignore file
+# Windows-generated
+Thumbs.db
+#Visual Studio-generated
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.bak
+*.cache
+*.ilk
+[Bb]in
+[Dd]ebug*/
+*.sbr
+obj/
+[Rr]elease*/
+_Resharper*/
+*.sdf

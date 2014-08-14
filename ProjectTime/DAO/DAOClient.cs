@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TicTac.DAO;
 
 namespace TicTac
 {
     class DAOClient
     {
+        //private DAOClientClass _dao;
         private DbClient _db;
-        private DAOClientClass _dao;
-        //private FileClient _fc;
-        private DbClient _fc;
+        private MessageQueue _mq;
 
         //Constructor
         public DAOClient()
         {
             _db = new DbClient();
-            //_fc = new FileClient();
-            _fc = new DbClient();
+            _mq = new MessageQueue();
         }
 
         public DbClient getDb()
@@ -26,138 +22,137 @@ namespace TicTac
             return _db;
         }
 
-        // This method may switch the _dao internal variable between _db and _fc
+        // This method may switch the _service internal variable between _service and _mq
         // according to current connectivity state
         private void SwitchDAO()
         {
             if (Program.ConnectedMode)
             {
-                _dao = _db;
+                // Check and process waiting messages if any
+                //_mq.ProcessWaitingMessages();
             }
             else
             {
-                _dao = _fc;
+//                string action = System.Reflection.MethodBase.GetCurrentMethod().Name
+//;
+//                string data = ;
+//                Message msg = new Message(action, data);
+//                _mq.StoreMessage();
             }
         }
 
-        public List<Session> GetStartedWorkSessions(Architect archi)
+        public void InsertWorkSession(Session s)
         {
             SwitchDAO();
-            return _dao.SelectStartedWorkSessions(archi);
+            _db.InsertWorkSession(s);
         }
 
-        public void StartWorkSession(Session cfg)
+        public void UpdateWorkSession(Session s)
         {
             SwitchDAO();
-            _dao.StartWorkSession(cfg);
-        }
-
-        public void EndWorkSession(Session s)
-        {
-            SwitchDAO();
-            _dao.EndWorkSession(s);
+            _db.UpdateWorkSession(s);
         }
 
         public List<Session> SelectStartedWorkSessions(Architect archi)
         {
             SwitchDAO();
-            return _dao.SelectStartedWorkSessions(archi);
+            return _db.SelectStartedWorkSessions(archi);
         }
 
         public TimeSpan SelectTimeCount(int? archiId, int? projectId, int? phaseId)
         {
             SwitchDAO();
-            return _dao.SelectTimeCount(archiId, projectId, phaseId);
+            return _db.SelectTimeCount(archiId, projectId, phaseId);
         }
 
         public double SelectTimeCountFromProjectId(int? id)
         {
             SwitchDAO();
-            return _dao.SelectTimeCountFromProjectId(id);
+            return _db.SelectTimeCountFromProjectId(id);
         }
 
         public Architect SelectArchitectFromId(int id)
         {
             SwitchDAO();
-            return _dao.SelectArchitectFromId(id);
+            return _db.SelectArchitectFromId(id);
         }
 
         public Project SelectProjectFromId(int id)
         {
             SwitchDAO();
-            return _dao.SelectProjectFromId(id);
+            return _db.SelectProjectFromId(id);
         }
 
         public Phase SelectPhaseFromId(int id)
         {
             SwitchDAO();
-            return _dao.SelectPhaseFromId(id);
+            return _db.SelectPhaseFromId(id);
         }
 
         public Company SelectCompanyFromId(int id)
         {
             SwitchDAO();
-            return _dao.SelectCompanyFromId(id);
+            return _db.SelectCompanyFromId(id);
         }
 
         public List<Architect> SelectAllArchitects()
         {
             SwitchDAO();
-            return _dao.SelectAllArchitects();
+            return _db.SelectAllArchitects();
         }
 
         public List<Project> SelectAllProjects()
         {
             SwitchDAO();
-            return _dao.SelectAllProjects();
+            return _db.SelectAllProjects();
         }
 
         public List<Phase> SelectAllPhases()
         {
             SwitchDAO();
-            return _dao.SelectAllPhases();
+            return _db.SelectAllPhases();
         }
 
         public List<Company> SelectAllCompanies()
         {
             SwitchDAO();
-            return _dao.SelectAllCompanies();
+            return _db.SelectAllCompanies();
         }
 
         public int InsertArchitect(Architect a)
         {
             SwitchDAO();
-            return _dao.InsertArchitect(a);
+            return _db.InsertArchitect(a);
         }
 
         public int InsertProject(Project p)
         {
             SwitchDAO();
-            return _dao.InsertProject(p);
+            return _db.InsertProject(p);
         }
 
         public int InsertPhase(Phase p)
         {
             SwitchDAO();
-            return _dao.InsertPhase(p);
+            return _db.InsertPhase(p);
         }
 
         public bool DeleteArchitect(Architect a)
         {
             SwitchDAO();
-            return _dao.DeleteArchitect(a);
+            return _db.DeleteArchitect(a);
         }
 
         public bool DeleteProject(Project p)
         {
             SwitchDAO();
-            return _dao.DeleteProject(p);
+            return _db.DeleteProject(p);
         }
 
         public bool DeletePhase(Phase p)
         {
             SwitchDAO();
-            return _dao.DeletePhase(p);
+            return _db.DeletePhase(p);
         }
     }
 }

@@ -88,8 +88,8 @@ namespace TicTac.DAO
             }
         }
 
-        //StartWorkSession statement
-        public override void StartWorkSession(Session cfg)
+        //InsertWorkSession statement
+        public override void InsertWorkSession(Session s)
         {
             var test = 0;
 #if (DEBUG)
@@ -105,16 +105,16 @@ namespace TicTac.DAO
                                   "VALUES ('', NULL, TIMESTAMP(NOW()), @archi, @project, @phase, @test)"
                 };
             cmd.Prepare();
-            cmd.Parameters.AddWithValue("@archi", cfg.Architect.Id);
-            cmd.Parameters.AddWithValue("@project", cfg.Project.Id);
-            cmd.Parameters.AddWithValue("@phase", cfg.Phase.Id);
+            cmd.Parameters.AddWithValue("@archi", s.Architect.Id);
+            cmd.Parameters.AddWithValue("@project", s.Project.Id);
+            cmd.Parameters.AddWithValue("@phase", s.Phase.Id);
             cmd.Parameters.AddWithValue("@test", test);
             cmd.ExecuteNonQuery();
             CloseConnection();
         }
 
         //Update statement
-        public override void EndWorkSession(Session s)
+        public override void UpdateWorkSession(Session s)
         {
             if (s == null) throw new ArgumentNullException("s");
             if (!s.IsValid() || !s.IsTerminated()) throw new Exception();

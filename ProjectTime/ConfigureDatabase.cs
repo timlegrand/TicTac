@@ -6,10 +6,10 @@ namespace TicTac
 {
     public partial class ConfigureDatabase : Form
     {
-        //private DbClient _db;
-        private readonly Consult _parent;
+        //private DbClient _service;
+        private readonly DatabaseViewer _parent;
 
-        public ConfigureDatabase(Consult consult)
+        public ConfigureDatabase(DatabaseViewer consult)
         {
             InitializeComponent();
 
@@ -43,7 +43,7 @@ namespace TicTac
             Database.DbName     = textBoxDatabase.Text;
             Database.DbUserName = textBoxUserName.Text;
             Database.DbPassword = textBoxPassword.Text;
-            _parent.UpdateDb();
+            //Program.UpdateDb(); // TODO
         }
 
         private bool IsValid()
