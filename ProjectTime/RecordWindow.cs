@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.IO;
+
 using System.Linq;
-//using System.Runtime.Serialization.Formatters.Soap; // doesn't work LOL
 using System.Windows.Forms;
 
 // tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
@@ -15,16 +13,12 @@ namespace TicTac
 {
     public partial class RecordWindow : Form
     {
-        //private string _title;
         private DAOClient _dao; // Remains for save&close only
         private Service _service;
-        private static List<Project> _projectList;
-        private static List<Phase> _phaseList;
-        private static List<Architect> _architectList;
         public Architect LastArchitect { get; private set; }
         private Session _ws;
-        
 
+        //Constructor
         public RecordWindow()
         {
             InitializeComponent();
@@ -34,18 +28,15 @@ namespace TicTac
         private void Initialize()
         {
             // Load configuration, including Default information
-            var cfg = new Config(this);
-            cfg.LoadFromXml();
+            var prefs = new Preferences(this);
+            prefs.LoadFromXml();
             StartPosition = FormStartPosition.Manual;
-            Location = cfg.LastStartPosition.HasValue ? (Point)cfg.LastStartPosition : new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
-            LastArchitect = cfg.LastArchitect;
+            Location = prefs.LastStartPosition.HasValue ? (Point)prefs.LastStartPosition : new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
+            LastArchitect = prefs.LastArchitect;
 
-            //if (Program.ConnectedMode)
-            {
-                _service = new Service();
-                _dao = new DAOClient();
-            }
-            
+            _service = new Service();
+            _dao = new DAOClient();
+
             InitComboboxes();
             InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
         }
@@ -53,55 +44,22 @@ namespace TicTac
         // Retrieve Comboboxes data
         private void InitComboboxes()
         {
-            if (Program.ConnectedMode)
-            {
-                // Retrieve data from server
-                _architectList = _service.SelectAllArchitects();
-                _projectList = _service.SelectAllProjects();
-                _phaseList = _service.SelectAllPhases();
-            }
-            else
-            {
-                // Deserialize from file if any
-                _architectList = new List<Architect>();
-                _projectList = new List<Project>();
-                _phaseList = new List<Phase>();
-
-                // Use serialization to files until real DB
-                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                using (var architectsFile = File.Open("Architects.osl", FileMode.Open))
-                {
-                    Console.WriteLine("Lecture de la table des architectes (depuis un fichier)");
-                    _architectList = (List<Architect>)formatter.Deserialize(architectsFile);
-                }
-                using (var projectsFile = File.Open("Projects.osl", FileMode.Open))
-                {
-                    Console.WriteLine("Lecture de la table des projets (depuis un fichier)");
-                    _projectList = (List<Project>)formatter.Deserialize(projectsFile);
-                }
-                using (var phasesFile = File.Open("Phases.osl", FileMode.Open))
-                {
-                    Console.WriteLine("Lecture de la table des phases (depuis un fichier)");
-                    _phaseList = (List<Phase>)formatter.Deserialize(phasesFile);
-                }
-            }
-
             // Fill in the ComboBoxes
-            if (_projectList != null && _projectList.Count() != 0)
+            if (_service.ProjectList != null && _service.ProjectList.Count() != 0)
             {
-                comboBoxProjects.Items.AddRange(_projectList.ToArray());
+                comboBoxProjects.Items.AddRange(_service.ProjectList.ToArray());
                 comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
             }
 
-            if (_phaseList != null && _phaseList.Count() != 0)
+            if (_service.PhaseList != null && _service.PhaseList.Count() != 0)
             {
-                comboBoxPhases.Items.AddRange(_phaseList.ToArray());
+                comboBoxPhases.Items.AddRange(_service.PhaseList.ToArray());
                 comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
             }
 
-            if (_architectList != null && _architectList.Count() != 0)
+            if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
-                comboBoxArchitects.Items.AddRange(_architectList.ToArray());
+                comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
                 comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0]; // Must be done LAST because of event management
             }
         }
@@ -123,10 +81,10 @@ namespace TicTac
             {
                 Console.WriteLine(@"Running session found:");
                 Program.VarDump(session);
-                var matchingProjects = (from proj in _projectList where proj.Id == session.Project.Id select proj).ToList();
+                var matchingProjects = (from proj in _service.ProjectList where proj.Id == session.Project.Id select proj).ToList();
                 if (matchingProjects.Count() != 1) throw new DataException();
                 comboBoxProjects.SelectedItem = matchingProjects.First();
-                var matchingPhases = (from phase in _phaseList where phase.Id == session.Phase.Id select phase).ToList();
+                var matchingPhases = (from phase in _service.PhaseList where phase.Id == session.Phase.Id select phase).ToList();
                 if (matchingPhases.Count() != 1) throw new DataException();
                 comboBoxPhases.SelectedItem = matchingPhases.First();
                 comboBoxProjects.Enabled = false;
@@ -222,36 +180,25 @@ namespace TicTac
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
-            var cfg = new Config(this)
+            var cfg = new Preferences(this)
                 {
                     LastStartPosition = Location,
                     LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
                     LastDb = _dao.getDb()
                 };
             if (!cfg.IsValid()) return;
-            
-            Console.WriteLine(@"Writing " + Config.ConfigFileName + @"...");
+#if (DEBUG)            
+            Console.WriteLine(@"Writing " + Preferences.ConfigFileName + @"...");
+#endif
             cfg.SaveToXml();
-            Console.WriteLine(Config.ConfigFileName + @" written.");
+#if (DEBUG)
+            Console.WriteLine(Preferences.ConfigFileName + @" written.");
+#endif
 
             // Serialize and save comboboxes in files
-            var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            using (var architectsFile = File.Open("Architects.osl", FileMode.Create))
-            {
-                Console.WriteLine("Ecriture de la table des architectes (dans un fichier)");
-                formatter.Serialize(architectsFile, _architectList);
-            }
-            using (var projectsFile = File.Open("Projects.osl", FileMode.Create))
-            {
-                Console.WriteLine("Ecriture de la table des projets (dans un fichier)");
-                formatter.Serialize(projectsFile, _projectList);
-            }
-            using (var phasesFile = File.Open("Phases.osl", FileMode.Create))
-            {
-                Console.WriteLine("Ecriture de la table des phases (dans un fichier)");
-                formatter.Serialize(phasesFile, _phaseList);
-            }
-            
+            _service.SaveAllArchitects();
+            _service.SaveAllProjects();
+            _service.SaveAllPhases();
         }
 
         private void ButtonConsultClick(object sender, EventArgs e)

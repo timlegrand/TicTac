@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using TicTac.DAO;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace TicTac
 {
     class Service
     {
-        private DAOClient _dao;
+        private readonly DAOClient _dao;
+        private readonly BinaryFormatter _formatter;
+        public List<Project> ProjectList { get; private set; } // WANT STATIC LIST
+        public List<Phase> PhaseList { get; private set; } // WANT STATIC LIST
+        public List<Architect> ArchitectList { get; private set; } // WANT STATIC LIST
 
         //Constructor
         public Service()
         {
             _dao = new DAOClient();
+            _formatter = new BinaryFormatter();
+            ArchitectList = GetAllArchitects();
+            ProjectList = GetAllProjects();
+            PhaseList = GetAllPhases();
         }
 
         public List<Session> GetStartedWorkSessions(Architect archi)
@@ -59,19 +68,88 @@ namespace TicTac
             return _dao.SelectCompanyFromId(id);
         }
 
-        public List<Architect> SelectAllArchitects()
+        public List<Architect> GetAllArchitects()
         {
-            return _dao.SelectAllArchitects();
+            if (Program.ConnectedMode)
+            {
+                // Retrieve data from server
+                return _dao.SelectAllArchitects();
+            }
+            else
+            {
+                // Deserialize from file if any
+                List<Architect> architectList;
+                // Use serialization to files until real DB
+                using (var architectsFile = File.Open("Architects.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des architectes (depuis un fichier)");
+                    architectList = (List<Architect>)_formatter.Deserialize(architectsFile);
+                }
+                return architectList;
+            }
         }
 
-        public List<Project> SelectAllProjects()
+        public List<Project> GetAllProjects()
         {
-            return _dao.SelectAllProjects();
+            if (Program.ConnectedMode)
+            {
+                return _dao.SelectAllProjects();
+            }
+            else
+            {
+                List<Project> projectList;
+                using (var projectsFile = File.Open("Projects.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des projets (depuis un fichier)");
+                    projectList = (List<Project>) _formatter.Deserialize(projectsFile);
+                }
+                return projectList;
+            }
         }
 
-        public List<Phase> SelectAllPhases()
+        public List<Phase> GetAllPhases()
         {
-            return _dao.SelectAllPhases();
+            if (Program.ConnectedMode)
+            {
+                return _dao.SelectAllPhases();
+            }
+            else
+            {
+                List<Phase> phaseList;
+                using (var phasesFile = File.Open("Phases.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des phases (depuis un fichier)");
+                    phaseList = (List<Phase>)_formatter.Deserialize(phasesFile);
+                }
+                return phaseList ;
+            }
+        }
+
+        public void SaveAllArchitects()
+        {
+            using (var architectsFile = File.Open("Architects.osl", FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des architectes (dans un fichier)");
+                _formatter.Serialize(architectsFile, ArchitectList);
+            }
+        }
+
+        public void SaveAllProjects()
+        {
+            using (var projectsFile = File.Open("Projects.osl", FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des projets (dans un fichier)");
+                _formatter.Serialize(projectsFile, ProjectList);
+            }
+        }
+
+        public void SaveAllPhases()
+        {
+            using (var phasesFile = File.Open("Phases.osl", FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des phases (dans un fichier)");
+                _formatter.Serialize(phasesFile, PhaseList);
+            }
         }
 
         public List<Company> GetAllCompanies()
