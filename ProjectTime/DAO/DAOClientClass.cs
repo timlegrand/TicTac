@@ -6,11 +6,11 @@ namespace TicTac.DAO
     abstract class DAOClientClass
     {
         // Work-session management
-        abstract public void InsertWorkSession(Session cfg);
-        abstract public void UpdateWorkSession(Session s);
+        abstract public void InsertWorkSession(WorkSession cfg);
+        abstract public void UpdateWorkSession(WorkSession s);
 
         // Get statistics
-        abstract public List<Session> SelectStartedWorkSessions(Architect archi);
+        abstract public List<WorkSession> SelectStartedWorkSessions(Architect archi);
         abstract public TimeSpan SelectTimeCount(int? archiId, int? projectId, int? phaseId);
         abstract public double SelectTimeCountFromProjectId(int? id);
 

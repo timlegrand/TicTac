@@ -6,54 +6,42 @@ namespace TicTac
     [Serializable()]
     public class Architect
     {
-        private int? _id;
-        private string _firstName;
-        private string _lastName;
-        private int _company;
+        public int? Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Company { get; set; }
 
         public Architect()
         {
-            _id = null;
-            _firstName = null;
-            _lastName = null;
-            _company = -1;
+            Id = null;
+            FirstName = null;
+            LastName = null;
+            Company = -1;
         }
 
-
-        // Accessors
-        public int? Id
+        //Operators
+        public bool Equals(Architect a)
         {
-            get { return _id; }
-            set { _id = value; }
-        }
+            if (a == null)
+            {
+                return false;
+            }
 
-        public string FirstName
-        {
-            get { return _firstName; }
-            set { _firstName = value; }
-        }
-
-        public string LastName
-        {
-            get { return _lastName; }
-            set { _lastName = value; }
-        }
-
-        public int Company
-        {
-            get { return _company; }
-            set { _company = value; }
+            return (a.LastName == LastName &&
+                    a.FirstName == FirstName &&
+                    a.Company == Company &&
+                    a.Id == Id);
         }
 
         // Service
         public bool IsValid()
         {
-            return ((_id != null) && (_firstName != null) && (_lastName != null) && (_company != -1));
+            return ((Id != null) && (FirstName != null) && (LastName != null) && (Company != -1));
         }
 
         public override string ToString()
         {
-            return _firstName + " " + _lastName;
+            return FirstName + " " + LastName;
         }
     }
 }

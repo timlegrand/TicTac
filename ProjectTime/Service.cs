@@ -23,17 +23,17 @@ namespace TicTac
             PhaseList = GetAllPhases();
         }
 
-        public List<Session> GetStartedWorkSessions(Architect archi)
+        public List<WorkSession> GetStartedWorkSessions(Architect archi)
         {
             return _dao.SelectStartedWorkSessions(archi);
         }
 
-        public void StartWorkSession(Session cfg)
+        public void StartWorkSession(WorkSession cfg)
         {
             _dao.InsertWorkSession(cfg);
         }
 
-        public void EndWorkSession(Session s)
+        public void EndWorkSession(WorkSession s)
         {
             _dao.UpdateWorkSession(s);
         }

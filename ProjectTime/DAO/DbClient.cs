@@ -89,12 +89,10 @@ namespace TicTac.DAO
         }
 
         //InsertWorkSession statement
-        public override void InsertWorkSession(Session s)
+        public override void InsertWorkSession(WorkSession s)
         {
-            var test = 0;
 #if (DEBUG)
             Console.WriteLine(@"Debug mode: row will be inserted with field ""test""=1.");
-            test = 1;
 #endif
 
             if (!OpenConnection()) return;
@@ -102,19 +100,24 @@ namespace TicTac.DAO
             var cmd = new MySqlCommand(null, _connection)
                 {
                     CommandText = "INSERT INTO r_worked " +
-                                  "VALUES ('', NULL, TIMESTAMP(NOW()), @archi, @project, @phase, @test)"
+                                  "VALUES ('', NULL, TIMESTAMP(NOW()), @archi, @project, @phase, @test, @company)"
                 };
             cmd.Prepare();
             cmd.Parameters.AddWithValue("@archi", s.Architect.Id);
             cmd.Parameters.AddWithValue("@project", s.Project.Id);
             cmd.Parameters.AddWithValue("@phase", s.Phase.Id);
-            cmd.Parameters.AddWithValue("@test", test);
+#if (DEBUG)
+            cmd.Parameters.AddWithValue("@test", 1);
+#else
+            cmd.Parameters.AddWithValue("@test", 0);
+#endif
+            cmd.Parameters.AddWithValue("@company", s.Architect.Company);
             cmd.ExecuteNonQuery();
             CloseConnection();
         }
 
         //Update statement
-        public override void UpdateWorkSession(Session s)
+        public override void UpdateWorkSession(WorkSession s)
         {
             if (s == null) throw new ArgumentNullException("s");
             if (!s.IsValid() || !s.IsTerminated()) throw new Exception();
@@ -142,11 +145,11 @@ namespace TicTac.DAO
         }
 
         //TODO: must return info for a given Architect
-        public override List<Session> SelectStartedWorkSessions(Architect archi)
+        public override List<WorkSession> SelectStartedWorkSessions(Architect archi)
         {
             if (!OpenConnection() || archi == null || archi.Id == null) return null;
 
-            var li = new List<Session>();
+            var li = new List<WorkSession>();
             var cmd = new MySqlCommand(null, _connection)
             {
                 CommandText = "SELECT * FROM r_worked " +
@@ -172,7 +175,7 @@ namespace TicTac.DAO
                     var phaseId = int.Parse(reader["phase"].ToString());
                     var startTime = DateTime.Parse(reader["startdate"].ToString());
                     var tempConnexion = new DbClient();
-                    li.Add(new Session
+                    li.Add(new WorkSession
                         {
                             Architect = tempConnexion.SelectArchitectFromId(archiId),
                             Project = tempConnexion.SelectProjectFromId(projectId),

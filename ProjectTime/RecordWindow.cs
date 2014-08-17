@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 
@@ -16,7 +17,7 @@ namespace TicTac
         private DAOClient _dao; // Remains for save&close only
         private Service _service;
         public Architect LastArchitect { get; private set; }
-        private Session _ws;
+        private WorkSession _ws;
 
         //Constructor
         public RecordWindow()
@@ -60,11 +61,28 @@ namespace TicTac
             if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
                 comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
-                comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0]; // Must be done LAST because of event management
+                // Must be done LAST because of event management
+                if (LastArchitect != null)
+                {
+                    // TODO make it work with Linq
+                    //var item = (ComboBox.ObjectCollection) from Architect elem in comboBoxArchitects.Items
+                    //           where elem.Id == LastArchitect.Id
+                    //           select elem;
+                    var i = 0;
+                    while (!LastArchitect.Equals((Architect)comboBoxArchitects.Items[i]))
+                    {
+                        i++;
+                    }
+                    comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[i];
+                }
+                else
+                {
+                    comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
+                }
             }
         }
 
-        private Session RestoreSession(Architect archi)
+        private WorkSession RestoreSession(Architect archi)
         {
             if (!Program.IsDatabaseConnexionAvailable(null)) return null;
             // 1- Try to retrieve one single open Session in DB
@@ -118,7 +136,7 @@ namespace TicTac
         // ComboBox selection
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _ws = RestoreSession((Architect)comboBoxArchitects.SelectedItem) ?? new Session
+            _ws = RestoreSession((Architect)comboBoxArchitects.SelectedItem) ?? new WorkSession
                 {
                     Architect = (Architect)comboBoxArchitects.SelectedItem,
                     Project = (Project)comboBoxProjects.SelectedItem,
@@ -180,17 +198,17 @@ namespace TicTac
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
-            var cfg = new Preferences(this)
+            var prefs = new Preferences(this)
                 {
                     LastStartPosition = Location,
                     LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
                     LastDb = _dao.getDb()
                 };
-            if (!cfg.IsValid()) return;
+            if (!prefs.IsValid()) return;
 #if (DEBUG)            
             Console.WriteLine(@"Writing " + Preferences.ConfigFileName + @"...");
 #endif
-            cfg.SaveToXml();
+            prefs.SaveToXml();
 #if (DEBUG)
             Console.WriteLine(Preferences.ConfigFileName + @" written.");
 #endif

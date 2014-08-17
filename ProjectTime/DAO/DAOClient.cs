@@ -41,19 +41,19 @@ namespace TicTac
             }
         }
 
-        public void InsertWorkSession(Session s)
+        public void InsertWorkSession(WorkSession s)
         {
             SwitchDAO();
             _db.InsertWorkSession(s);
         }
 
-        public void UpdateWorkSession(Session s)
+        public void UpdateWorkSession(WorkSession s)
         {
             SwitchDAO();
             _db.UpdateWorkSession(s);
         }
 
-        public List<Session> SelectStartedWorkSessions(Architect archi)
+        public List<WorkSession> SelectStartedWorkSessions(Architect archi)
         {
             SwitchDAO();
             return _db.SelectStartedWorkSessions(archi);

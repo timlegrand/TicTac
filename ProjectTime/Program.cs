@@ -6,8 +6,8 @@ namespace TicTac
 {
     static class Program
     {
-        //public static DAOClient DAO { get; set; }
         public static bool ConnectedMode { get; private set; }
+        public const bool DatabasePreferencesAvailable = false;
 
         [STAThread]
         static void Main()
@@ -86,12 +86,6 @@ namespace TicTac
             }
             Console.WriteLine(@"}");
             Console.WriteLine();
-        }
-
-        public static bool IsDatabaseConfigAvailable()
-        {
-            //return false;
-            throw new NotImplementedException();
         }
     }
 }

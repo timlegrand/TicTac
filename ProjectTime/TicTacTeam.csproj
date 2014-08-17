@@ -99,7 +99,7 @@
     <Compile Include="DAO\DAOClient.cs" />
     <Compile Include="DAO\DAOClientClass.cs" />
     <Compile Include="DAO\Defaults.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Preferences.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="AddPhase.cs">
       <SubType>Form</SubType>
@@ -114,7 +114,7 @@
       <DependentUpon>ConfigureDatabase.cs</DependentUpon>
     </Compile>
     <Compile Include="DAO\MessageQueue.cs" />
-    <Compile Include="Session.cs" />
+    <Compile Include="WorkSession.cs" />
     <Compile Include="DAO\DbClient.cs" />
     <Compile Include="DatabaseViewer.cs">
       <SubType>Form</SubType>
