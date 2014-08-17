@@ -30,7 +30,7 @@ namespace TicTac
         {
             // Load configuration, including Default information
             var prefs = new Preferences(this);
-            prefs.LoadFromXml();
+            prefs.Load();
             StartPosition = FormStartPosition.Manual;
             Location = prefs.StartLocation;
             LastArchitect = prefs.LastArchitect;
@@ -207,12 +207,12 @@ namespace TicTac
 #if (DEBUG)            
             Console.WriteLine(@"Writing " + Preferences.ConfigFileName + @"...");
 #endif
-            prefs.SaveToXml();
+            prefs.Save();
 #if (DEBUG)
             Console.WriteLine(Preferences.ConfigFileName + @" written.");
 #endif
 
-            // Serialize and save comboboxes in files
+            // Serialize and save comboboxes content in files
             _service.SaveAllArchitects();
             _service.SaveAllProjects();
             _service.SaveAllPhases();
