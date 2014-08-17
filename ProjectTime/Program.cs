@@ -7,7 +7,7 @@ namespace TicTac
     static class Program
     {
         public static bool ConnectedMode { get; private set; }
-        public const bool DatabasePreferencesAvailable = false;
+        public const bool IsDBPrefStorageAvailable = false;
 
         [STAThread]
         static void Main()

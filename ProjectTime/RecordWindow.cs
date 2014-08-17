@@ -32,7 +32,7 @@ namespace TicTac
             var prefs = new Preferences(this);
             prefs.LoadFromXml();
             StartPosition = FormStartPosition.Manual;
-            Location = prefs.LastStartPosition.HasValue ? (Point)prefs.LastStartPosition : new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
+            Location = prefs.StartLocation;
             LastArchitect = prefs.LastArchitect;
 
             _service = new Service();
@@ -200,9 +200,8 @@ namespace TicTac
         {
             var prefs = new Preferences(this)
                 {
-                    LastStartPosition = Location,
+                    StartLocation = Location,
                     LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
-                    LastDb = _dao.getDb()
                 };
             if (!prefs.IsValid()) return;
 #if (DEBUG)            

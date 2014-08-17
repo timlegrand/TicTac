@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using TicTac.DAO;
+using System.Windows.Forms;
 
 namespace TicTac
 {
@@ -14,18 +15,20 @@ namespace TicTac
         public const string ConfigFileName = "preferences.xml";
         public static string PreferencesFilePathAndName { get; set; }
 
-        public Point? LastStartPosition { get; set; }
+        public Point StartLocation { get; set; }
+        public Point DefaultLocation { get; set; }
         public Architect LastArchitect { get; set; }
-        public DbClient LastDb { get; set; }
         private readonly RecordWindow _parent;
 
         // Constructor
         public Preferences(RecordWindow recordWindow)
         {
             _parent = recordWindow;
-            LastStartPosition = new Point(recordWindow.Location.X, recordWindow.Location.Y);
+
+            DefaultLocation = new Point(Screen.PrimaryScreen.Bounds.Width / 2 - recordWindow.Width / 2,
+                                        Screen.PrimaryScreen.Bounds.Height / 2 - recordWindow.Height / 2);
+            StartLocation = DefaultLocation;
             LastArchitect = null;
-            LastDb = null;
 
             // Preferences file should be saved in "AppData/Roaming" folder
             var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
@@ -39,7 +42,7 @@ namespace TicTac
 
         public void Load()
         {
-            if (Program.DatabasePreferencesAvailable)
+            if (Program.IsDBPrefStorageAvailable)
             {
                 LoadFromDatabase();
             }
@@ -53,6 +56,24 @@ namespace TicTac
         {
             throw new NotImplementedException();
         }
+
+        public void Save()
+        {
+            if (Program.IsDBPrefStorageAvailable)
+            {
+                SaveToDatabase();
+            }
+            else
+            {
+                SaveToXml();
+            }
+        }
+
+        private void SaveToDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
 
         // Last selection memorization
         public void SaveToXml()
@@ -74,8 +95,8 @@ namespace TicTac
             writer.WriteAttributeString("company", LastArchitect.Company.ToString(CultureInfo.InvariantCulture));
             writer.WriteEndElement();
 
-            // Last prefered window position
-            writer.WriteStartElement("position");
+            // Last prefered window location
+            writer.WriteStartElement("location");
             writer.WriteAttributeString("x", _parent.Location.X.ToString(CultureInfo.InvariantCulture));
             writer.WriteAttributeString("y", _parent.Location.Y.ToString(CultureInfo.InvariantCulture));
             writer.WriteEndElement();
@@ -125,18 +146,30 @@ namespace TicTac
             var company = Int32.Parse(reader.GetAttribute("company") ?? "-1");
             LastArchitect = new Architect() { Id = archiId, FirstName = firstname, LastName = lastname, Company = company };
 
-            // Last prefered window position
-            reader.ReadToFollowing("position");
+            // Last prefered window location
+            reader.ReadToFollowing("location");
             var x = Int32.Parse(reader.GetAttribute("x") ?? "-1");
             var y = Int32.Parse(reader.GetAttribute("y") ?? "-1");
-            LastStartPosition = (x == -1 || y == -1) ? (Point?) null : new Point(x,y);
+            BoundAndSetLocation(x, y);
 
             reader.Close();
         }
 
+        private void BoundAndSetLocation(int x, int y)
+        {
+            if (x != -1 && y != -1)
+            {
+                x = (x < Screen.PrimaryScreen.Bounds.Width - _parent.Width) ? x : Screen.PrimaryScreen.Bounds.Width - _parent.Width;
+                x = (x >= 0) ? x : 0;
+                y = (y < Screen.PrimaryScreen.Bounds.Height - _parent.Height) ? y : Screen.PrimaryScreen.Bounds.Height - _parent.Height;
+                x = (x >= 0) ? x : 0;
+                StartLocation = new Point(x, y);
+            }
+        }
+
         public bool IsValid()
         {
-            return LastStartPosition != null && LastArchitect != null; //&& LastDb != null 
+            return StartLocation != null && LastArchitect != null;
         }
     }
 }
