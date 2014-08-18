@@ -11,13 +11,15 @@ namespace TicTac
 {
     class Preferences
     {
-        private const string Version = "0.5";
+        private const string Version = "0.6";
         public const string ConfigFileName = "preferences.xml";
         public static string PreferencesFilePathAndName { get; set; }
 
         public Point StartLocation { get; set; }
         public Point DefaultLocation { get; set; }
         public Architect LastArchitect { get; set; }
+        public Project LastProject { get; set; }
+        public Phase LastPhase { get; set; }
         private readonly RecordWindow _parent;
 
         // Constructor
@@ -29,6 +31,8 @@ namespace TicTac
                                         Screen.PrimaryScreen.Bounds.Height / 2 - recordWindow.Height / 2);
             StartLocation = DefaultLocation;
             LastArchitect = null;
+            LastProject = null;
+            LastPhase = null;
 
             // Preferences file should be saved in "AppData/Roaming" folder
             var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
@@ -88,12 +92,35 @@ namespace TicTac
             writer.WriteAttributeString("version", Version);
 
             // Last working architect
-            writer.WriteStartElement("architect");
-            writer.WriteAttributeString("id", LastArchitect.Id.ToString());
-            writer.WriteAttributeString("firstname", LastArchitect.FirstName);
-            writer.WriteAttributeString("lastname", LastArchitect.LastName);
-            writer.WriteAttributeString("company", LastArchitect.Company.ToString(CultureInfo.InvariantCulture));
-            writer.WriteEndElement();
+            if (LastArchitect != null && LastArchitect.IsValid())
+            {
+                writer.WriteStartElement("architect");
+                writer.WriteAttributeString("id", LastArchitect.Id.ToString());
+                writer.WriteAttributeString("firstname", LastArchitect.FirstName);
+                writer.WriteAttributeString("lastname", LastArchitect.LastName);
+                writer.WriteAttributeString("company", LastArchitect.Company.ToString(CultureInfo.InvariantCulture));
+                writer.WriteEndElement();
+            }
+
+            // Last project
+            if (LastProject != null && LastProject.IsValid())
+            {
+                writer.WriteStartElement("project");
+                writer.WriteAttributeString("id", LastProject.Id.ToString());
+                writer.WriteAttributeString("name", LastProject.Name);
+                writer.WriteAttributeString("description", LastProject.Description);
+                writer.WriteEndElement();
+            }
+
+            // Last phase
+            if (LastPhase != null && LastPhase.IsValid())
+            {
+                writer.WriteStartElement("phase");
+                writer.WriteAttributeString("id", LastPhase.Id.ToString());
+                writer.WriteAttributeString("name", LastPhase.Name);
+                writer.WriteAttributeString("description", LastPhase.Description);
+                writer.WriteEndElement();
+            }
 
             // Last prefered window location
             writer.WriteStartElement("location");
@@ -134,23 +161,46 @@ namespace TicTac
                 Console.WriteLine(@"File is going to be overwritten.");
                 //Console.WriteLine(@"Please edit file manually or simply delete it (no worries, it will appear again at next launch). You may find it at '" + PreferencesFilePathAndName + @"'.");
                 reader.Close();
+                return;
             }
 #if (DEBUG)
             Console.WriteLine(@"Preferences file version " + version);
 #endif
             // Last working architect
-            reader.ReadToFollowing("architect");
-            var archiId = Int32.Parse(reader.GetAttribute("id") ?? "-1");
-            var firstname = reader.GetAttribute("firstname") ?? "Unknown";
-            var lastname = reader.GetAttribute("lastname") ?? "Unknown";
-            var company = Int32.Parse(reader.GetAttribute("company") ?? "-1");
-            LastArchitect = new Architect() { Id = archiId, FirstName = firstname, LastName = lastname, Company = company };
+            if (reader.ReadToFollowing("architect"))
+            {
+                var id = Int32.Parse(reader.GetAttribute("id") ?? "-1");
+                var firstname = reader.GetAttribute("firstname") ?? "Unknown";
+                var lastname = reader.GetAttribute("lastname") ?? "Unknown";
+                var company = Int32.Parse(reader.GetAttribute("company") ?? "-1");
+                LastArchitect = new Architect() { Id = id, FirstName = firstname, LastName = lastname, Company = company };
+            }
+
+            // Last project
+            if (reader.ReadToFollowing("project"))
+            {
+                var id = Int32.Parse(reader.GetAttribute("id") ?? "-1");
+                var name = reader.GetAttribute("name") ?? "Unknown";
+                var description = reader.GetAttribute("description") ?? "Unknown";
+                LastProject = new Project() { Id = id, Name = name, Description = description };
+            }
+
+            // Last phase
+            if (reader.ReadToFollowing("phase"))
+            {
+                var id = Int32.Parse(reader.GetAttribute("id") ?? "-1");
+                var name = reader.GetAttribute("name") ?? "Unknown";
+                var description = reader.GetAttribute("description") ?? "Unknown";
+                LastPhase = new Phase() { Id = id, Name = name, Description = description };
+            }
 
             // Last prefered window location
-            reader.ReadToFollowing("location");
-            var x = Int32.Parse(reader.GetAttribute("x") ?? "-1");
-            var y = Int32.Parse(reader.GetAttribute("y") ?? "-1");
-            BoundAndSetLocation(x, y);
+            if (reader.ReadToFollowing("location"))
+            {
+                var x = Int32.Parse(reader.GetAttribute("x") ?? "-1");
+                var y = Int32.Parse(reader.GetAttribute("y") ?? "-1");
+                BoundAndSetLocation(x, y);
+            }
 
             reader.Close();
         }
@@ -169,7 +219,10 @@ namespace TicTac
 
         public bool IsValid()
         {
-            return StartLocation != null && LastArchitect != null;
+            return (StartLocation != null &&
+                    LastArchitect != null && LastArchitect.IsValid() &&
+                    LastProject != null && LastProject.IsValid() &&
+                    LastPhase != null && LastPhase.IsValid());
         }
     }
 }

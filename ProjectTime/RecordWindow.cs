@@ -16,7 +16,7 @@ namespace TicTac
     {
         private DAOClient _dao; // Remains for save&close only
         private Service _service;
-        public Architect LastArchitect { get; private set; }
+        private Preferences _prefs;
         private WorkSession _ws;
 
         //Constructor
@@ -29,11 +29,10 @@ namespace TicTac
         private void Initialize()
         {
             // Load configuration, including Default information
-            var prefs = new Preferences(this);
-            prefs.Load();
+            _prefs = new Preferences(this);
+            _prefs.Load();
             StartPosition = FormStartPosition.Manual;
-            Location = prefs.StartLocation;
-            LastArchitect = prefs.LastArchitect;
+            Location = _prefs.StartLocation;
 
             _service = new Service();
             _dao = new DAOClient();
@@ -49,27 +48,58 @@ namespace TicTac
             if (_service.ProjectList != null && _service.ProjectList.Count() != 0)
             {
                 comboBoxProjects.Items.AddRange(_service.ProjectList.ToArray());
-                comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
+                if (_prefs.LastProject != null)
+                {
+                    int i;
+                    for ( i = 0; i < comboBoxProjects.Items.Count; i++)
+                    {
+                        var p = (Project)comboBoxProjects.Items[i];
+                        if (_prefs.LastProject.Equals(p))
+                        {
+                            comboBoxProjects.SelectedItem = comboBoxProjects.Items[i];
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
+                }
             }
 
             if (_service.PhaseList != null && _service.PhaseList.Count() != 0)
             {
                 comboBoxPhases.Items.AddRange(_service.PhaseList.ToArray());
-                comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
+                if (_prefs.LastPhase != null)
+                {
+                    int i;
+                    for ( i = 0; i < comboBoxPhases.Items.Count; i++)
+                    {
+                        if (_prefs.LastPhase.Equals((Phase)comboBoxPhases.Items[i]))
+                        {
+                            comboBoxPhases.SelectedItem = comboBoxPhases.Items[i];
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
+                }
             }
 
             if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
                 comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
                 // Must be done LAST because of event management
-                if (LastArchitect != null)
+                if (_prefs.LastArchitect != null)
                 {
-                    // TODO make it work with Linq
+                    // TODO make it work with Linq (see http://msdn.microsoft.com/fr-fr/library/vstudio/system.windows.forms.combobox.objectcollection.aspx)
                     //var item = (ComboBox.ObjectCollection) from Architect elem in comboBoxArchitects.Items
                     //           where elem.Id == LastArchitect.Id
                     //           select elem;
                     var i = 0;
-                    while (!LastArchitect.Equals((Architect)comboBoxArchitects.Items[i]))
+                    while (!_prefs.LastArchitect.Equals((Architect)comboBoxArchitects.Items[i]))
                     {
                         i++;
                     }
@@ -202,6 +232,8 @@ namespace TicTac
                 {
                     StartLocation = Location,
                     LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
+                    LastProject = (Project)comboBoxProjects.SelectedItem,
+                    LastPhase = (Phase)comboBoxPhases.SelectedItem,
                 };
             if (!prefs.IsValid()) return;
 #if (DEBUG)            
