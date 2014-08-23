@@ -95,6 +95,7 @@
     <Compile Include="AddArchitect.Designer.cs">
       <DependentUpon>AddArchitect.cs</DependentUpon>
     </Compile>
+    <Compile Include="DateRange.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="DAO\DAOClient.cs" />
     <Compile Include="DAO\DAOClientClass.cs" />

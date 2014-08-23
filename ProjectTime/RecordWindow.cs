@@ -114,6 +114,7 @@ namespace TicTac
 
         private WorkSession RestoreSession(Architect archi)
         {
+            // TODO make file-based session available !!
             if (!Program.IsDatabaseConnexionAvailable(null)) return null;
             // 1- Try to retrieve one single open Session in DB
             var sessions = _service.GetStartedWorkSessions(archi);
@@ -166,9 +167,17 @@ namespace TicTac
         // ComboBox selection
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            _ws = RestoreSession((Architect)comboBoxArchitects.SelectedItem) ?? new WorkSession
+            var archi = (Architect)comboBoxArchitects.SelectedItem;
+
+            var daily = _service.GetDaylyWorkSessions(archi);
+            foreach (WorkSession ws in daily)
+            {
+                Console.WriteLine(ws.ToString());
+            }
+
+            _ws = RestoreSession(archi) ?? new WorkSession
                 {
-                    Architect = (Architect)comboBoxArchitects.SelectedItem,
+                    Architect = archi,
                     Project = (Project)comboBoxProjects.SelectedItem,
                     Phase = (Phase)comboBoxPhases.SelectedItem
                 };

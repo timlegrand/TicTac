@@ -59,6 +59,12 @@ namespace TicTac
             return _db.SelectStartedWorkSessions(archi);
         }
 
+        public List<WorkSession> SelectWorkSessions(Architect archi, DateRange dr = null)
+        {
+            SwitchDAO();
+            return _db.SelectWorkSessions(archi, dr);
+        }
+
         public TimeSpan SelectTimeCount(int? archiId, int? projectId, int? phaseId)
         {
             SwitchDAO();

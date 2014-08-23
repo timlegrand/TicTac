@@ -11,6 +11,7 @@ namespace TicTac.DAO
 
         // Get statistics
         abstract public List<WorkSession> SelectStartedWorkSessions(Architect archi);
+        abstract public List<WorkSession> SelectWorkSessions(Architect archi, DateRange dr = null);
         abstract public TimeSpan SelectTimeCount(int? archiId, int? projectId, int? phaseId);
         abstract public double SelectTimeCountFromProjectId(int? id);
 

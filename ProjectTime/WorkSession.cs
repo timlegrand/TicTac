@@ -9,8 +9,7 @@ namespace TicTac
         public Phase Phase { get; set; }
         public uint? RunningSessionId { get; set; }
         public DateTime StartTime { get; set; } //in DateTime format
-        public DateTime StopTime { get; set; }
-//in DateTime format
+        public DateTime StopTime { get; set; } //in DateTime format
 
         public WorkSession()
         {
@@ -43,6 +42,17 @@ namespace TicTac
         public bool IsTerminated()
         {
             return (StartTime != DateTime.MinValue && StopTime != DateTime.MinValue);
+        }
+
+        public override string ToString()
+        {
+            var s = " -- Work session #" + RunningSessionId;
+            s += "\nArchitect: " + Architect;
+            s += "\nProject: " + Project;
+            s += "\nPhase: " + Phase;
+            s += "\nStart time: " + StartTime;
+            s += "\nStop time: " + StopTime;
+            return s;
         }
     }
 }

@@ -150,19 +150,20 @@ namespace TicTac.DAO
             if (!OpenConnection() || archi == null || archi.Id == null) return null;
 
             var li = new List<WorkSession>();
+
+            var cmdString = "SELECT * FROM r_worked " +
+                            "WHERE " +
+                            "enddate IS NULL" + " AND " +
+                            "archi=" + archi.Id + " AND " +
+#if (DEBUG)
+                            "test=1";
+#else
+                            "test=0";
+#endif
+
             var cmd = new MySqlCommand(null, _connection)
             {
-                CommandText = "SELECT * FROM r_worked " +
-                              "WHERE " +
-                              "enddate IS NULL" + " AND " +
-                              "archi=" + archi.Id + " AND " +
-                              //"project=" + s.Project.Id + " AND " +
-                              //"phase=" + s.Phase.Id + " AND " +
-#if (DEBUG)
-                              "test=1"
-#else
-                              "test=0"
-#endif
+                CommandText = cmdString
             };
 
             using (var reader = cmd.ExecuteReader())
@@ -183,6 +184,61 @@ namespace TicTac.DAO
                             RunningSessionId = id,
                             StartTime = startTime
                         });
+                }
+            }
+
+            CloseConnection();
+            return li;
+        }
+
+
+        public override List<WorkSession> SelectWorkSessions(Architect archi, DateRange dr = null)
+        {
+            if (!OpenConnection() || archi == null || archi.Id == null) return null;
+
+            var li = new List<WorkSession>();
+
+            var startDate = dr != null ? dr.StartDate : null;
+            var endDate = dr != null ? dr.EndDate : null;
+            var startString = startDate != null ? "startdate>='" + ((DateTime) startDate).ToString("yyyy-MM-dd HH:mm:ss") + "' AND " : "";
+            var endString = endDate != null ? "enddate<='" + ((DateTime) endDate).ToString("yyyy-MM-dd HH:mm:ss") + "' AND " : "";
+
+            var cmdString = "SELECT * FROM r_worked " +
+                            "WHERE " +
+                            "archi=" + archi.Id + " AND " +
+                            startString + endString +
+#if (DEBUG)
+                            "test=1";
+            Console.WriteLine(cmdString);
+#else
+                            "test=0";
+#endif
+
+            var cmd = new MySqlCommand(null, _connection)
+            {
+                CommandText = cmdString
+            };
+
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var id = uint.Parse(reader["id"].ToString());
+                    var archiId = int.Parse(reader["archi"].ToString());
+                    var projectId = int.Parse(reader["project"].ToString());
+                    var phaseId = int.Parse(reader["phase"].ToString());
+                    var startTime = DateTime.Parse(reader["startdate"].ToString());
+                    var stopTime = DateTime.Parse(reader["enddate"].ToString());
+                    var tempConnexion = new DbClient();
+                    li.Add(new WorkSession
+                    {
+                        Architect = tempConnexion.SelectArchitectFromId(archiId),
+                        Project = tempConnexion.SelectProjectFromId(projectId),
+                        Phase = tempConnexion.SelectPhaseFromId(phaseId),
+                        RunningSessionId = id,
+                        StartTime = startTime,
+                        StopTime = stopTime
+                    });
                 }
             }
 

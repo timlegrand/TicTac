@@ -38,6 +38,12 @@ namespace TicTac
             _dao.UpdateWorkSession(s);
         }
 
+        public List<WorkSession> GetDaylyWorkSessions(Architect archi)
+        {
+            var dr = new DateRange(DateTime.Today, DateTime.Today.AddDays(1));
+            return _dao.SelectWorkSessions(archi, dr);
+        }
+
         public TimeSpan SelectTimeCount(int? archiId, int? projectId, int? phaseId)
         {
             return _dao.SelectTimeCount(archiId, projectId, phaseId);
