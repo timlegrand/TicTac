@@ -30,6 +30,8 @@ namespace TicTac
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RecordWindow));
             this.buttonStart = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.comboBoxArchitects = new System.Windows.Forms.ComboBox();
@@ -39,8 +41,14 @@ namespace TicTac
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.labelTime = new System.Windows.Forms.Label();
-            this.buttonConsult = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.trayMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayMenuItemReduce = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayMenuItemConfigure = new System.Windows.Forms.ToolStripMenuItem();
+            this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonStart
@@ -126,16 +134,6 @@ namespace TicTac
             this.labelTime.TabIndex = 8;
             this.labelTime.Text = "Au boulot !";
             // 
-            // buttonConsult
-            // 
-            this.buttonConsult.Location = new System.Drawing.Point(9, 120);
-            this.buttonConsult.Name = "buttonConsult";
-            this.buttonConsult.Size = new System.Drawing.Size(75, 21);
-            this.buttonConsult.TabIndex = 9;
-            this.buttonConsult.Text = "Éditer";
-            this.buttonConsult.UseVisualStyleBackColor = true;
-            this.buttonConsult.Click += new System.EventHandler(this.ButtonConsultClick);
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -145,13 +143,65 @@ namespace TicTac
             this.label4.TabIndex = 10;
             this.label4.Text = "Total :";
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon.BalloonTipText = "TicTac est ouvert et prêt à enregistrer vos exploits !";
+            this.notifyIcon.BalloonTipTitle = "TicTac";
+            this.notifyIcon.ContextMenuStrip = this.notifyIconMenu;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "TicTac";
+            this.notifyIcon.Visible = true;
+            this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
+            // 
+            // notifyIconMenu
+            // 
+            this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.trayMenuItemConfigure,
+            this.trayMenuItemOpen,
+            this.trayMenuItemReduce,
+            this.trayMenuItemExit});
+            this.notifyIconMenu.Name = "notifyIconMenu";
+            this.notifyIconMenu.Size = new System.Drawing.Size(160, 92);
+            // 
+            // trayMenuItemOpen
+            // 
+            this.trayMenuItemOpen.Name = "trayMenuItemOpen";
+            this.trayMenuItemOpen.Size = new System.Drawing.Size(159, 22);
+            this.trayMenuItemOpen.Text = "Open";
+            this.trayMenuItemOpen.ToolTipText = "Open TicTac record window";
+            this.trayMenuItemOpen.Click += new System.EventHandler(this.trayMenuItemOpen_Click);
+            // 
+            // trayMenuItemReduce
+            // 
+            this.trayMenuItemReduce.Name = "trayMenuItemReduce";
+            this.trayMenuItemReduce.Size = new System.Drawing.Size(159, 22);
+            this.trayMenuItemReduce.Text = "Minimize in tray";
+            this.trayMenuItemReduce.ToolTipText = "Minimize in system tray (keep running in background)";
+            this.trayMenuItemReduce.Click += new System.EventHandler(this.trayMenuItemMinimize_Click);
+            // 
+            // trayMenuItemExit
+            // 
+            this.trayMenuItemExit.Name = "trayMenuItemExit";
+            this.trayMenuItemExit.Size = new System.Drawing.Size(159, 22);
+            this.trayMenuItemExit.Text = "Exit";
+            this.trayMenuItemExit.ToolTipText = "Close TicTac";
+            this.trayMenuItemExit.Click += new System.EventHandler(this.notifyIconMenuExit_Click);
+            // 
+            // trayMenuItemConfigure
+            // 
+            this.trayMenuItemConfigure.Name = "trayMenuItemConfigure";
+            this.trayMenuItemConfigure.Size = new System.Drawing.Size(159, 22);
+            this.trayMenuItemConfigure.Text = "Configure";
+            this.trayMenuItemConfigure.Click += new System.EventHandler(this.trayMenuItemConfigure_Click);
+            // 
             // RecordWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(258, 151);
+            this.ContextMenuStrip = this.notifyIconMenu;
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.buttonConsult);
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.comboBoxArchitects);
             this.Controls.Add(this.label3);
@@ -161,11 +211,14 @@ namespace TicTac
             this.Controls.Add(this.comboBoxProjects);
             this.Controls.Add(this.buttonStop);
             this.Controls.Add(this.buttonStart);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "RecordWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TicTac";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.RecordWindowFormClosed);
+            this.Resize += new System.EventHandler(this.RecordWindow_Resize);
+            this.notifyIconMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -182,8 +235,13 @@ namespace TicTac
         private System.Windows.Forms.ComboBox comboBoxPhases;
         private System.Windows.Forms.ComboBox comboBoxArchitects;
         private System.Windows.Forms.Label labelTime;
-        private System.Windows.Forms.Button buttonConsult;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ContextMenuStrip notifyIconMenu;
+        private System.Windows.Forms.ToolStripMenuItem trayMenuItemExit;
+        private System.Windows.Forms.ToolStripMenuItem trayMenuItemOpen;
+        private System.Windows.Forms.ToolStripMenuItem trayMenuItemReduce;
+        private System.Windows.Forms.ToolStripMenuItem trayMenuItemConfigure;
     }
 }
 

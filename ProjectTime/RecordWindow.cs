@@ -28,6 +28,8 @@ namespace TicTac
 
         private void Initialize()
         {
+            this.notifyIcon.Icon = this.Icon;
+
             // Load configuration, including Default information
             _prefs = new Preferences(this);
             _prefs.Load();
@@ -257,12 +259,90 @@ namespace TicTac
             _service.SaveAllArchitects();
             _service.SaveAllProjects();
             _service.SaveAllPhases();
+
+            // System tray icon
+            if (notifyIcon != null)
+            {
+                this.notifyIcon.Visible = false;
+                this.notifyIcon.Dispose();
+                this.notifyIcon = null;
+            }
         }
 
-        private void ButtonConsultClick(object sender, EventArgs e)
+        //this.notifyIcon.Icon = this.Icon; // L'icône de not_zero est celle de l'application.
+        //this.notifyIcon.Icon = SystemIcons.Application; // Affiche l'icône par défaut.
+        //this.notifyIcon.Icon = SystemIcons.Error; // Affiche l'icône d'erreur.
+        //this.notifyIcon.Icon = SystemIcons.Warning; // Affiche l'icône de danger.
+        //this.notifyIcon.Icon = SystemIcons.Question; // Affiche l'icône de question.
+        //this.notifyIcon.Icon = SystemIcons.Shield; // Affiche l'icône du bouclier Windows.
+        //this.notifyIcon.BalloonTipIcon = ToolTipIcon.Info; // Icône information de Windows.
+        //this.notifyIcon.ShowBalloonTip(3000); // On affiche le message indéfiniment.
+
+        private void RecordWindow_Resize(object sender, EventArgs e)
         {
-            var consultForm = new DatabaseViewer(this)
-                                  { FormBorderStyle = FormBorderStyle.FixedSingle };
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                notifyIcon.ShowBalloonTip(500);
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+            }
+        }
+
+        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            // Left click only to hide/show GUI
+            if (e.Button == MouseButtons.Right)
+            {
+                return;
+            }
+
+            // Hide
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                this.Hide();
+                this.WindowState = FormWindowState.Minimized;
+                notifyIcon.ShowBalloonTip(500);
+            }
+            // Show
+            else if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+            }
+        }
+
+        private void notifyIconMenuExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void trayMenuItemMinimize_Click(object sender, EventArgs e)
+        {
+            // Hide
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                this.Hide();
+                this.WindowState = FormWindowState.Minimized;
+                notifyIcon.ShowBalloonTip(500);
+            }
+        }
+
+        private void trayMenuItemOpen_Click(object sender, EventArgs e)
+        {
+            // Show
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+            }
+        }
+
+        private void trayMenuItemConfigure_Click(object sender, EventArgs e)
+        {
+            var consultForm = new DatabaseViewer(this) { FormBorderStyle = FormBorderStyle.FixedSingle };
             consultForm.Show();
         }
     }
