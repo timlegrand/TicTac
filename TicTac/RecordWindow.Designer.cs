@@ -46,8 +46,8 @@ namespace TicTac
             this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.trayMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemReduce = new System.Windows.Forms.ToolStripMenuItem();
-            this.trayMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemConfigure = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -180,20 +180,22 @@ namespace TicTac
             this.trayMenuItemReduce.ToolTipText = "Minimize in system tray (keep running in background)";
             this.trayMenuItemReduce.Click += new System.EventHandler(this.trayMenuItemMinimize_Click);
             // 
+            // trayMenuItemConfigure
+            // 
+            this.trayMenuItemConfigure.Image = global::TicTac.Properties.Resources.configure;
+            this.trayMenuItemConfigure.Name = "trayMenuItemConfigure";
+            this.trayMenuItemConfigure.Size = new System.Drawing.Size(159, 22);
+            this.trayMenuItemConfigure.Text = "Configure";
+            this.trayMenuItemConfigure.Click += new System.EventHandler(this.trayMenuItemConfigure_Click);
+            // 
             // trayMenuItemExit
             // 
+            this.trayMenuItemExit.Image = global::TicTac.Properties.Resources.power;
             this.trayMenuItemExit.Name = "trayMenuItemExit";
             this.trayMenuItemExit.Size = new System.Drawing.Size(159, 22);
             this.trayMenuItemExit.Text = "Exit";
             this.trayMenuItemExit.ToolTipText = "Close TicTac";
             this.trayMenuItemExit.Click += new System.EventHandler(this.notifyIconMenuExit_Click);
-            // 
-            // trayMenuItemConfigure
-            // 
-            this.trayMenuItemConfigure.Name = "trayMenuItemConfigure";
-            this.trayMenuItemConfigure.Size = new System.Drawing.Size(159, 22);
-            this.trayMenuItemConfigure.Text = "Configure";
-            this.trayMenuItemConfigure.Click += new System.EventHandler(this.trayMenuItemConfigure_Click);
             // 
             // RecordWindow
             // 

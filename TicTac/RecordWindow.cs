@@ -157,11 +157,13 @@ namespace TicTac
                 _ws = session;
                 buttonStart.Enabled = false;
                 buttonStop.Enabled = true;
+                notifyIcon.Icon = Properties.Resources.tictac_on;
             }
             else // hope that return value is 0 (big problem otherwise)
             {
                 buttonStart.Enabled = true;
                 buttonStop.Enabled = false;
+                notifyIcon.Icon = Properties.Resources.tictac;
             }
         }
         
@@ -214,6 +216,8 @@ namespace TicTac
             
             buttonStart.Enabled = false;
             buttonStop.Enabled = true;
+
+            notifyIcon.Icon = Properties.Resources.tictac_on;
         }
         
         private void ButtonStopClick(object sender, EventArgs e)
@@ -233,6 +237,8 @@ namespace TicTac
             comboBoxPhases.Enabled = true;
             buttonStart.Enabled = true;
             buttonStop.Enabled = false;
+
+            notifyIcon.Icon = Properties.Resources.tictac_on;
         }
 
 
