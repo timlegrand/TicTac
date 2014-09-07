@@ -16,11 +16,16 @@ namespace TicTac
         //Constructor
         public Service()
         {
+            Program.clk.Probe("Service");
             _dao = new DAOClient();
             _formatter = new BinaryFormatter();
+            Program.clk.Probe("Service");
             ArchitectList = GetAllArchitects();
+            Program.clk.Probe("GetAllArchitects");
             ProjectList = GetAllProjects();
+            Program.clk.Probe("GetAllProjects");
             PhaseList = GetAllPhases();
+            Program.clk.Probe("GetAllPhases");
         }
 
         public List<WorkSession> GetStartedWorkSessions(Architect archi)
@@ -38,7 +43,7 @@ namespace TicTac
             _dao.UpdateWorkSession(s);
         }
 
-        public List<WorkSession> GetDaylyWorkSessions(Architect archi)
+        public List<WorkSession> GetDailyWorkSessions(Architect archi)
         {
             var dr = new DateRange(DateTime.Today, DateTime.Today.AddDays(1));
             return _dao.SelectWorkSessions(archi, dr);
@@ -76,7 +81,7 @@ namespace TicTac
 
         public List<Architect> GetAllArchitects()
         {
-            if (Program.ConnectedMode)
+            if (Program.DatabaseConnexionAvailable)
             {
                 // Retrieve data from server
                 return _dao.SelectAllArchitects();
@@ -97,7 +102,7 @@ namespace TicTac
 
         public List<Project> GetAllProjects()
         {
-            if (Program.ConnectedMode)
+            if (Program.DatabaseConnexionAvailable)
             {
                 return _dao.SelectAllProjects();
             }
@@ -115,7 +120,7 @@ namespace TicTac
 
         public List<Phase> GetAllPhases()
         {
-            if (Program.ConnectedMode)
+            if (Program.DatabaseConnexionAvailable)
             {
                 return _dao.SelectAllPhases();
             }

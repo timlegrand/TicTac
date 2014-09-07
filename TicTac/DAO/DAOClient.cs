@@ -26,7 +26,7 @@ namespace TicTac
         // according to current connectivity state
         private void SwitchDAO()
         {
-            if (Program.ConnectedMode)
+            if (Program.DatabaseConnexionAvailable)
             {
                 // Check and process waiting messages if any
                 //_mq.ProcessWaitingMessages();
@@ -104,6 +104,7 @@ namespace TicTac
         public List<Architect> SelectAllArchitects()
         {
             SwitchDAO();
+            Program.clk.Probe("Avant SelectAllArchitects");
             return _db.SelectAllArchitects();
         }
 

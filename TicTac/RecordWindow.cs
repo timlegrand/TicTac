@@ -23,11 +23,15 @@ namespace TicTac
         public RecordWindow()
         {
             InitializeComponent();
+Program.clk.Probe("InitializeComponent");
             Initialize();
+Program.clk.Probe("Initialize");
+Program.clk.Print();
         }
 
         private void Initialize()
         {
+Program.clk.Probe();
             this.notifyIcon.Icon = this.Icon;
 
             // Load configuration, including Default information
@@ -35,11 +39,14 @@ namespace TicTac
             _prefs.Load();
             StartPosition = FormStartPosition.Manual;
             Location = _prefs.StartLocation;
+Program.clk.Probe();
 
             _service = new Service();
+Program.clk.Probe();
             _dao = new DAOClient();
-
+Program.clk.Probe();
             InitComboboxes();
+Program.clk.Probe();
             InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
         }
 
@@ -117,7 +124,7 @@ namespace TicTac
         private WorkSession RestoreSession(Architect archi)
         {
             // TODO make file-based session available !!
-            if (!Program.IsDatabaseConnexionAvailable(null)) return null;
+            if (!Program.DatabaseConnexionAvailable) return null;
             // 1- Try to retrieve one single open Session in DB
             var sessions = _service.GetStartedWorkSessions(archi);
             var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
@@ -173,7 +180,7 @@ namespace TicTac
         {
             var archi = (Architect)comboBoxArchitects.SelectedItem;
 
-            var daily = _service.GetDaylyWorkSessions(archi);
+            var daily = _service.GetDailyWorkSessions(archi);
             foreach (WorkSession ws in daily)
             {
                 Console.WriteLine(ws.ToString());

@@ -6,17 +6,20 @@ namespace TicTac
 {
     static class Program
     {
-        public static bool ConnectedMode { get; private set; }
+        //public static bool DatabaseConnexionAvailable { get; private set; }
+        public static bool DatabaseConnexionAvailable { get; private set; }
         public const bool IsDBPrefStorageAvailable = false;
+        public static WallClock clk;
 
         [STAThread]
         static void Main()
         {
+            clk = new WallClock();
+
             // Check if an Internet connection is available
-            ConnectedMode = true;
-            if (!IsDatabaseConnexionAvailable(null))
+            CheckDatabaseConnexionAvailable(null);
+            if (!DatabaseConnexionAvailable)
             {
-                ConnectedMode = false;
                 const string msg = @"Il est préférable d'être connecté à Internet pour utiliser TitTacTeam. Certaines fonctionnalités peuvent ne pas fonctionner correctement.";
                 MessageBox.Show(msg, @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -32,7 +35,7 @@ namespace TicTac
         }
 
 
-        public static bool IsDatabaseConnexionAvailable(string serverAddress)
+        public static bool CheckDatabaseConnexionAvailable(string serverAddress)
         {
             var server = serverAddress ?? Database.DbServerIp;
             var req = new System.Net.NetworkInformation.Ping();
@@ -49,8 +52,9 @@ namespace TicTac
                 }
                 return false;
             }
-            return rep != null && (rep.Status == System.Net.NetworkInformation.IPStatus.Success);
-            
+
+            DatabaseConnexionAvailable = (rep != null && (rep.Status == System.Net.NetworkInformation.IPStatus.Success));
+            return DatabaseConnexionAvailable;
         }
 
         public static void VarDump(object obj)

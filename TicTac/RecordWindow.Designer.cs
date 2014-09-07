@@ -44,9 +44,9 @@ namespace TicTac
             this.label4 = new System.Windows.Forms.Label();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.trayMenuItemConfigure = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemReduce = new System.Windows.Forms.ToolStripMenuItem();
-            this.trayMenuItemConfigure = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
@@ -164,6 +164,14 @@ namespace TicTac
             this.notifyIconMenu.Name = "notifyIconMenu";
             this.notifyIconMenu.Size = new System.Drawing.Size(160, 92);
             // 
+            // trayMenuItemConfigure
+            // 
+            this.trayMenuItemConfigure.Image = global::TicTac.Properties.Resources.configure;
+            this.trayMenuItemConfigure.Name = "trayMenuItemConfigure";
+            this.trayMenuItemConfigure.Size = new System.Drawing.Size(159, 22);
+            this.trayMenuItemConfigure.Text = "Configure";
+            this.trayMenuItemConfigure.Click += new System.EventHandler(this.trayMenuItemConfigure_Click);
+            // 
             // trayMenuItemOpen
             // 
             this.trayMenuItemOpen.Name = "trayMenuItemOpen";
@@ -217,7 +225,7 @@ namespace TicTac
             this.MaximizeBox = false;
             this.Name = "RecordWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TicTac";
+            this.Text = "TicTac (v 0.1)";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.RecordWindowFormClosed);
             this.Resize += new System.EventHandler(this.RecordWindow_Resize);
             this.notifyIconMenu.ResumeLayout(false);

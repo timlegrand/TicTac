@@ -27,7 +27,7 @@ namespace TicTac
                 MessageBox.Show(@"Veuillez renseigner tous les champs", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            if (!Program.IsDatabaseConnexionAvailable(textBoxServer.Text))
+            if (!Program.CheckDatabaseConnexionAvailable(textBoxServer.Text))
             {
                 MessageBox.Show(@"Base de données inaccessible. Vérifiez l'adresse ou le nom du serveur, ou bien vérifiez que celui-ci est démarré.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
