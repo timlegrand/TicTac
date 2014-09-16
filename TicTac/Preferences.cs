@@ -12,7 +12,8 @@ namespace TicTac
     class Preferences
     {
         private const string Version = "0.6";
-        public const string ConfigFileName = "preferences.xml";
+        public const string PreferencesFileName = "preferences.xml";
+        public static string ApplicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
         public static string PreferencesFilePathAndName { get; set; }
 
         public Point StartLocation { get; set; }
@@ -41,7 +42,7 @@ namespace TicTac
                 Console.WriteLine("Directory \"" + path + "\"does not exist, creating...");
                 Directory.CreateDirectory(path);
             }
-            PreferencesFilePathAndName = Path.Combine(path, ConfigFileName);
+            PreferencesFilePathAndName = Path.Combine(path, PreferencesFileName);
         }
 
         public void Load()

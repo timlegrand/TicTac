@@ -261,11 +261,11 @@ Program.clk.Probe();
                 };
             if (!prefs.IsValid()) return;
 #if (DEBUG)            
-            Console.WriteLine(@"Writing " + Preferences.ConfigFileName + @"...");
+            Console.WriteLine(@"Writing " + Preferences.PreferencesFileName + @"...");
 #endif
             prefs.Save();
 #if (DEBUG)
-            Console.WriteLine(Preferences.ConfigFileName + @" written.");
+            Console.WriteLine(Preferences.PreferencesFileName + @" written.");
 #endif
 
             // Serialize and save comboboxes content in files
