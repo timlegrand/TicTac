@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
 using TicTac.DAO;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace TicTac
 {
     public partial class ConfigureDatabase : Form
     {
-        //private DbClient _service;
         private readonly DatabaseViewer _parent;
+        private string hPassword;
 
         public ConfigureDatabase(DatabaseViewer consult)
         {
@@ -17,11 +19,15 @@ namespace TicTac
             textBoxServer.Text   = Database.DbServerIp;
             textBoxDatabase.Text = Database.DbName;
             textBoxUserName.Text = Database.DbUserName;
-            textBoxPassword.Text = Database.DbPassword;
+            textBoxPassword.Text = "*********";
+            hPassword = null;
         }
 
         private void ButtonSaveClick(object sender, EventArgs e)
         {
+            hPassword = SHA1Util.SHA1HashStringForUTF8String(textBoxPassword.Text);
+            ;
+
             if (!IsValid())
             {
                 MessageBox.Show(@"Veuillez renseigner tous les champs", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -36,14 +42,13 @@ namespace TicTac
             PropagateDatabaseConfiguration();
             Hide();
         }
-
+       
         private void PropagateDatabaseConfiguration()
         {
             Database.DbServerIp = textBoxServer.Text;
             Database.DbName     = textBoxDatabase.Text;
             Database.DbUserName = textBoxUserName.Text;
-            Database.DbPassword = textBoxPassword.Text;
-            //Program.UpdateDb(); // TODO
+            Database.DbPassword = hPassword;
         }
 
         private bool IsValid()
