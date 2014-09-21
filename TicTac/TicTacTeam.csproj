@@ -96,6 +96,7 @@
       <DependentUpon>AddArchitect.cs</DependentUpon>
     </Compile>
     <Compile Include="WallClock.cs" />
+    <Compile Include="DAO\SHA1Util.cs" />
     <Compile Include="DateRange.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="DAO\DAOClient.cs" />

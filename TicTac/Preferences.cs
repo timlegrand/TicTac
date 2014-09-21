@@ -11,7 +11,7 @@ namespace TicTac
 {
     class Preferences
     {
-        private const string Version = "0.6";
+        private const string Version = "0.7";
         public const string PreferencesFileName = "preferences.xml";
         public static string ApplicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
         public static string PreferencesFilePathAndName { get; set; }
@@ -92,6 +92,17 @@ namespace TicTac
             // Revision of current format of document
             writer.WriteAttributeString("version", Version);
 
+            // Database info
+            if (Database.DbPassword != null)
+            {
+                writer.WriteStartElement("database");
+                writer.WriteAttributeString("name", Database.DbName);
+                writer.WriteAttributeString("address", Database.DbServerIp);
+                writer.WriteAttributeString("userName", Database.DbUserName);
+                writer.WriteAttributeString("password", Database.DbPassword);
+                writer.WriteEndElement();
+            }
+
             // Last working architect
             if (LastArchitect != null && LastArchitect.IsValid())
             {
@@ -167,6 +178,16 @@ namespace TicTac
 #if (DEBUG)
             Console.WriteLine(@"Preferences file version " + version);
 #endif
+
+            // Database info
+            if (reader.ReadToFollowing("database"))
+            {
+                Database.DbName = reader.GetAttribute("name");
+                Database.DbServerIp = reader.GetAttribute("address");
+                Database.DbUserName = reader.GetAttribute("userName");
+                Database.DbPassword = reader.GetAttribute("password");
+            }
+
             // Last working architect
             if (reader.ReadToFollowing("architect"))
             {
