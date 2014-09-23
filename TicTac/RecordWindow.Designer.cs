@@ -188,14 +188,6 @@ namespace TicTac
             this.trayMenuItemReduce.ToolTipText = "Minimize in system tray (keep running in background)";
             this.trayMenuItemReduce.Click += new System.EventHandler(this.trayMenuItemMinimize_Click);
             // 
-            // trayMenuItemConfigure
-            // 
-            this.trayMenuItemConfigure.Image = global::TicTac.Properties.Resources.configure;
-            this.trayMenuItemConfigure.Name = "trayMenuItemConfigure";
-            this.trayMenuItemConfigure.Size = new System.Drawing.Size(159, 22);
-            this.trayMenuItemConfigure.Text = "Configure";
-            this.trayMenuItemConfigure.Click += new System.EventHandler(this.trayMenuItemConfigure_Click);
-            // 
             // trayMenuItemExit
             // 
             this.trayMenuItemExit.Image = global::TicTac.Properties.Resources.power;
