@@ -59,7 +59,7 @@ namespace TicTac
         public TimeSpan Time { get; set; } // Wallclock since clock start
         public string Location { get; set; }
 
-        public string ToString()
+        public override string ToString()
         {
             string duration = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", Duration.Hours, Duration.Minutes, Duration.Seconds, Duration.Milliseconds);
             string timeStamp = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", Time.Hours, Time.Minutes, Time.Seconds, Time.Milliseconds);
