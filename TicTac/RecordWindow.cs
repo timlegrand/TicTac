@@ -81,6 +81,8 @@ Program.clk.Probe();
 
             if (_service.PhaseList != null && _service.PhaseList.Count() != 0)
             {
+                // Sort ascending
+                _service.PhaseList.Sort((p1, p2) => p1.Name.CompareTo(p2.Name));
                 comboBoxPhases.Items.AddRange(_service.PhaseList.ToArray());
                 if (_prefs.LastPhase != null)
                 {
