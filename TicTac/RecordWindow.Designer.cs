@@ -77,6 +77,7 @@ namespace TicTac
             this.comboBoxArchitects.Location = new System.Drawing.Point(83, 13);
             this.comboBoxArchitects.Name = "comboBoxArchitects";
             this.comboBoxArchitects.Size = new System.Drawing.Size(163, 21);
+            this.comboBoxArchitects.Sorted = true;
             this.comboBoxArchitects.TabIndex = 7;
             this.comboBoxArchitects.SelectedIndexChanged += new System.EventHandler(this.ComboBoxArchitectsSelectedIndexChanged);
             // 

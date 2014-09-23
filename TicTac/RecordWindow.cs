@@ -56,6 +56,9 @@ Program.clk.Probe();
             // Fill in the ComboBoxes
             if (_service.ProjectList != null && _service.ProjectList.Count() != 0)
             {
+                // Sort descending
+                _service.ProjectList.Sort((p1,p2)=>p1.Name.CompareTo(p2.Name));
+                _service.ProjectList.Reverse();
                 comboBoxProjects.Items.AddRange(_service.ProjectList.ToArray());
                 if (_prefs.LastProject != null)
                 {
