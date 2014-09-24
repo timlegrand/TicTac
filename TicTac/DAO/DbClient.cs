@@ -194,7 +194,11 @@ namespace TicTac.DAO
 
         public override List<WorkSession> SelectWorkSessions(Architect archi, DateRange dr = null)
         {
-            if (!OpenConnection() || archi == null || archi.Id == null) return null;
+            if (!OpenConnection() || archi == null || archi.Id == null)
+            {
+                throw new ArgumentException();
+            }
+
 
             var li = new List<WorkSession>();
 
@@ -446,7 +450,8 @@ namespace TicTac.DAO
                 {
                     var id = (int) dataReader["id"];
                     var na = (string)dataReader["name"];
-                    projects.Add(new Project{ Id = id, Name = na });
+                    var de = (string)dataReader["description"];
+                    projects.Add(new Project{ Id = id, Name = na, Description = de });
                 }
                 dataReader.Close();
                 CloseConnection();
@@ -645,6 +650,29 @@ namespace TicTac.DAO
                                 "firstname='" + a.FirstName + "', " +
                                 "lastName='" + a.LastName + "', " +
                                 "company='" + a.Company + "' " +
+                                "WHERE ID='" + id + "'"
+            })
+            {
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
+
+            CloseConnection();
+            return id;
+        }
+
+        internal object UpdateProject(int id, Project p)
+        {
+            if (p == null) return -1;
+
+            var insertedRowId = -1;
+            if (!p.IsValidWithoutId() || !OpenConnection()) return insertedRowId;
+
+            using (var cmd = new MySqlCommand(null, _connection)
+            {
+                CommandText = "UPDATE e_project SET " +
+                                "name='" + p.Name + "', " +
+                                "description='" + p.Description + "' " +
                                 "WHERE ID='" + id + "'"
             })
             {

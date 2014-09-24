@@ -79,7 +79,7 @@ namespace TicTac
             this.comboBoxArchitects.Size = new System.Drawing.Size(163, 21);
             this.comboBoxArchitects.Sorted = true;
             this.comboBoxArchitects.TabIndex = 7;
-            this.comboBoxArchitects.SelectedIndexChanged += new System.EventHandler(this.ComboBoxArchitectsSelectedIndexChanged);
+            this.comboBoxArchitects.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxArchitectsSelectionChangeCommited);
             // 
             // comboBoxProjects
             // 

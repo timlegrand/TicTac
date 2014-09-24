@@ -89,11 +89,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddProject.cs">
+    <Compile Include="EditProject.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddProject.Designer.cs">
-      <DependentUpon>AddProject.cs</DependentUpon>
+    <Compile Include="EditProject.Designer.cs">
+      <DependentUpon>EditProject.cs</DependentUpon>
     </Compile>
     <Compile Include="Architect.cs" />
     <Compile Include="EditArchitect.cs">
@@ -145,8 +145,8 @@
     <EmbeddedResource Include="EditArchitect.resx">
       <DependentUpon>EditArchitect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddProject.resx">
-      <DependentUpon>AddProject.cs</DependentUpon>
+    <EmbeddedResource Include="EditProject.resx">
+      <DependentUpon>EditProject.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DatabaseViewer.resx">
       <DependentUpon>DatabaseViewer.cs</DependentUpon>

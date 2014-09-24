@@ -46,5 +46,17 @@ namespace TicTac
         {
             return Name;
         }
+
+        internal bool IsValidWithoutId()
+        {
+            return ((Name != null));
+        }
+
+        internal void CopyIn(Project p)
+        {
+            Id = p.Id ?? null;
+            Name = p.Name;
+            Description = p.Description;
+        }
     }
 }

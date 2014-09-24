@@ -89,7 +89,7 @@ namespace TicTac
 
         private void AddProjectClick(object sender, EventArgs e)
         {
-            var form = new AddProject(this);
+            var form = new EditProject(this);
             form.Show();
         }
 
@@ -109,8 +109,8 @@ namespace TicTac
         private void EditProjectButtonClick(object sender, EventArgs e)
         {
             if (_currentProject == null) return;
-            //var form = new AddProject(this, _currentProject);
-            //form.Show();
+            var form = new EditProject(this, _currentProject);
+            form.Show();
         }
 
         private void EditPhaseButtonClick(object sender, EventArgs e)

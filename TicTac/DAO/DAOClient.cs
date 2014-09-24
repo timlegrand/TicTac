@@ -166,5 +166,12 @@ namespace TicTac
             SwitchDAO();
             return _db.UpdateArchitect(id, architect);
         }
+
+
+        internal object UpdateProject(int id, Project project)
+        {
+            SwitchDAO();
+            return _db.UpdateProject(id, project);
+        }
     }
 }

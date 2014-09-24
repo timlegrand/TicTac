@@ -48,6 +48,9 @@ Program.clk.Print();
             this.SuspendLayout();
 
             // Empty the ComboBoxes
+            comboBoxArchitects.DataSource = null;
+            comboBoxProjects.DataSource = null;
+            comboBoxPhases.DataSource = null;
             comboBoxArchitects.Items.Clear();
             comboBoxProjects.Items.Clear();
             comboBoxPhases.Items.Clear();
@@ -59,6 +62,8 @@ Program.clk.Print();
                 _service.ProjectList.Sort((p1,p2)=>p1.Name.CompareTo(p2.Name));
                 _service.ProjectList.Reverse();
                 comboBoxProjects.DataSource = _service.ProjectList;
+                comboBoxProjects.DisplayMember = "Name";
+                comboBoxProjects.ValueMember = "Id";
                 if (_prefs.LastProject != null)
                 {
                     int i;
@@ -105,8 +110,8 @@ Program.clk.Print();
 
             if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
-                //comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
-                comboBoxArchitects.DataSource = _service.ArchitectList;
+                comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
+                //comboBoxArchitects.DataSource = _service.ArchitectList;
                 // Must be done LAST because of event management
                 if (_prefs.LastArchitect != null)
                 {
@@ -187,8 +192,9 @@ Program.clk.Print();
         
 
         // ComboBox selection
-        private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxArchitectsSelectionChangeCommited(object sender, EventArgs e)
         {
+            Console.WriteLine("ComboBoxArchitectsSelectionChangeCommited");
             var archi = (Architect)comboBoxArchitects.SelectedItem;
 
             var daily = _service.GetDailyWorkSessions(archi);

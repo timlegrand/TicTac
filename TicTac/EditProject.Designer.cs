@@ -1,6 +1,6 @@
 ﻿namespace TicTac
 {
-    partial class AddProject
+    partial class EditProject
     {
         /// <summary>
         /// Required designer variable.
@@ -78,7 +78,7 @@
             this.textBoxDescription.Size = new System.Drawing.Size(141, 46);
             this.textBoxDescription.TabIndex = 8;
             // 
-            // AddProject
+            // EditProject
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -88,7 +88,7 @@
             this.Controls.Add(this.labelProjectName);
             this.Controls.Add(this.textBoxProjectName);
             this.Controls.Add(this.Save);
-            this.Name = "AddProject";
+            this.Name = "EditProject";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ajouter un projet";
             this.ResumeLayout(false);

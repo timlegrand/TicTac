@@ -183,7 +183,7 @@ namespace TicTac
             return _dao.InsertArchitect(a);
         }
 
-        public int InsertProject(Project p)
+        public int AddProject(Project p)
         {
             return _dao.InsertProject(p);
         }
@@ -211,6 +211,11 @@ namespace TicTac
         internal int EditArchitect(int id, Architect architect)
         {
             return _dao.UpdateArchitect(id, architect);
+        }
+
+        internal object EditProject(int id, Project project)
+        {
+            return _dao.UpdateProject(id, project);
         }
     }
 }
