@@ -14,7 +14,6 @@ namespace TicTac
 {
     public partial class RecordWindow : Form
     {
-        private DAOClient _dao; // Remains for save&close only
         private Service _service;
         private Preferences _prefs;
         private WorkSession _ws;
@@ -31,7 +30,6 @@ Program.clk.Print();
 
         private void Initialize()
         {
-Program.clk.Probe();
             this.notifyIcon.Icon = this.Icon;
 
             // Load configuration, including Default information
@@ -39,27 +37,28 @@ Program.clk.Probe();
             _prefs.Load();
             StartPosition = FormStartPosition.Manual;
             Location = _prefs.StartLocation;
-Program.clk.Probe();
-
-            _service = new Service();
-Program.clk.Probe();
-            _dao = new DAOClient();
-Program.clk.Probe();
+            _service = Service.Instance;
             InitComboboxes();
-Program.clk.Probe();
             InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
         }
 
         // Retrieve Comboboxes data
-        private void InitComboboxes()
+        public void InitComboboxes()
         {
+            this.SuspendLayout();
+
+            // Empty the ComboBoxes
+            comboBoxArchitects.Items.Clear();
+            comboBoxProjects.Items.Clear();
+            comboBoxPhases.Items.Clear();
+
             // Fill in the ComboBoxes
             if (_service.ProjectList != null && _service.ProjectList.Count() != 0)
             {
                 // Sort descending
                 _service.ProjectList.Sort((p1,p2)=>p1.Name.CompareTo(p2.Name));
                 _service.ProjectList.Reverse();
-                comboBoxProjects.Items.AddRange(_service.ProjectList.ToArray());
+                comboBoxProjects.DataSource = _service.ProjectList;
                 if (_prefs.LastProject != null)
                 {
                     int i;
@@ -68,22 +67,23 @@ Program.clk.Probe();
                         var p = (Project)comboBoxProjects.Items[i];
                         if (_prefs.LastProject.Equals(p))
                         {
-                            comboBoxProjects.SelectedItem = comboBoxProjects.Items[i];
+                            comboBoxProjects.SelectedIndex = i;
                             break;
                         }
                     }
                 }
                 else
                 {
-                    comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
+                    comboBoxProjects.SelectedIndex = 0;
                 }
             }
+            Program.clk.Probe("ProjectList");
 
             if (_service.PhaseList != null && _service.PhaseList.Count() != 0)
             {
                 // Sort ascending
                 _service.PhaseList.Sort((p1, p2) => p1.Name.CompareTo(p2.Name));
-                comboBoxPhases.Items.AddRange(_service.PhaseList.ToArray());
+                comboBoxPhases.DataSource = _service.PhaseList;
                 if (_prefs.LastPhase != null)
                 {
                     int i;
@@ -91,20 +91,22 @@ Program.clk.Probe();
                     {
                         if (_prefs.LastPhase.Equals((Phase)comboBoxPhases.Items[i]))
                         {
-                            comboBoxPhases.SelectedItem = comboBoxPhases.Items[i];
+                            comboBoxPhases.SelectedIndex = i;
                             break;
                         }
                     }
                 }
                 else
                 {
-                    comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
+                    comboBoxPhases.SelectedIndex = 0;
                 }
             }
+            Program.clk.Probe("PhaseList");
 
             if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
-                comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
+                //comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
+                comboBoxArchitects.DataSource = _service.ArchitectList;
                 // Must be done LAST because of event management
                 if (_prefs.LastArchitect != null)
                 {
@@ -113,17 +115,21 @@ Program.clk.Probe();
                     //           where elem.Id == LastArchitect.Id
                     //           select elem;
                     var i = 0;
-                    while (!_prefs.LastArchitect.Equals((Architect)comboBoxArchitects.Items[i]))
+                    while (i < comboBoxArchitects.Items.Count && !_prefs.LastArchitect.RefersTo((Architect)comboBoxArchitects.Items[i]))
                     {
                         i++;
                     }
-                    comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[i];
+                    Program.clk.Probe("comboBoxArchitects.SelectedIndex START");
+                    comboBoxArchitects.SelectedIndex = i;
+                    Program.clk.Probe("comboBoxArchitects.SelectedIndex STOP");
                 }
                 else
                 {
-                    comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
+                    comboBoxArchitects.SelectedIndex = 0;
                 }
             }
+            
+            this.ResumeLayout();
         }
 
         private WorkSession RestoreSession(Architect archi)

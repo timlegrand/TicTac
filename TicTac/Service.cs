@@ -5,21 +5,22 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace TicTac
 {
-    class Service
+    // Singleton
+    public sealed class Service
     {
+        private static readonly Service instance = new Service();
+
         private readonly DAOClient _dao;
         private readonly BinaryFormatter _formatter;
-        public List<Project> ProjectList { get; private set; } // WANT STATIC LIST
-        public List<Phase> PhaseList { get; private set; } // WANT STATIC LIST
-        public List<Architect> ArchitectList { get; private set; } // WANT STATIC LIST
+        public List<Project> ProjectList { get; private set; }
+        public List<Phase> PhaseList { get; private set; }
+        public List<Architect> ArchitectList { get; private set; }
 
-        //Constructor
-        public Service()
+        // Constructor
+        private Service()
         {
-            Program.clk.Probe("Service");
             _dao = new DAOClient();
             _formatter = new BinaryFormatter();
-            Program.clk.Probe("Service");
             ArchitectList = GetAllArchitects();
             Program.clk.Probe("GetAllArchitects");
             ProjectList = GetAllProjects();
@@ -28,22 +29,31 @@ namespace TicTac
             Program.clk.Probe("GetAllPhases");
         }
 
-        public List<WorkSession> GetStartedWorkSessions(Architect archi)
+        // Singleton getter
+        public static Service Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+
+        internal List<WorkSession> GetStartedWorkSessions(Architect archi)
         {
             return _dao.SelectStartedWorkSessions(archi);
         }
 
-        public void StartWorkSession(WorkSession cfg)
+        internal void StartWorkSession(WorkSession cfg)
         {
             _dao.InsertWorkSession(cfg);
         }
 
-        public void EndWorkSession(WorkSession s)
+        internal void EndWorkSession(WorkSession s)
         {
             _dao.UpdateWorkSession(s);
         }
 
-        public List<WorkSession> GetDailyWorkSessions(Architect archi)
+        internal List<WorkSession> GetDailyWorkSessions(Architect archi)
         {
             var dr = new DateRange(DateTime.Today, DateTime.Today.AddDays(1));
             return _dao.SelectWorkSessions(archi, dr);
@@ -74,7 +84,7 @@ namespace TicTac
             return _dao.SelectPhaseFromId(id);
         }
 
-        public Company SelectCompanyFromId(int id)
+        internal Company SelectCompanyFromId(int id)
         {
             return _dao.SelectCompanyFromId(id);
         }
@@ -163,7 +173,7 @@ namespace TicTac
             }
         }
 
-        public List<Company> GetAllCompanies()
+        internal List<Company> GetAllCompanies()
         {
             return _dao.SelectAllCompanies();
         }
@@ -196,6 +206,11 @@ namespace TicTac
         public bool DeletePhase(Phase p)
         {
             return _dao.DeletePhase(p);
+        }
+
+        internal int EditArchitect(int id, Architect architect)
+        {
+            return _dao.UpdateArchitect(id, architect);
         }
     }
 }

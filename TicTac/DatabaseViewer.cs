@@ -15,7 +15,7 @@ namespace TicTac
         private Architect _currentArchitect;
         private Project _currentProject;
         private Phase _currentPhase;
-        private readonly RecordWindow _parent;
+        public readonly RecordWindow _parent;
 
         public DatabaseViewer(RecordWindow mainWindow)
         {
@@ -56,6 +56,7 @@ namespace TicTac
         public void UpdateData()
         {
             InitializeData();
+            _parent.InitComboboxes();
         }
 
         private const int SnapDist = 20;
@@ -82,7 +83,7 @@ namespace TicTac
 
         private void AddArchitectClick(object sender, EventArgs e)
         {
-            var form = new AddArchitect(this);
+            var form = new EditArchitect(this);
             form.Show();
         }
 
@@ -96,6 +97,64 @@ namespace TicTac
         {
             var form = new AddPhase(this);
             form.Show();
+        }
+
+        private void EditArchitectButtonClick(object sender, EventArgs e)
+        {
+            if (_currentArchitect == null) return;
+            var form = new EditArchitect(this, _currentArchitect);
+            form.Show();
+        }
+
+        private void EditProjectButtonClick(object sender, EventArgs e)
+        {
+            if (_currentProject == null) return;
+            //var form = new AddProject(this, _currentProject);
+            //form.Show();
+        }
+
+        private void EditPhaseButtonClick(object sender, EventArgs e)
+        {
+            if (_currentPhase == null) return;
+            //var form = new AddPhase(this, _currentPhase);
+            //form.Show();
+        }
+
+        private void DeleteArchitectButtonClick(object sender, EventArgs e)
+        {
+            if (
+                MessageBox.Show(
+                    "Êtes vous sûr de vouloir supprimer l'achitecte " + _currentArchitect.ToString() + " ? Tous les enregistrements le concernant seront perdus.",
+                    "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var success = _db.DeleteArchitect(_currentArchitect);
+                if (!success) throw new DataException();
+                UpdateData();
+            }
+        }
+
+        private void DeleteProjectButtonClick(object sender, EventArgs e)
+        {
+            if (
+                MessageBox.Show("Êtes vous sûr de vouloir supprimer le projet " + _currentProject.ToString() + "? Tous les enregistrements le concernant seront perdus.",
+                                "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var success = _db.DeleteProject(_currentProject);
+                if (!success) throw new DataException();
+                UpdateData();
+            }
+        }
+
+        private void DeletePhaseButtonClick(object sender, EventArgs e)
+        {
+            if (
+                MessageBox.Show("Êtes vous sûr de vouloir supprimer la phase " + _currentPhase.ToString() + "? Tous les enregistrements la concernant seront perdus.",
+                                "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var success = _db.DeletePhase(_currentPhase);
+                if (!success) throw new DataException();
+                UpdateData();
+            }
         }
 
         private void ComboBoxArchitectsSelectedIndexChanged(object sender, EventArgs e)
@@ -161,46 +220,9 @@ namespace TicTac
             return dist <= 400;
         }
 
-        private void DeleteArchitectButtonClick(object sender, EventArgs e)
+        private void EditDatabaseButtonClick(object sender, EventArgs e)
         {
-            if (
-                MessageBox.Show(
-                    "Êtes vous sûr de vouloir supprimer l'achitecte " + _currentArchitect.ToString() + " ?",
-                    "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                var success = _db.DeleteArchitect(_currentArchitect);
-                if (!success) throw new DataException();
-                UpdateData();
-            }
-        }
-
-        private void DeleteProjectButtonClick(object sender, EventArgs e)
-        {
-            if (
-                MessageBox.Show("Êtes vous sûr de vouloir supprimer le projet " + _currentProject.ToString() + "?",
-                                "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                var success = _db.DeleteProject(_currentProject);
-                if (!success) throw new DataException();
-                UpdateData();
-            }
-        }
-
-        private void DeletePhaseButtonClick(object sender, EventArgs e)
-        {
-            if (
-                MessageBox.Show("Êtes vous sûr de vouloir supprimer la phase " + _currentPhase.ToString() + "?",
-                                "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                var success = _db.DeletePhase(_currentPhase);
-                if (!success) throw new DataException();
-                UpdateData();
-            }
-        }
-
-        private void editDatabaseButton_Click(object sender, EventArgs e)
-        {
-            var configureForm = new ConfigureDatabase(this) {FormBorderStyle = FormBorderStyle.FixedSingle};
+            var configureForm = new ConfigureDatabase(this) { FormBorderStyle = FormBorderStyle.FixedSingle };
             configureForm.Show();
         }
     }

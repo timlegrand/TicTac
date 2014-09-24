@@ -104,7 +104,6 @@ namespace TicTac
         public List<Architect> SelectAllArchitects()
         {
             SwitchDAO();
-            Program.clk.Probe("Avant SelectAllArchitects");
             return _db.SelectAllArchitects();
         }
 
@@ -160,6 +159,12 @@ namespace TicTac
         {
             SwitchDAO();
             return _db.DeletePhase(p);
+        }
+
+        internal int UpdateArchitect(int id, Architect architect)
+        {
+            SwitchDAO();
+            return _db.UpdateArchitect(id, architect);
         }
     }
 }

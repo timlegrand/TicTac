@@ -1,6 +1,6 @@
 ﻿namespace TicTac
 {
-    partial class AddArchitect
+    partial class EditArchitect
     {
         /// <summary>
         /// Required designer variable.
@@ -96,7 +96,7 @@
             this.comboBoxCompany.Size = new System.Drawing.Size(141, 21);
             this.comboBoxCompany.TabIndex = 7;
             // 
-            // AddArchitect
+            // EditArchitect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -108,7 +108,7 @@
             this.Controls.Add(this.textBoxLastName);
             this.Controls.Add(this.textBoxFirstName);
             this.Controls.Add(this.Save);
-            this.Name = "AddArchitect";
+            this.Name = "EditArchitect";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ajouter un architecte";
             this.ResumeLayout(false);

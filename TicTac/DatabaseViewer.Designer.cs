@@ -49,13 +49,16 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.editDatabaseButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBoxArchitects
             // 
             this.comboBoxArchitects.FormattingEnabled = true;
-            this.comboBoxArchitects.Location = new System.Drawing.Point(92, 18);
+            this.comboBoxArchitects.Location = new System.Drawing.Point(76, 18);
             this.comboBoxArchitects.Name = "comboBoxArchitects";
             this.comboBoxArchitects.Size = new System.Drawing.Size(158, 21);
             this.comboBoxArchitects.TabIndex = 0;
@@ -64,7 +67,7 @@
             // comboBoxProjects
             // 
             this.comboBoxProjects.FormattingEnabled = true;
-            this.comboBoxProjects.Location = new System.Drawing.Point(92, 46);
+            this.comboBoxProjects.Location = new System.Drawing.Point(76, 46);
             this.comboBoxProjects.Name = "comboBoxProjects";
             this.comboBoxProjects.Size = new System.Drawing.Size(158, 21);
             this.comboBoxProjects.TabIndex = 1;
@@ -73,7 +76,7 @@
             // comboBoxPhases
             // 
             this.comboBoxPhases.FormattingEnabled = true;
-            this.comboBoxPhases.Location = new System.Drawing.Point(92, 74);
+            this.comboBoxPhases.Location = new System.Drawing.Point(76, 74);
             this.comboBoxPhases.Name = "comboBoxPhases";
             this.comboBoxPhases.Size = new System.Drawing.Size(158, 21);
             this.comboBoxPhases.TabIndex = 2;
@@ -164,7 +167,7 @@
             // 
             // addArchitect
             // 
-            this.addArchitect.Location = new System.Drawing.Point(257, 19);
+            this.addArchitect.Location = new System.Drawing.Point(261, 19);
             this.addArchitect.Name = "addArchitect";
             this.addArchitect.Size = new System.Drawing.Size(20, 21);
             this.addArchitect.TabIndex = 12;
@@ -174,7 +177,7 @@
             // 
             // addProject
             // 
-            this.addProject.Location = new System.Drawing.Point(257, 46);
+            this.addProject.Location = new System.Drawing.Point(261, 46);
             this.addProject.Name = "addProject";
             this.addProject.Size = new System.Drawing.Size(20, 21);
             this.addProject.TabIndex = 13;
@@ -184,7 +187,7 @@
             // 
             // addPhase
             // 
-            this.addPhase.Location = new System.Drawing.Point(257, 73);
+            this.addPhase.Location = new System.Drawing.Point(261, 73);
             this.addPhase.Name = "addPhase";
             this.addPhase.Size = new System.Drawing.Size(20, 21);
             this.addPhase.TabIndex = 14;
@@ -194,7 +197,7 @@
             // 
             // deletePhaseButton
             // 
-            this.deletePhaseButton.Location = new System.Drawing.Point(282, 74);
+            this.deletePhaseButton.Location = new System.Drawing.Point(283, 73);
             this.deletePhaseButton.Name = "deletePhaseButton";
             this.deletePhaseButton.Size = new System.Drawing.Size(20, 21);
             this.deletePhaseButton.TabIndex = 18;
@@ -204,7 +207,7 @@
             // 
             // deleteProjectButton
             // 
-            this.deleteProjectButton.Location = new System.Drawing.Point(282, 46);
+            this.deleteProjectButton.Location = new System.Drawing.Point(283, 46);
             this.deleteProjectButton.Name = "deleteProjectButton";
             this.deleteProjectButton.Size = new System.Drawing.Size(20, 21);
             this.deleteProjectButton.TabIndex = 17;
@@ -214,7 +217,7 @@
             // 
             // deleteArchitectButton
             // 
-            this.deleteArchitectButton.Location = new System.Drawing.Point(282, 18);
+            this.deleteArchitectButton.Location = new System.Drawing.Point(283, 19);
             this.deleteArchitectButton.Name = "deleteArchitectButton";
             this.deleteArchitectButton.Size = new System.Drawing.Size(20, 21);
             this.deleteArchitectButton.TabIndex = 16;
@@ -248,13 +251,46 @@
             this.editDatabaseButton.TabIndex = 21;
             this.editDatabaseButton.Text = "Configurer";
             this.editDatabaseButton.UseVisualStyleBackColor = true;
-            this.editDatabaseButton.Click += new System.EventHandler(this.editDatabaseButton_Click);
+            this.editDatabaseButton.Click += new System.EventHandler(this.EditDatabaseButtonClick);
             // 
-            // Consult
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(239, 73);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(20, 21);
+            this.button1.TabIndex = 24;
+            this.button1.Text = "e";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.EditPhaseButtonClick);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(239, 46);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(20, 21);
+            this.button2.TabIndex = 23;
+            this.button2.Text = "e";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.EditProjectButtonClick);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(239, 19);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(20, 21);
+            this.button3.TabIndex = 22;
+            this.button3.Text = "e";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.EditArchitectButtonClick);
+            // 
+            // DatabaseViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(313, 208);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.editDatabaseButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
@@ -277,7 +313,7 @@
             this.Controls.Add(this.comboBoxProjects);
             this.Controls.Add(this.comboBoxArchitects);
             this.MaximizeBox = false;
-            this.Name = "Consult";
+            this.Name = "DatabaseViewer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Consulter / éditer la base";
             this.Move += new System.EventHandler(this.OnMove);
@@ -310,5 +346,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button editDatabaseButton;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }

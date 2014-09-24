@@ -631,5 +631,29 @@ namespace TicTac.DAO
             }
             return true;
         }
+
+        internal int UpdateArchitect(int id, Architect a)
+        {
+            if (a == null) return -1;
+
+            var insertedRowId = -1;
+            if (!a.IsValidWithoutId() || !OpenConnection()) return insertedRowId;
+
+            using (var cmd = new MySqlCommand(null, _connection)
+            {
+                CommandText = "UPDATE e_architect SET " +
+                                "firstname='" + a.FirstName + "', " +
+                                "lastName='" + a.LastName + "', " +
+                                "company='" + a.Company + "' " +
+                                "WHERE ID='" + id + "'"
+            })
+            {
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
+
+            CloseConnection();
+            return id;
+        }
     }
 }
