@@ -7,37 +7,32 @@ namespace TicTac
 {
     public partial class EditArchitect : Form
     {
-        private readonly Service _service;
-        private readonly List<Company> _companyList;
-        private readonly DatabaseViewer _parent;
-        private bool _updateOnly;
-        private Architect _currentArchitect;
+        private readonly DatabaseViewer parentWindow;
+        private Architect currentArchitect; 
+        private bool updateOnly;
+        private readonly List<Company> companyList;
 
         public EditArchitect(DatabaseViewer parent)
         {
             InitializeComponent();
-            _service = Service.Instance;
-            _parent = parent;
-            _companyList = _service.GetAllCompanies();
-            if (_companyList != null && _companyList.Count != 0) comboBoxCompany.Items.AddRange(_companyList.ToArray());
-            comboBoxCompany.SelectedItem = comboBoxCompany.Items[0];
-            this._updateOnly = false;
+            this.parentWindow = parent;
+            this.companyList = Service.Instance.GetAllCompanies();
+            if (this.companyList != null && this.companyList.Count != 0)
+            {
+                this.comboBoxCompany.Items.AddRange(this.companyList.ToArray());
+            }
+            this.comboBoxCompany.SelectedItem = this.comboBoxCompany.Items[0];
+            this.updateOnly = false;
         }
 
-        public EditArchitect(DatabaseViewer parent, Architect architect)
+        public EditArchitect(DatabaseViewer parent, Architect architect) : this(parent)
         {
-            InitializeComponent();
             this.Text = "Modifier un architecte";
-            _service = Service.Instance;
-            _parent = parent;
-            _companyList = _service.GetAllCompanies();
-            if (_companyList != null && _companyList.Count != 0) comboBoxCompany.Items.AddRange(_companyList.ToArray());
-            comboBoxCompany.SelectedItem = comboBoxCompany.Items[0];
-            textBoxFirstName.Text = architect.FirstName;
-            textBoxLastName.Text = architect.LastName;
-            comboBoxCompany.SelectedItem = _service.SelectCompanyFromId(architect.Company);
-            this._currentArchitect = architect;
-            this._updateOnly = true;
+            this.textBoxFirstName.Text = architect.FirstName;
+            this.textBoxLastName.Text = architect.LastName;
+            this.comboBoxCompany.SelectedItem = Service.Instance.SelectCompanyFromId(architect.Company);
+            this.currentArchitect = architect;
+            this.updateOnly = true;
         }
 
         private void SaveClick(object sender, EventArgs e)
@@ -51,14 +46,14 @@ namespace TicTac
                 return;
             }
 
-            var updatedArchitect = new Architect() { Id = _currentArchitect.Id, Company = (int)cp.Id, FirstName = fn, LastName = ln };
-            var id = (_updateOnly == true) ?
-                _service.EditArchitect((int)this._currentArchitect.Id, updatedArchitect) :
-                _service.AddArchitect(updatedArchitect);
+            var updatedArchitect = new Architect() { Id = currentArchitect.Id, Company = (int)cp.Id, FirstName = fn, LastName = ln };
+            var id = (updateOnly == true) ?
+                Service.Instance.EditArchitect((int)currentArchitect.Id, updatedArchitect) :
+                Service.Instance.AddArchitect(updatedArchitect);
             Console.WriteLine("inserted id = {0}", id);
 
-            _service.ArchitectList.Single(a => a.Id == id).CopyIn(updatedArchitect);
-            _parent.UpdateData();
+            Service.Instance.ArchitectList.Single(a => a.Id == id).CopyIn(updatedArchitect);
+            parentWindow.UpdateData();
             Hide();
         }
     }

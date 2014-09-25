@@ -7,27 +7,23 @@ namespace TicTac
 {
     public partial class EditProject : Form
     {
-        private readonly Service _service;
-        private readonly DatabaseViewer _parent;
-        private bool _updateOnly;
-        private Project _currentProject;
+        private readonly DatabaseViewer parentWindow;
+        private Project currentProject; 
+        private bool updateOnly;
 
         public EditProject(DatabaseViewer parent)
         {
             InitializeComponent();
-            _parent = parent;
+            this.parentWindow = parent;
         }
 
-        public EditProject(DatabaseViewer parent, Project currentProject)
+        public EditProject(DatabaseViewer parent, Project currentProject) : this(parent)
         {
-            InitializeComponent();
             this.Text = "Modifier un Projet";
-            _service = Service.Instance;
-            _parent = parent;
-            textBoxProjectName.Text = currentProject.Name;
-            textBoxDescription.Text = currentProject.Description;
-            this._currentProject = currentProject;
-            this._updateOnly = true;
+            this.textBoxProjectName.Text = currentProject.Name;
+            this.textBoxDescription.Text = currentProject.Description;
+            this.currentProject = currentProject;
+            this.updateOnly = true;
         }
 
         private void SaveClick(object sender, EventArgs e)
@@ -40,14 +36,14 @@ namespace TicTac
                 return;
             }
 
-            var updatedProject = new Project() { Id = _currentProject.Id, Name = n, Description = d };
-            var id = (_updateOnly == true) ?
-                _service.EditProject((int)this._currentProject.Id, updatedProject) :
-                _service.AddProject(updatedProject);
+            var updatedProject = new Project() { Id = currentProject.Id, Name = n, Description = d };
+            var id = (updateOnly == true) ?
+                Service.Instance.EditProject((int)currentProject.Id, updatedProject) :
+                Service.Instance.AddProject(updatedProject);
             Console.WriteLine("inserted id = {0}", id);
 
-            _service.ProjectList.Single(p => ((int)p.Id) == (int)id).CopyIn(updatedProject);
-            _parent.UpdateData();
+            Service.Instance.ProjectList.Single(p => ((int)p.Id) == (int)id).CopyIn(updatedProject);
+            this.parentWindow.UpdateData();
             Hide();
         }
     }

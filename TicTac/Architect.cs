@@ -1,40 +1,8 @@
 ﻿using System;
-//using System.Collections;
-//using System.Collections.Generic;
 
 
 namespace TicTac
 {
-    //public class ArchitectList : IEnumerable<Architect>
-    //{
-    //    private List<Architect> List;
-
-    //    public ArchitectList()
-    //    {
-    //        List = new List<Architect>();
-    //    }
-
-    //    public IEnumerator<Architect> GetEnumerator()
-    //    {
-    //        return List.GetEnumerator();
-    //    }
-
-    //    IEnumerator IEnumerable.GetEnumerator()
-    //    {
-    //        return List.GetEnumerator();
-    //    }
-
-    //    internal object[] ToArray()
-    //    {
-    //        return List.ToArray();
-    //    }
-
-    //    public void Add(Architect a)
-    //    {
-    //        List.Add(a);
-    //    }
-    //}
-
     [Serializable()]
     public class Architect
     {
