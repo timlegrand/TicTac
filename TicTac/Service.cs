@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
+
 
 namespace TicTac
 {
     // Singleton
     public sealed class Service
     {
-        private static readonly Service instance = new Service();
+        public static ManualResetEvent Ready;
+        private static readonly Service instance;
 
         private readonly DAOClient _dao;
         private readonly BinaryFormatter _formatter;
@@ -16,7 +19,14 @@ namespace TicTac
         public List<Phase> PhaseList { get; private set; }
         public List<Architect> ArchitectList { get; private set; }
 
-        // Constructor
+        // Static constructor
+        static Service()
+        {
+            Service.Ready = new ManualResetEvent(false); // Should be constructed first since needed by Instance Constructor
+            Service.instance = new Service();
+        }
+
+        // Instance constructor
         private Service()
         {
             _dao = new DAOClient();
@@ -27,6 +37,9 @@ namespace TicTac
             Program.clk.Probe("GetAllProjects");
             PhaseList = GetAllPhases();
             Program.clk.Probe("GetAllPhases");
+
+            // Tell I'm ready
+            Service.Ready.Set();
         }
 
         // Singleton getter

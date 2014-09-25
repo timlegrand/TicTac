@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-
+using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -21,6 +21,15 @@ namespace TicTac
         //Constructor
         public RecordWindow()
         {
+            // Initialize Service in another thread
+            Program.clk.Probe("Initialize Service START");
+            Thread startUpThread = new Thread(delegate()
+                                        {                 
+                                            this._service = Service.Instance;
+                                        });
+            startUpThread.Start();
+            Program.clk.Probe("Initialize Service STOP");
+
             InitializeComponent();
 Program.clk.Probe("InitializeComponent");
             Initialize();
@@ -37,16 +46,19 @@ Program.clk.Print();
             _prefs.Load();
             StartPosition = FormStartPosition.Manual;
             Location = _prefs.StartLocation;
-            _service = Service.Instance;
+
+            // Following needs Service to be initialized
+            Service.Ready.WaitOne();
+
+            this.SuspendLayout();
             InitComboboxes();
-            InitButtons(); // Actually useless since called above by "comboBoxArchitects.SelectedItem changed" events
+            InitButtons();
+            this.ResumeLayout();
         }
 
         // Retrieve Comboboxes data
         public void InitComboboxes()
         {
-            this.SuspendLayout();
-
             // Empty the ComboBoxes
             comboBoxArchitects.DataSource = null;
             comboBoxProjects.DataSource = null;
@@ -124,17 +136,14 @@ Program.clk.Print();
                     {
                         i++;
                     }
-                    Program.clk.Probe("comboBoxArchitects.SelectedIndex START");
                     comboBoxArchitects.SelectedIndex = i;
-                    Program.clk.Probe("comboBoxArchitects.SelectedIndex STOP");
                 }
                 else
                 {
                     comboBoxArchitects.SelectedIndex = 0;
                 }
             }
-            
-            this.ResumeLayout();
+            Program.clk.Probe("ArchitectList");
         }
 
         private WorkSession RestoreSession(Architect archi)

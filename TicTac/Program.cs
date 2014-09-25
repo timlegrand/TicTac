@@ -2,11 +2,11 @@
 using System.Reflection;
 using System.Windows.Forms;
 
+
 namespace TicTac
 {
     static class Program
     {
-        //public static bool DatabaseConnexionAvailable { get; private set; }
         public static bool DatabaseConnexionAvailable { get; private set; }
         public const bool IsDBPrefStorageAvailable = false;
         public static WallClock clk;
