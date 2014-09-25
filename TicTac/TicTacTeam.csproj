@@ -111,11 +111,11 @@
     <Compile Include="DAO\Defaults.cs" />
     <Compile Include="Preferences.cs" />
     <Compile Include="Company.cs" />
-    <Compile Include="AddPhase.cs">
+    <Compile Include="EditPhase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddPhase.Designer.cs">
-      <DependentUpon>AddPhase.cs</DependentUpon>
+    <Compile Include="EditPhase.Designer.cs">
+      <DependentUpon>EditPhase.cs</DependentUpon>
     </Compile>
     <Compile Include="ConfigureDatabase.cs">
       <SubType>Form</SubType>
@@ -151,8 +151,8 @@
     <EmbeddedResource Include="DatabaseViewer.resx">
       <DependentUpon>DatabaseViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddPhase.resx">
-      <DependentUpon>AddPhase.cs</DependentUpon>
+    <EmbeddedResource Include="EditPhase.resx">
+      <DependentUpon>EditPhase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigureDatabase.resx">
       <DependentUpon>ConfigureDatabase.cs</DependentUpon>

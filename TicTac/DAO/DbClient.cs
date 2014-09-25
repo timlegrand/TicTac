@@ -683,5 +683,28 @@ namespace TicTac.DAO
             CloseConnection();
             return id;
         }
+
+        internal object UpdatePhase(int id, Phase p)
+        {
+            if (p == null) return -1;
+
+            var insertedRowId = -1;
+            if (!p.IsValidWithoutId() || !OpenConnection()) return insertedRowId;
+
+            using (var cmd = new MySqlCommand(null, _connection)
+            {
+                CommandText = "UPDATE e_phase SET " +
+                                "name='" + p.Name + "', " +
+                                "description='" + p.Description + "' " +
+                                "WHERE ID='" + id + "'"
+            })
+            {
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
+
+            CloseConnection();
+            return id;
+        }
     }
 }

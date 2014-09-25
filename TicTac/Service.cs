@@ -188,7 +188,7 @@ namespace TicTac
             return _dao.InsertProject(p);
         }
 
-        public int InsertPhase(Phase p)
+        public int AddPhase(Phase p)
         {
             return _dao.InsertPhase(p);
         }
@@ -216,6 +216,11 @@ namespace TicTac
         internal object EditProject(int id, Project project)
         {
             return _dao.UpdateProject(id, project);
+        }
+
+        internal object EditPhase(int id, Phase phase)
+        {
+            return _dao.UpdatePhase(id, phase);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TicTac
 {
-    partial class AddPhase
+    partial class EditPhase
     {
         /// <summary>
         /// Required designer variable.

@@ -95,7 +95,7 @@ namespace TicTac
 
         private void AddPhaseClick(object sender, EventArgs e)
         {
-            var form = new AddPhase(this);
+            var form = new EditPhase(this);
             form.Show();
         }
 
@@ -116,8 +116,8 @@ namespace TicTac
         private void EditPhaseButtonClick(object sender, EventArgs e)
         {
             if (_currentPhase == null) return;
-            //var form = new AddPhase(this, _currentPhase);
-            //form.Show();
+            var form = new EditPhase(this, _currentPhase);
+            form.Show();
         }
 
         private void DeleteArchitectButtonClick(object sender, EventArgs e)
