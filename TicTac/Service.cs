@@ -111,61 +111,58 @@ namespace TicTac
             if (Program.DatabaseConnexionAvailable)
             {
                 // Retrieve data from server
-                return _dao.SelectAllArchitects();
+                ArchitectList = _dao.SelectAllArchitects();
             }
             else
             {
                 // Deserialize from file if any
-                List<Architect> architectList;
                 // Use serialization to files until real DB
                 using (var architectsFile = File.Open("Architects.osl", FileMode.Open))
                 {
                     Console.WriteLine("Lecture de la table des architectes (depuis un fichier)");
-                    architectList = (List<Architect>)_formatter.Deserialize(architectsFile);
+                    ArchitectList = (List<Architect>)_formatter.Deserialize(architectsFile);
                 }
-                return architectList;
             }
+            return ArchitectList;
         }
 
         public List<Project> GetAllProjects()
         {
             if (Program.DatabaseConnexionAvailable)
             {
-                return _dao.SelectAllProjects();
+                ProjectList = _dao.SelectAllProjects();
             }
             else
             {
-                List<Project> projectList;
                 using (var projectsFile = File.Open("Projects.osl", FileMode.Open))
                 {
                     Console.WriteLine("Lecture de la table des projets (depuis un fichier)");
-                    projectList = (List<Project>) _formatter.Deserialize(projectsFile);
+                    ProjectList = (List<Project>)_formatter.Deserialize(projectsFile);
                 }
-                return projectList;
             }
+            return ProjectList;
         }
 
         public List<Phase> GetAllPhases()
         {
             if (Program.DatabaseConnexionAvailable)
             {
-                return _dao.SelectAllPhases();
+                PhaseList = _dao.SelectAllPhases();
             }
             else
             {
-                List<Phase> phaseList;
                 using (var phasesFile = File.Open("Phases.osl", FileMode.Open))
                 {
                     Console.WriteLine("Lecture de la table des phases (depuis un fichier)");
-                    phaseList = (List<Phase>)_formatter.Deserialize(phasesFile);
+                    PhaseList = (List<Phase>)_formatter.Deserialize(phasesFile);
                 }
-                return phaseList ;
             }
+            return PhaseList;
         }
 
         internal List<Company> GetAllCompanies()
         {
-            if (CompanyList == null)
+            if (CompanyList == null && Program.DatabaseConnexionAvailable)
             {
                 CompanyList = _dao.SelectAllCompanies();
             }
