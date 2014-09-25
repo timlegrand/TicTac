@@ -174,7 +174,7 @@ Program.clk.Print();
             else if(session.IsValid())
             {
                 Console.WriteLine(@"Running session found:");
-                Program.VarDump(session);
+                Utils.Vardump.dump(session);
                 var matchingProjects = (from proj in _service.ProjectList where proj.Id == session.Project.Id select proj).ToList();
                 if (matchingProjects.Count() != 1) throw new DataException();
                 comboBoxProjects.SelectedItem = matchingProjects.First();
