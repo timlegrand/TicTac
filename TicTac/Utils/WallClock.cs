@@ -61,8 +61,8 @@ namespace TicTac
 
         public override string ToString()
         {
-            string duration = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", Duration.Hours, Duration.Minutes, Duration.Seconds, Duration.Milliseconds);
-            string timeStamp = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", Time.Hours, Time.Minutes, Time.Seconds, Time.Milliseconds);
+            string duration  = String.Format("{0:00}:{1:00}:{2:00}.{3:000}", Duration.Hours, Duration.Minutes, Duration.Seconds, Duration.Milliseconds);
+            string timeStamp = String.Format("{0:00}:{1:00}:{2:00}.{3:000}", Time.Hours, Time.Minutes, Time.Seconds, Time.Milliseconds);
 
             return "[" + timeStamp + "](" + duration + ") => "+ this.Location;
         }

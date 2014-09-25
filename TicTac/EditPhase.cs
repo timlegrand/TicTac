@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace TicTac
@@ -42,7 +40,6 @@ namespace TicTac
                 Service.Instance.AddPhase(updatedPhase);
             Console.WriteLine("inserted id = {0}", id);
 
-            Service.Instance.PhaseList.Single(p => ((int)p.Id) == (int)id).CopyIn(updatedPhase);
             parentWindow.UpdateData();
             Hide();
         }

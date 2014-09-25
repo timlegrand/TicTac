@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
@@ -15,9 +16,11 @@ namespace TicTac
 
         private readonly DAOClient _dao;
         private readonly BinaryFormatter _formatter;
+
         public List<Project> ProjectList { get; private set; }
         public List<Phase> PhaseList { get; private set; }
         public List<Architect> ArchitectList { get; private set; }
+        public List<Company> CompanyList { get; private set; }
 
         // Static constructor
         static Service()
@@ -37,6 +40,7 @@ namespace TicTac
             Program.clk.Probe("GetAllProjects");
             PhaseList = GetAllPhases();
             Program.clk.Probe("GetAllPhases");
+            CompanyList = null; // On demand only
 
             // Tell I'm ready
             Service.Ready.Set();
@@ -159,6 +163,15 @@ namespace TicTac
             }
         }
 
+        internal List<Company> GetAllCompanies()
+        {
+            if (CompanyList == null)
+            {
+                CompanyList = _dao.SelectAllCompanies();
+            }
+            return CompanyList;
+        }
+
         public void SaveAllArchitects()
         {
             using (var architectsFile = File.Open(Path.Combine(Preferences.ApplicationDataFolder, "Architects.osl"), FileMode.Create))
@@ -186,53 +199,57 @@ namespace TicTac
             }
         }
 
-        internal List<Company> GetAllCompanies()
-        {
-            return _dao.SelectAllCompanies();
-        }
-
         public int AddArchitect(Architect a)
         {
+            ArchitectList.Add(a);
             return _dao.InsertArchitect(a);
         }
 
         public int AddProject(Project p)
         {
+            ProjectList.Add(p);
             return _dao.InsertProject(p);
         }
 
         public int AddPhase(Phase p)
         {
+            PhaseList.Add(p);
             return _dao.InsertPhase(p);
         }
 
         public bool DeleteArchitect(Architect a)
         {
+            ArchitectList.Remove(ArchitectList.Single(i => i.Id == a.Id));
             return _dao.DeleteArchitect(a);
         }
 
         public bool DeleteProject(Project p)
         {
+            ProjectList.Remove(ProjectList.Single(i => i.Id == p.Id));
             return _dao.DeleteProject(p);
         }
 
         public bool DeletePhase(Phase p)
         {
+            PhaseList.Remove(PhaseList.Single(i => i.Id == p.Id));
             return _dao.DeletePhase(p);
         }
 
         internal int EditArchitect(int id, Architect architect)
         {
+            ArchitectList.Single(a => a.Id == id).CopyIn(architect);
             return _dao.UpdateArchitect(id, architect);
         }
 
         internal object EditProject(int id, Project project)
         {
+            ProjectList.Single(a => a.Id == id).CopyIn(project);
             return _dao.UpdateProject(id, project);
         }
 
         internal object EditPhase(int id, Phase phase)
         {
+            PhaseList.Single(a => a.Id == id).CopyIn(phase);
             return _dao.UpdatePhase(id, phase);
         }
     }

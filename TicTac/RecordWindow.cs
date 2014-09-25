@@ -22,13 +22,11 @@ namespace TicTac
         public RecordWindow()
         {
             // Initialize Service in another thread
-            Program.clk.Probe("Initialize Service START");
             Thread startUpThread = new Thread(delegate()
                                         {                 
                                             this._service = Service.Instance;
                                         });
             startUpThread.Start();
-            Program.clk.Probe("Initialize Service STOP");
 
             InitializeComponent();
 Program.clk.Probe("InitializeComponent");

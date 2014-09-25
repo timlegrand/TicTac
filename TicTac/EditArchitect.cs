@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace TicTac
@@ -10,17 +9,12 @@ namespace TicTac
         private readonly DatabaseViewer parentWindow;
         private Architect currentArchitect; 
         private bool updateOnly;
-        private readonly List<Company> companyList;
 
         public EditArchitect(DatabaseViewer parent)
         {
             InitializeComponent();
             this.parentWindow = parent;
-            this.companyList = Service.Instance.GetAllCompanies();
-            if (this.companyList != null && this.companyList.Count != 0)
-            {
-                this.comboBoxCompany.Items.AddRange(this.companyList.ToArray());
-            }
+            this.comboBoxCompany.Items.AddRange(Service.Instance.GetAllCompanies().ToArray());
             this.comboBoxCompany.SelectedItem = this.comboBoxCompany.Items[0];
             this.updateOnly = false;
         }
@@ -52,7 +46,6 @@ namespace TicTac
                 Service.Instance.AddArchitect(updatedArchitect);
             Console.WriteLine("inserted id = {0}", id);
 
-            Service.Instance.ArchitectList.Single(a => a.Id == id).CopyIn(updatedArchitect);
             parentWindow.UpdateData();
             Hide();
         }
