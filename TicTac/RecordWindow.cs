@@ -56,74 +56,21 @@ Program.clk.Print();
             this.ResumeLayout();
         }
 
-        // Retrieve Comboboxes data
         public void InitComboboxes()
         {
-            // Empty the ComboBoxes
-            comboBoxArchitects.DataSource = null;
-            comboBoxProjects.DataSource = null;
-            comboBoxPhases.DataSource = null;
+            InitComboboxArchitects();
+            InitComboboxProjects();
+            InitComboboxPhases();
+        }
+
+        public void InitComboboxArchitects()
+        {
             comboBoxArchitects.Items.Clear();
-            comboBoxProjects.Items.Clear();
-            comboBoxPhases.Items.Clear();
-
-            // Fill in the ComboBoxes
-            if (_service.ProjectList != null && _service.ProjectList.Count() != 0)
-            {
-                // Sort descending
-                _service.ProjectList.Sort((p1,p2)=>p1.Name.CompareTo(p2.Name));
-                _service.ProjectList.Reverse();
-                comboBoxProjects.DataSource = _service.ProjectList;
-                comboBoxProjects.DisplayMember = "Name";
-                comboBoxProjects.ValueMember = "Id";
-                if (_prefs.LastProject != null)
-                {
-                    int i;
-                    for ( i = 0; i < comboBoxProjects.Items.Count; i++)
-                    {
-                        var p = (Project)comboBoxProjects.Items[i];
-                        if (_prefs.LastProject.Equals(p))
-                        {
-                            comboBoxProjects.SelectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    comboBoxProjects.SelectedIndex = 0;
-                }
-            }
-            Program.clk.Probe("ProjectList");
-
-            if (_service.PhaseList != null && _service.PhaseList.Count() != 0)
-            {
-                // Sort ascending
-                _service.PhaseList.Sort((p1, p2) => p1.Name.CompareTo(p2.Name));
-                comboBoxPhases.DataSource = _service.PhaseList;
-                if (_prefs.LastPhase != null)
-                {
-                    int i;
-                    for ( i = 0; i < comboBoxPhases.Items.Count; i++)
-                    {
-                        if (_prefs.LastPhase.Equals((Phase)comboBoxPhases.Items[i]))
-                        {
-                            comboBoxPhases.SelectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    comboBoxPhases.SelectedIndex = 0;
-                }
-            }
-            Program.clk.Probe("PhaseList");
-
+         
             if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
                 comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
-                //comboBoxArchitects.DataSource = _service.ArchitectList;
+               
                 // Must be done LAST because of event management
                 if (_prefs.LastArchitect != null)
                 {
@@ -144,6 +91,70 @@ Program.clk.Print();
                 }
             }
             Program.clk.Probe("ArchitectList");
+        }
+
+        public void InitComboboxProjects()
+        {
+            comboBoxProjects.DataSource = null;
+            comboBoxProjects.Items.Clear();
+
+            if (_service.ProjectList != null && _service.ProjectList.Count() != 0)
+            {
+                // Sort descending
+                _service.ProjectList.Sort((p1,p2)=>p1.Name.CompareTo(p2.Name));
+                _service.ProjectList.Reverse();
+                comboBoxProjects.DataSource = _service.ProjectList;
+                comboBoxProjects.DisplayMember = "Name";
+                comboBoxProjects.ValueMember = "Id";
+                if (_prefs.LastProject != null)
+                {
+                    int i;
+                    for (i = 0; i < comboBoxProjects.Items.Count; i++)
+                    {
+                        var p = (Project)comboBoxProjects.Items[i];
+                        if (_prefs.LastProject.Equals(p))
+                        {
+                            comboBoxProjects.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    comboBoxProjects.SelectedIndex = 0;
+                }
+            }
+            Program.clk.Probe("ProjectList");
+        }
+
+        public void InitComboboxPhases()
+        {
+            comboBoxPhases.DataSource = null;
+            comboBoxPhases.Items.Clear();    
+
+            if (_service.PhaseList != null && _service.PhaseList.Count() != 0)
+            {
+                // Sort ascending
+                _service.PhaseList.Sort((p1, p2) => p1.Name.CompareTo(p2.Name));
+                comboBoxPhases.DataSource = _service.PhaseList;
+                if (_prefs.LastPhase != null)
+                {
+                    int i;
+                    for (i = 0; i < comboBoxPhases.Items.Count; i++)
+                    {
+                        if (_prefs.LastPhase.Equals((Phase)comboBoxPhases.Items[i]))
+                        {
+                            comboBoxPhases.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    comboBoxPhases.SelectedIndex = 0;
+                }
+            }
+            Program.clk.Probe("PhaseList");
         }
 
         private WorkSession RestoreSession(Architect archi)
