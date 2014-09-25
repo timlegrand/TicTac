@@ -316,7 +316,6 @@
             this.Name = "DatabaseViewer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Consulter / éditer la base";
-            this.Move += new System.EventHandler(this.OnMove);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
