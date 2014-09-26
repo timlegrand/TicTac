@@ -52,7 +52,12 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.enddate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.startdate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.duration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBoxArchitects
@@ -122,7 +127,7 @@
             // labelTotalCountHours
             // 
             this.labelTotalCountHours.AutoSize = true;
-            this.labelTotalCountHours.Location = new System.Drawing.Point(92, 152);
+            this.labelTotalCountHours.Location = new System.Drawing.Point(97, 412);
             this.labelTotalCountHours.Name = "labelTotalCountHours";
             this.labelTotalCountHours.Size = new System.Drawing.Size(37, 13);
             this.labelTotalCountHours.TabIndex = 7;
@@ -130,7 +135,7 @@
             // 
             // textBoxCountHours
             // 
-            this.textBoxCountHours.Location = new System.Drawing.Point(135, 149);
+            this.textBoxCountHours.Location = new System.Drawing.Point(140, 409);
             this.textBoxCountHours.Name = "textBoxCountHours";
             this.textBoxCountHours.ReadOnly = true;
             this.textBoxCountHours.Size = new System.Drawing.Size(92, 20);
@@ -139,7 +144,7 @@
             // 
             // textBoxCountManMonth
             // 
-            this.textBoxCountManMonth.Location = new System.Drawing.Point(135, 179);
+            this.textBoxCountManMonth.Location = new System.Drawing.Point(140, 439);
             this.textBoxCountManMonth.Name = "textBoxCountManMonth";
             this.textBoxCountManMonth.ReadOnly = true;
             this.textBoxCountManMonth.Size = new System.Drawing.Size(92, 20);
@@ -149,7 +154,7 @@
             // labelTotalCountManMonth
             // 
             this.labelTotalCountManMonth.AutoSize = true;
-            this.labelTotalCountManMonth.Location = new System.Drawing.Point(104, 182);
+            this.labelTotalCountManMonth.Location = new System.Drawing.Point(109, 442);
             this.labelTotalCountManMonth.Name = "labelTotalCountManMonth";
             this.labelTotalCountManMonth.Size = new System.Drawing.Size(25, 13);
             this.labelTotalCountManMonth.TabIndex = 9;
@@ -228,7 +233,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(233, 182);
+            this.label1.Location = new System.Drawing.Point(238, 442);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 13);
             this.label1.TabIndex = 20;
@@ -237,7 +242,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(233, 152);
+            this.label2.Location = new System.Drawing.Point(238, 412);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(39, 13);
             this.label2.TabIndex = 19;
@@ -245,7 +250,7 @@
             // 
             // editDatabaseButton
             // 
-            this.editDatabaseButton.Location = new System.Drawing.Point(12, 177);
+            this.editDatabaseButton.Location = new System.Drawing.Point(17, 437);
             this.editDatabaseButton.Name = "editDatabaseButton";
             this.editDatabaseButton.Size = new System.Drawing.Size(75, 23);
             this.editDatabaseButton.TabIndex = 21;
@@ -283,11 +288,53 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.EditArchitectButtonClick);
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.AllowUserToResizeColumns = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.enddate,
+            this.startdate,
+            this.duration});
+            this.dataGridView1.Location = new System.Drawing.Point(13, 130);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersWidth = 25;
+            this.dataGridView1.Size = new System.Drawing.Size(288, 273);
+            this.dataGridView1.TabIndex = 25;
+            // 
+            // enddate
+            // 
+            this.enddate.DataPropertyName = "enddate";
+            this.enddate.FillWeight = 73.85786F;
+            this.enddate.HeaderText = "Fin";
+            this.enddate.Name = "enddate";
+            this.enddate.Width = 21;
+            // 
+            // startdate
+            // 
+            this.startdate.DataPropertyName = "startdate";
+            this.startdate.FillWeight = 73.85786F;
+            this.startdate.HeaderText = "Début";
+            this.startdate.Name = "startdate";
+            this.startdate.Width = 21;
+            // 
+            // duration
+            // 
+            this.duration.DataPropertyName = "duration";
+            this.duration.FillWeight = 152.2843F;
+            this.duration.HeaderText = "Durée";
+            this.duration.Name = "duration";
+            this.duration.Width = 21;
+            // 
             // DatabaseViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(313, 208);
+            this.ClientSize = new System.Drawing.Size(313, 472);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
@@ -317,6 +364,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Consulter / éditer la base";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -348,5 +396,9 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn enddate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn startdate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn duration;
     }
 }

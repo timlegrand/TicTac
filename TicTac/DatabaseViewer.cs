@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+using System.ComponentModel;
 
 namespace TicTac
 {
@@ -20,6 +22,43 @@ namespace TicTac
 
             pictureBox.Hide();
             _parent = mainWindow;
+            ;
+            
+            string connectionString = "SERVER=" + TicTac.Database.DbServerIp + ";" +
+                "DATABASE=" + TicTac.Database.DbName + ";" +
+                "UID=" + TicTac.Database.DbUserName + ";" +
+                "PASSWORD=" + TicTac.Database.DbPassword + ";";
+
+            var id = (_currentArchitect != null) ? _currentArchitect.Id : 0;
+            var cmdString = "SELECT startdate, enddate FROM r_worked " +
+                            "WHERE " +
+                            "archi=" + id;
+
+            var connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            var cmd = new MySqlCommand(cmdString, connection);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+
+            DataTable data = new DataTable();
+            adapter.Fill(data);
+            
+
+            // Add a column to compute task duration
+            data.Columns.Add("duration", typeof(string));
+
+            foreach (DataRow row in data.Rows)
+            {
+                var start = DateTime.Parse(row["startdate"].ToString());
+                var end = DateTime.Parse(row["enddate"].ToString());
+                var timeSpan = end - start;
+                row["duration"] = String.Format("{0}", timeSpan.ToString());
+            }
+
+            dataGridView1.AutoGenerateColumns = false;
+            dataGridView1.DataSource = data;
+
+            dataGridView1.Sort(dataGridView1.Columns[0], System.ComponentModel.ListSortDirection.Descending);
         }
 
         private void InitializeData()
@@ -188,6 +227,16 @@ namespace TicTac
         {
             var configureForm = new ConfigureDatabase(this) { FormBorderStyle = FormBorderStyle.FixedSingle };
             configureForm.Show();
+        }
+
+        private void dataGridView1_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
