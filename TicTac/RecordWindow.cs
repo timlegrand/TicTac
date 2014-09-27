@@ -23,16 +23,14 @@ namespace TicTac
         {
             // Initialize Service in another thread
             Thread startUpThread = new Thread(delegate()
-                                        {                 
+                                        {
                                             this._service = Service.Instance;
                                         });
             startUpThread.Start();
 
             InitializeComponent();
-Program.clk.Probe("InitializeComponent");
             Initialize();
-Program.clk.Probe("Initialize");
-Program.clk.Print();
+            Program.clk.Print();
         }
 
         private void Initialize()
@@ -88,7 +86,6 @@ Program.clk.Print();
                     comboBoxArchitects.SelectedIndex = 0;
                 }
             }
-            Program.clk.Probe("ArchitectList");
         }
 
         public void InitComboboxProjects()
@@ -122,7 +119,6 @@ Program.clk.Print();
                     comboBoxProjects.SelectedIndex = 0;
                 }
             }
-            Program.clk.Probe("ProjectList");
         }
 
         public void InitComboboxPhases()
@@ -152,7 +148,6 @@ Program.clk.Print();
                     comboBoxPhases.SelectedIndex = 0;
                 }
             }
-            Program.clk.Probe("PhaseList");
         }
 
         private WorkSession RestoreSession(Architect archi)

@@ -12,7 +12,8 @@ namespace TicTac
     public sealed class Service
     {
         public static ManualResetEvent Ready;
-        private static readonly Service instance;
+        private static volatile Service instance;
+        private static object syncRoot = new Object();
 
         private readonly DAOClient _dao;
         private readonly BinaryFormatter _formatter;
@@ -25,32 +26,63 @@ namespace TicTac
         // Static constructor
         static Service()
         {
-            Service.Ready = new ManualResetEvent(false); // Should be constructed first since needed by Instance Constructor
-            Service.instance = new Service();
+            Service.Ready = new ManualResetEvent(false);
         }
 
         // Instance constructor
         private Service()
         {
+            Program.clk.Probe("REQUESTS START");
+
+            Thread ar = new Thread(delegate()
+            {
+                ArchitectList = new DAO.DbClient().SelectAllArchitects();
+            });
+            ar.Name = "GetAllArchitects";
+            ar.Start();
+
+            Thread pr = new Thread(delegate()
+            {
+                ProjectList = new DAO.DbClient().SelectAllProjects();
+            });
+            pr.Name = "GetAllProjects";
+            pr.Start();
+
+            Thread ph = new Thread(delegate()
+            {
+                PhaseList = new DAO.DbClient().SelectAllPhases();
+            });
+            ph.Name = "GetAllPhases";
+            ph.Start();
+
             _dao = new DAOClient();
             _formatter = new BinaryFormatter();
-            ArchitectList = GetAllArchitects();
-            Program.clk.Probe("GetAllArchitects");
-            ProjectList = GetAllProjects();
-            Program.clk.Probe("GetAllProjects");
-            PhaseList = GetAllPhases();
-            Program.clk.Probe("GetAllPhases");
+
+            ar.Join();
+            pr.Join();
+            ph.Join();
+            Program.clk.Probe("REQUESTS END");
+
             CompanyList = null; // On demand only
 
             // Tell I'm ready
             Service.Ready.Set();
         }
 
-        // Singleton getter
+        // Singleton getter & lazy constructor
         public static Service Instance
         {
             get
             {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new Service();
+                    }
+                }
+
                 return instance;
             }
         }

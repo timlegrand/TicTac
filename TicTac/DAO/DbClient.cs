@@ -10,37 +10,29 @@ namespace TicTac.DAO
 {
     class DbClient : DAOClientClass
     {
+        public string Server    { get; private set; }
+        public string Database  { get; private set; }
+        public string Uid       { get; private set; }
+        public string Password  { get; private set; }
         private MySqlConnection _connection;
-        public string Server    { get; set; } //TODO: WANT A PRIVATE SET
-        public string Database  { get; set; } //TODO: WANT A PRIVATE SET
-        public string Uid       { get; set; } //TODO: WANT A PRIVATE SET
-        public string Password  { get; set; } //TODO: WANT A PRIVATE SET
+        private string _connectionString;
 
         //Constructor
         public DbClient()
         {
-            Server = null;
-            Database = null;
-            Uid = null;
-            Password = null;
-            
-            //If not initialized
-            if (Server == null)
-            {
-                Server =    TicTac.Database.DbServerIp;
-                Database =  TicTac.Database.DbName;
-                Uid =       TicTac.Database.DbUserName;
-                Password =  TicTac.Database.DbPassword;
-            }
-            
+            Server =    TicTac.Database.DbServerIp;
+            Database =  TicTac.Database.DbName;
+            Uid =       TicTac.Database.DbUserName;
+            Password =  TicTac.Database.DbPassword;
+
             Initialize();
         }
 
         //Initialize values
         private void Initialize()
         {
-            string connectionString = "SERVER=" + Server + ";" + "DATABASE=" + Database + ";" + "UID=" + Uid + ";" + "PASSWORD=" + Password + ";";
-            _connection = new MySqlConnection(connectionString);
+            _connectionString = "SERVER=" + Server + ";" + "DATABASE=" + Database + ";" + "UID=" + Uid + ";" + "PASSWORD=" + Password + ";";
+            _connection = new MySqlConnection(_connectionString);
         }
 
         //open connection to database
