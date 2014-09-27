@@ -30,7 +30,7 @@ namespace TicTac
                 "PASSWORD=" + TicTac.Database.DbPassword + ";";
 
             var id = (_currentArchitect != null) ? _currentArchitect.Id : 0;
-            var cmdString = "SELECT startdate, enddate FROM r_worked " +
+            var cmdString = "SELECT id, startdate, enddate FROM r_worked " +
                             "WHERE " +
                             "archi=" + id;
 
