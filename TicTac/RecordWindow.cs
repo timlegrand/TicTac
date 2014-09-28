@@ -44,7 +44,7 @@ namespace TicTac
             Location = _prefs.StartLocation;
 
             // Following needs Service to be initialized
-            Service.Ready.WaitOne();
+            Service.Ready();
 
             this.SuspendLayout();
             InitComboboxes();

@@ -11,7 +11,7 @@ namespace TicTac
     // Singleton
     public sealed class Service
     {
-        public static ManualResetEvent Ready;
+        private static ManualResetEvent ready;
         private static volatile Service instance;
         private static object syncRoot = new Object();
 
@@ -26,47 +26,7 @@ namespace TicTac
         // Static constructor
         static Service()
         {
-            Service.Ready = new ManualResetEvent(false);
-        }
-
-        // Instance constructor
-        private Service()
-        {
-            Program.clk.Probe("REQUESTS START");
-
-            Thread ar = new Thread(delegate()
-            {
-                ArchitectList = new DAO.DbClient().SelectAllArchitects();
-            });
-            ar.Name = "GetAllArchitects";
-            ar.Start();
-
-            Thread pr = new Thread(delegate()
-            {
-                ProjectList = new DAO.DbClient().SelectAllProjects();
-            });
-            pr.Name = "GetAllProjects";
-            pr.Start();
-
-            Thread ph = new Thread(delegate()
-            {
-                PhaseList = new DAO.DbClient().SelectAllPhases();
-            });
-            ph.Name = "GetAllPhases";
-            ph.Start();
-
-            _dao = new DAOClient();
-            _formatter = new BinaryFormatter();
-
-            ar.Join();
-            pr.Join();
-            ph.Join();
-            Program.clk.Probe("REQUESTS END");
-
-            CompanyList = null; // On demand only
-
-            // Tell I'm ready
-            Service.Ready.Set();
+            Service.ready = new ManualResetEvent(false);
         }
 
         // Singleton getter & lazy constructor
@@ -85,6 +45,45 @@ namespace TicTac
 
                 return instance;
             }
+        }
+
+        // Instance constructor
+        private Service()
+        {
+            Program.clk.Probe("REQUESTS START");
+
+            Thread ar = new Thread(delegate()
+            {
+                ArchitectList = new DAOClient().SelectAllArchitects();
+            });
+            ar.Name = "GetAllArchitects";
+            ar.Start();
+
+            Thread pr = new Thread(delegate()
+            {
+                ProjectList = new DAOClient().SelectAllProjects();
+            });
+            pr.Name = "GetAllProjects";
+            pr.Start();
+
+            Thread ph = new Thread(delegate()
+            {
+                PhaseList = new DAOClient().SelectAllPhases();
+            });
+            ph.Name = "GetAllPhases";
+            ph.Start();
+
+            _dao = new DAOClient();
+            _formatter = new BinaryFormatter();
+
+            ar.Join();
+            pr.Join();
+            ph.Join();
+            Program.clk.Probe("REQUESTS END");
+
+            CompanyList = null; // On demand only
+
+            Service.ready.Set(); // Tell I'm ready
         }
 
         internal List<WorkSession> GetStartedWorkSessions(Architect archi)
@@ -280,6 +279,11 @@ namespace TicTac
         {
             PhaseList.Single(a => a.Id == id).CopyIn(phase);
             return _dao.UpdatePhase(id, phase);
+        }
+
+        internal static void Ready()
+        {
+            ready.WaitOne();
         }
     }
 }
