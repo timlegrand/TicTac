@@ -11,8 +11,9 @@ namespace TicTac
     // Singleton
     public sealed class Service
     {
-        public static ManualResetEvent Ready;
-        private static readonly Service instance;
+        private static ManualResetEvent ready;
+        private static volatile Service instance;
+        private static object syncRoot = new Object();
 
         private readonly DAOClient _dao;
         private readonly BinaryFormatter _formatter;
@@ -25,34 +26,64 @@ namespace TicTac
         // Static constructor
         static Service()
         {
-            Service.Ready = new ManualResetEvent(false); // Should be constructed first since needed by Instance Constructor
-            Service.instance = new Service();
+            Service.ready = new ManualResetEvent(false);
+        }
+
+        // Singleton getter & lazy constructor
+        public static Service Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new Service();
+                    }
+                }
+
+                return instance;
+            }
         }
 
         // Instance constructor
         private Service()
         {
+            Program.clk.Probe("REQUESTS START");
+
+            Thread ar = new Thread(delegate()
+            {
+                ArchitectList = new DAOClient().SelectAllArchitects();
+            });
+            ar.Name = "GetAllArchitects";
+            ar.Start();
+
+            Thread pr = new Thread(delegate()
+            {
+                ProjectList = new DAOClient().SelectAllProjects();
+            });
+            pr.Name = "GetAllProjects";
+            pr.Start();
+
+            Thread ph = new Thread(delegate()
+            {
+                PhaseList = new DAOClient().SelectAllPhases();
+            });
+            ph.Name = "GetAllPhases";
+            ph.Start();
+
             _dao = new DAOClient();
             _formatter = new BinaryFormatter();
-            ArchitectList = GetAllArchitects();
-            Program.clk.Probe("GetAllArchitects");
-            ProjectList = GetAllProjects();
-            Program.clk.Probe("GetAllProjects");
-            PhaseList = GetAllPhases();
-            Program.clk.Probe("GetAllPhases");
+
+            ar.Join();
+            pr.Join();
+            ph.Join();
+            Program.clk.Probe("REQUESTS END");
+
             CompanyList = null; // On demand only
 
-            // Tell I'm ready
-            Service.Ready.Set();
-        }
-
-        // Singleton getter
-        public static Service Instance
-        {
-            get
-            {
-                return instance;
-            }
+            Service.ready.Set(); // Tell I'm ready
         }
 
         internal List<WorkSession> GetStartedWorkSessions(Architect archi)
@@ -248,6 +279,11 @@ namespace TicTac
         {
             PhaseList.Single(a => a.Id == id).CopyIn(phase);
             return _dao.UpdatePhase(id, phase);
+        }
+
+        internal static void Ready()
+        {
+            ready.WaitOne();
         }
     }
 }

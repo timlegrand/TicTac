@@ -17,11 +17,6 @@ namespace TicTac
             _mq = new MessageQueue();
         }
 
-        public DbClient getDb()
-        {
-            return _db;
-        }
-
         // This method may switch the _service internal variable between _service and _mq
         // according to current connectivity state
         private void SwitchDAO()
