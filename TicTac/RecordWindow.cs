@@ -21,15 +21,10 @@ namespace TicTac
         //Constructor
         public RecordWindow()
         {
-            // Initialize Service in another thread
-            Thread startUpThread = new Thread(delegate()
-                                        {
-                                            this._service = Service.Instance;
-                                        });
-            startUpThread.Start();
-
+            _service = Service.Instance;
             InitializeComponent();
             Initialize();
+
             Program.clk.Print();
         }
 
@@ -45,6 +40,7 @@ namespace TicTac
 
             // Following needs Service to be initialized
             Service.Ready();
+            Program.clk.Probe("SERVICE READY");
 
             this.SuspendLayout();
             InitComboboxes();

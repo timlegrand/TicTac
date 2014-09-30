@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows.Forms;
 
 
@@ -15,6 +14,10 @@ namespace TicTac
         static void Main()
         {
             clk = new WallClock();
+            Program.clk.Probe("PROGRAM START");
+
+            // Initialize Service in another thread
+            Service.StartAsync();
 
             // Check if an Internet connection is available
             CheckDatabaseConnexionAvailable(null);
