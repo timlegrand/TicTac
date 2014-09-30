@@ -50,6 +50,9 @@ namespace TicTac
             InitComboboxes();
             InitButtons();
             this.ResumeLayout();
+
+            // Retrieve current WS if any
+            ComboBoxArchitectsSelectionChangeCommited(null, null);
         }
 
         public void InitComboboxes()
