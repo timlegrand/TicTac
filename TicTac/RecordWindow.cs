@@ -14,18 +14,14 @@ namespace TicTac
         private Service _service;
         private Preferences _prefs;
         private WorkSession _ws;
-        private System.Timers.Timer _timer;
-        private ResumableStopwatch _stopWatch;
+        private TicTimer _ticTimer;
 
         //Constructor
         public RecordWindow()
         {
             _service = Service.Instance;
 
-            _timer = new System.Timers.Timer();
-            _timer.Interval = 1000; //In milliseconds here
-            _timer.AutoReset = true; //Stops it from repeating
-            _timer.Start();
+            _ticTimer = new TicTimer(OnTimerTickEvent);
 
             InitializeComponent();
             Initialize();
@@ -48,10 +44,10 @@ namespace TicTac
         void OnTimerTickEvent(object sender, System.Timers.ElapsedEventArgs e)
         {
             var s = string.Format("{0:0} jour(s) et {1:00}:{2:00}:{3:00}",
-                _stopWatch.Elapsed.TotalDays,
-                _stopWatch.Elapsed.Hours,
-                _stopWatch.Elapsed.Minutes,
-                _stopWatch.Elapsed.Seconds);
+                _ticTimer.Elapsed.TotalDays,
+                _ticTimer.Elapsed.Hours,
+                _ticTimer.Elapsed.Minutes,
+                _ticTimer.Elapsed.Seconds);
 
             SetLabelTimeText(s);
         }
@@ -207,10 +203,7 @@ namespace TicTac
                 if (matchingPhases.Count() != 1) throw new DataException();
                 comboBoxPhases.SelectedItem = matchingPhases.First();
 
-                //_ticTimer.Resume();
-                _stopWatch = new ResumableStopwatch(DateTime.Now - session.StartTime);
-                _stopWatch.Start();
-                _timer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimerTickEvent);
+                _ticTimer.Resume(DateTime.Now - session.StartTime);
 
                 comboBoxProjects.Enabled = false;
                 comboBoxPhases.Enabled = false;
@@ -286,9 +279,7 @@ namespace TicTac
             _ws.StartTime = DateTime.Now;
             _service.StartWorkSession(_ws);
 
-            _stopWatch = new ResumableStopwatch();
-            _stopWatch.Start();
-            _timer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimerTickEvent);
+            _ticTimer.Start();
 
             comboBoxProjects.Enabled = false;
             comboBoxPhases.Enabled = false;
@@ -303,9 +294,7 @@ namespace TicTac
             _ws.StopTime = DateTime.Now;
             _service.EndWorkSession(_ws);
 
-            _stopWatch.Stop();
-            _stopWatch.Reset();
-            _timer.Elapsed -= new System.Timers.ElapsedEventHandler(OnTimerTickEvent);
+            _ticTimer.Stop();
 
             comboBoxProjects.Enabled = true;
             comboBoxPhases.Enabled = true;
