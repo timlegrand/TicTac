@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ResumableStopwatch.cs" />
     <Compile Include="EditProject.cs">
       <SubType>Form</SubType>
     </Compile>

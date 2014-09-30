@@ -6,9 +6,6 @@ using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
 
-// tried to implement second method from http://msdn.microsoft.com/en-us/library/ms171728(v=vs.80).aspx
-// DOES NOT WORK
-// (first method works)
 
 namespace TicTac
 {
@@ -17,15 +14,46 @@ namespace TicTac
         private Service _service;
         private Preferences _prefs;
         private WorkSession _ws;
+        private System.Timers.Timer _timer;
+        private ResumableStopwatch _stopWatch;
 
         //Constructor
         public RecordWindow()
         {
             _service = Service.Instance;
+
+            _timer = new System.Timers.Timer();
+            _timer.Interval = 1000; //In milliseconds here
+            _timer.AutoReset = true; //Stops it from repeating
+            _timer.Start();
+
             InitializeComponent();
             Initialize();
 
             Program.clk.Print();
+        }
+
+        private delegate void SetLabelTimeTextDelegate(string newLabel);
+        private void SetLabelTimeText(string newLabel)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new SetLabelTimeTextDelegate(SetLabelTimeText), new object[] {newLabel});
+                return;
+            }
+
+            this.labelTime.Text = String.Format("{0}", newLabel);
+        }
+
+        void OnTimerTickEvent(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var s = string.Format("{0:0} jour(s) et {1:00}:{2:00}:{3:00}",
+                _stopWatch.Elapsed.TotalDays,
+                _stopWatch.Elapsed.Hours,
+                _stopWatch.Elapsed.Minutes,
+                _stopWatch.Elapsed.Seconds);
+
+            SetLabelTimeText(s);
         }
 
         private void Initialize()
@@ -151,19 +179,24 @@ namespace TicTac
 
         private WorkSession RestoreSession(Architect archi)
         {
-            // TODO make file-based session available !!
-            if (!Program.DatabaseConnexionAvailable) return null;
+            if (!Program.DatabaseConnexionAvailable)
+            {
+                throw new NotImplementedException(@"file-based session not yet implemented");
+            }
+
             // 1- Try to retrieve one single open Session in DB
-            var sessions = _service.GetStartedWorkSessions(archi);
-            var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
-            //var session = (Session) from s in sessions where s.Architect.Id == LastArchitect.Id select s;
+            var session = _service.GetStartedWorkSessions(archi).SingleOrDefault<WorkSession>();
             if (session == null)
             {
-                //TODO 2- If none try to retrieve last work Session info from XML
                 comboBoxProjects.Enabled = true;
                 comboBoxPhases.Enabled = true;
             }
-            else if(session.IsValid())
+            else
+            {
+                //TODO 2- If none try to retrieve last work Session info from XML
+            }
+
+            if(session != null && session.IsValid())
             {
                 Console.WriteLine(@"Running session found:");
                 Utils.Vardump.dump(session);
@@ -173,10 +206,16 @@ namespace TicTac
                 var matchingPhases = (from phase in _service.PhaseList where phase.Id == session.Phase.Id select phase).ToList();
                 if (matchingPhases.Count() != 1) throw new DataException();
                 comboBoxPhases.SelectedItem = matchingPhases.First();
+
+                //_ticTimer.Resume();
+                _stopWatch = new ResumableStopwatch(DateTime.Now - session.StartTime);
+                _stopWatch.Start();
+                _timer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimerTickEvent);
+
                 comboBoxProjects.Enabled = false;
                 comboBoxPhases.Enabled = false;
             }
-            // 3- If not let set all to defaults //TODO to make sure about behavior
+
             InitButtons();
             return session;
         }
@@ -245,11 +284,14 @@ namespace TicTac
                 return;
             }
             _ws.StartTime = DateTime.Now;
-
             _service.StartWorkSession(_ws);
+
+            _stopWatch = new ResumableStopwatch();
+            _stopWatch.Start();
+            _timer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimerTickEvent);
+
             comboBoxProjects.Enabled = false;
             comboBoxPhases.Enabled = false;
-            
             buttonStart.Enabled = false;
             buttonStop.Enabled = true;
 
@@ -259,15 +301,11 @@ namespace TicTac
         private void ButtonStopClick(object sender, EventArgs e)
         {
             _ws.StopTime = DateTime.Now;
-            var elapsedTime = _ws.StopTime - _ws.StartTime;
-            labelTime.Text =
-                string.Format("{0:0}j {1:00}:{2:00}:{3:00}",
-                elapsedTime.TotalDays,
-                elapsedTime.Hours, 
-                elapsedTime.Minutes,
-                elapsedTime.Seconds);
-            
             _service.EndWorkSession(_ws);
+
+            _stopWatch.Stop();
+            _stopWatch.Reset();
+            _timer.Elapsed -= new System.Timers.ElapsedEventHandler(OnTimerTickEvent);
 
             comboBoxProjects.Enabled = true;
             comboBoxPhases.Enabled = true;
