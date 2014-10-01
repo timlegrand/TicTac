@@ -20,7 +20,7 @@ namespace TicTac
         public RecordWindow()
         {
             _service = Service.Instance;
-            _ticTimer = new TicTimer(OnTimerTickEvent, true);
+            _ticTimer = new TicTimer(OnTimerTickEvent, 1000, true);
 
             InitializeComponent();
             Initialize();
@@ -202,7 +202,7 @@ namespace TicTac
                 if (matchingPhases.Count() != 1) throw new DataException();
                 comboBoxPhases.SelectedItem = matchingPhases.First();
 
-                _ticTimer.Resume(DateTime.Now - session.StartTime);
+                _ticTimer.Start(DateTime.Now - session.StartTime);
 
                 comboBoxProjects.Enabled = false;
                 comboBoxPhases.Enabled = false;
