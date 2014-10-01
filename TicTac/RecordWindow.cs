@@ -20,8 +20,7 @@ namespace TicTac
         public RecordWindow()
         {
             _service = Service.Instance;
-
-            _ticTimer = new TicTimer(OnTimerTickEvent);
+            _ticTimer = new TicTimer(OnTimerTickEvent, true);
 
             InitializeComponent();
             Initialize();
@@ -38,7 +37,7 @@ namespace TicTac
                 return;
             }
 
-            this.labelTime.Text = String.Format("{0}", newLabel);
+            this.labelTime.Text = newLabel;
         }
 
         void OnTimerTickEvent(object sender, System.Timers.ElapsedEventArgs e)
@@ -276,10 +275,11 @@ namespace TicTac
                 MessageBox.Show(@"Choisissez un projet et une phase", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            _ws.StartTime = DateTime.Now;
-            _service.StartWorkSession(_ws);
 
             _ticTimer.Start();
+
+            _ws.StartTime = DateTime.Now;
+            _service.StartWorkSession(_ws);
 
             comboBoxProjects.Enabled = false;
             comboBoxPhases.Enabled = false;
@@ -291,10 +291,10 @@ namespace TicTac
         
         private void ButtonStopClick(object sender, EventArgs e)
         {
+            _ticTimer.Stop();
+
             _ws.StopTime = DateTime.Now;
             _service.EndWorkSession(_ws);
-
-            _ticTimer.Stop();
 
             comboBoxProjects.Enabled = true;
             comboBoxPhases.Enabled = true;
