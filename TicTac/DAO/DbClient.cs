@@ -698,5 +698,27 @@ namespace TicTac.DAO
             CloseConnection();
             return id;
         }
+
+        internal DataTable GetWorkSessionDataTable(int id)
+        {
+            if (OpenConnection())
+            {
+                var query = "SELECT id, startdate, enddate FROM r_worked " +
+                           "WHERE " +
+                           "archi=" + id;
+
+                var cmd = new MySqlCommand(query, _connection);
+
+                MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+
+                DataTable data = new DataTable();
+                adapter.Fill(data);
+
+                CloseConnection();
+                return data;
+            }
+
+            return null;
+        }
     }
 }

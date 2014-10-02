@@ -23,37 +23,9 @@ namespace TicTac
             busyAnimation.Hide();
             _parent = mainWindow;
             ;
-            
-            string connectionString = "SERVER=" + TicTac.Database.DbServerIp + ";" +
-                "DATABASE=" + TicTac.Database.DbName + ";" +
-                "UID=" + TicTac.Database.DbUserName + ";" +
-                "PASSWORD=" + TicTac.Database.DbPassword + ";";
 
-            var id = (_currentArchitect != null) ? _currentArchitect.Id : 0;
-            var cmdString = "SELECT id, startdate, enddate FROM r_worked " +
-                            "WHERE " +
-                            "archi=" + id;
-
-            var connection = new MySqlConnection(connectionString);
-            connection.Open();
-
-            var cmd = new MySqlCommand(cmdString, connection);
-            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
-
-            DataTable data = new DataTable();
-            adapter.Fill(data);
-            
-
-            // Add a column to compute task duration
-            data.Columns.Add("duration", typeof(string));
-
-            foreach (DataRow row in data.Rows)
-            {
-                var start = DateTime.Parse(row["startdate"].ToString());
-                var end = DateTime.Parse(row["enddate"].ToString());
-                var timeSpan = end - start;
-                row["duration"] = String.Format("{0}", timeSpan.ToString());
-            }
+            int id = (_currentArchitect != null && _currentArchitect.Id != null) ? (int)_currentArchitect.Id : 0;
+            DataTable data = Service.Instance.GetWorkSessionDataTable(id);
 
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = data;
