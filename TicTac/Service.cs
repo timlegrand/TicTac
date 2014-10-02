@@ -50,8 +50,6 @@ namespace TicTac
         // Instance constructor
         private Service()
         {
-            Program.clk.Probe("REQUESTS START");
-
             Thread ar = new Thread(delegate()
             {
                 ArchitectList = new DAOClient().SelectAllArchitects();
@@ -79,11 +77,19 @@ namespace TicTac
             ar.Join();
             pr.Join();
             ph.Join();
-            Program.clk.Probe("REQUESTS END");
 
             CompanyList = null; // On demand only
 
             Service.ready.Set(); // Tell I'm ready
+        }
+
+        public static void StartAsync()
+        {
+            Thread startUpThread = new Thread(delegate()
+            {
+                var s = Service.Instance;
+            });
+            startUpThread.Start();
         }
 
         internal List<WorkSession> GetStartedWorkSessions(Architect archi)

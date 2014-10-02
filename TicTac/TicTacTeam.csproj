@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ResumableStopwatch.cs" />
     <Compile Include="EditProject.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +103,7 @@
     <Compile Include="EditArchitect.Designer.cs">
       <DependentUpon>EditArchitect.cs</DependentUpon>
     </Compile>
+    <Compile Include="TicTimer.cs" />
     <Compile Include="Utils\Vardump.cs" />
     <Compile Include="Utils\WallClock.cs" />
     <Compile Include="DAO\SHA1Util.cs" />
