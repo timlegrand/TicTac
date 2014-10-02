@@ -48,6 +48,7 @@ namespace TicTac
             this.trayMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemReduce = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -158,12 +159,13 @@ namespace TicTac
             // notifyIconMenu
             // 
             this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.trayMenuItemConfigure,
             this.trayMenuItemOpen,
             this.trayMenuItemReduce,
+            this.trayMenuItemConfigure,
+            this.toolStripSeparator1,
             this.trayMenuItemExit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(160, 92);
+            this.notifyIconMenu.Size = new System.Drawing.Size(160, 98);
             // 
             // trayMenuItemConfigure
             // 
@@ -197,6 +199,11 @@ namespace TicTac
             this.trayMenuItemExit.Text = "Exit";
             this.trayMenuItemExit.ToolTipText = "Close TicTac";
             this.trayMenuItemExit.Click += new System.EventHandler(this.notifyIconMenuExit_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(156, 6);
             // 
             // RecordWindow
             // 
@@ -245,6 +252,7 @@ namespace TicTac
         private System.Windows.Forms.ToolStripMenuItem trayMenuItemOpen;
         private System.Windows.Forms.ToolStripMenuItem trayMenuItemReduce;
         private System.Windows.Forms.ToolStripMenuItem trayMenuItemConfigure;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 
