@@ -20,7 +20,7 @@ namespace TicTac
             InitializeComponent();
             InitializeData();
 
-            pictureBox.Hide();
+            busyAnimation.Hide();
             _parent = mainWindow;
             ;
             
@@ -88,18 +88,44 @@ namespace TicTac
             _parent.InitComboboxes();
         }
 
-        private void ButtonValidateClick(object sender, EventArgs e)
+        delegate void ShowBusyAnimationDelegate();
+        private void ShowBusyAnimation(object sender, DoWorkEventArgs e)
         {
-            pictureBox.Show();
-            //System.Threading.Thread.Sleep(2000);
+            this.BeginInvoke(new ShowBusyAnimationDelegate(busyAnimation.Show), null);
+        }
+
+        delegate void LongOperationDelegate();
+        private void LongOperation(object sender, DoWorkEventArgs e)
+        {            
             var archiId = (_currentArchitect != null) ? _currentArchitect.Id : null;
             var projectId = (_currentProject != null) ? _currentProject.Id : null;
             var phaseId = (_currentPhase != null) ? _currentPhase.Id : null;
 
             var timeSpan = Service.Instance.SelectTimeCount(archiId, projectId, phaseId);
-            textBoxCountHours.Text = String.Format("{0:0.00}", timeSpan.TotalHours);
-            textBoxCountManMonth.Text = String.Format("{0:0.00}", timeSpan.TotalDays);
-            pictureBox.Hide();
+
+            this.BeginInvoke(new UpdateTextBoxCountDelegate(UpdateTextBoxCount), timeSpan);
+        }
+
+        delegate void UpdateTextBoxCountDelegate(TimeSpan timeSpan);
+        private void UpdateTextBoxCount(TimeSpan timeSpan)
+        {
+            this.textBoxCountHours.Text = String.Format("{0:0.00}", timeSpan.TotalHours);
+            this.textBoxCountManMonth.Text = String.Format("{0:0.00}", timeSpan.TotalDays);
+        }
+                    
+        delegate void HideBusyAnimationDelegate();
+        private void HideBusyAnimation(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _parent.BeginInvoke(new HideBusyAnimationDelegate(busyAnimation.Hide), null);
+        }
+
+        private void ButtonValidateClick(object sender, EventArgs e)
+        {
+            var bgw = new BackgroundWorker();
+            bgw.DoWork += ShowBusyAnimation;
+            bgw.DoWork += LongOperation;
+            bgw.RunWorkerCompleted += HideBusyAnimation;
+            bgw.RunWorkerAsync();
         }
 
         private void AddArchitectClick(object sender, EventArgs e)
