@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.ComponentModel;
+using System.Linq;
 
 namespace TicTac
 {
@@ -14,49 +15,56 @@ namespace TicTac
         private Project _currentProject;
         private Phase _currentPhase;
         public readonly RecordWindow _parent;
+        private WorkSession WS;
 
-        public DatabaseViewer(RecordWindow mainWindow)
+        public DatabaseViewer(RecordWindow mainWindow, WorkSession worksession)
         {
             InitializeComponent();
-            InitializeData();
+
+            _parent = mainWindow;
+            this.WS = worksession;
+            _currentArchitect = this.WS.Architect ?? null;
+            _currentProject = this.WS.Project ?? null;
+            _currentPhase = this.WS.Phase ?? null;
+
+            InitializeComboboxes();
+            InitializeDataGridView();
 
             busyAnimation.Hide();
-            _parent = mainWindow;
-            ;
+        }
 
+        private void InitializeDataGridView()
+        {
             int id = (_currentArchitect != null && _currentArchitect.Id != null) ? (int)_currentArchitect.Id : 0;
             DataTable data = Service.Instance.GetWorkSessionDataTable(id);
 
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = data;
-
             dataGridView1.Sort(dataGridView1.Columns[0], System.ComponentModel.ListSortDirection.Descending);
         }
 
-        private void InitializeData()
+        private void InitializeComboboxes()
         {
-            _currentArchitect = null;
-            _currentProject = null;
-            _currentPhase = null;
-
             // Fill in the Architect, Project and Phases ComboBox
-            comboBoxArchitects.Items.Clear();
-            comboBoxArchitects.Items.Add("Tous");
             comboBoxArchitects.Items.AddRange(Service.Instance.ArchitectList.ToArray());
-            comboBoxArchitects.SelectedItem = comboBoxArchitects.Items[0];
-            comboBoxProjects.Items.Clear();
-            comboBoxProjects.Items.Add("Tous");
+            var a = comboBoxArchitects.Items.Cast<Architect>().Where(i => i.Id == _currentArchitect.Id).FirstOrDefault();
+            comboBoxArchitects.Items.Insert(0, "Tous");
+            comboBoxArchitects.SelectedItem = a ?? comboBoxArchitects.Items[0];
+
             comboBoxProjects.Items.AddRange(Service.Instance.ProjectList.ToArray());
-            comboBoxProjects.SelectedItem = comboBoxProjects.Items[0];
-            comboBoxPhases.Items.Clear();
-            comboBoxPhases.Items.Add("Tous");
+            var pr = comboBoxProjects.Items.Cast<Project>().Where(i => i.Id == _currentProject.Id).FirstOrDefault();
+            comboBoxProjects.Items.Insert(0, "Tous");
+            comboBoxProjects.SelectedItem = pr ?? comboBoxProjects.Items[0];
+
             comboBoxPhases.Items.AddRange(Service.Instance.PhaseList.ToArray());
-            comboBoxPhases.SelectedItem = comboBoxPhases.Items[0];
+            var ph = comboBoxPhases.Items.Cast<Phase>().Where(i => i.Id == _currentPhase.Id).FirstOrDefault();
+            comboBoxPhases.Items.Insert(0, "Tous");
+            comboBoxPhases.SelectedItem = ph ?? comboBoxPhases.Items[0];
         }
 
         public void UpdateData()
         {
-            InitializeData();
+            InitializeComboboxes();
             _parent.InitComboboxes();
         }
 

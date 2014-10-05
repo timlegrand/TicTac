@@ -703,8 +703,9 @@ namespace TicTac.DAO
         {
             if (OpenConnection())
             {
-                var query = "SELECT id, startdate, enddate FROM r_worked " +
+                var query = "SELECT id, startdate, enddate, TIMEDIFF(enddate, startdate) AS 'duration' FROM r_worked " +
                            "WHERE " +
+                           "enddate IS NOT NULL AND " +
                            "archi=" + id;
 
                 var cmd = new MySqlCommand(query, _connection);

@@ -2,7 +2,7 @@
 
 namespace TicTac
 {
-    class WorkSession
+    public class WorkSession
     {
         public Architect Architect { get; set; }
         public Project Project { get; set; }

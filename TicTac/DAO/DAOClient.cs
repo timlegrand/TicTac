@@ -178,19 +178,7 @@ namespace TicTac
         internal System.Data.DataTable GetWorkSessionDataTable(int id)
         {
             SwitchDAO();
-            System.Data.DataTable data = _db.GetWorkSessionDataTable(id);
-            
-            // Add a column to compute task duration
-            data.Columns.Add("duration", typeof(string));
-            foreach (System.Data.DataRow row in data.Rows)
-            {
-                var start = DateTime.Parse(row["startdate"].ToString());
-                var end = DateTime.Parse(row["enddate"].ToString());
-                var timeSpan = end - start;
-                row["duration"] = String.Format("{0}", timeSpan.ToString());
-            }
-
-            return data;
+            return _db.GetWorkSessionDataTable(id);
         }
     }
 }
