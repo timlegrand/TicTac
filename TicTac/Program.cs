@@ -6,6 +6,7 @@ namespace TicTac
 {
     static class Program
     {
+        public static string ApplicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
         public static bool DatabaseConnexionAvailable { get; private set; }
         public const bool IsDBPrefStorageAvailable = false;
         public static WallClock clk;

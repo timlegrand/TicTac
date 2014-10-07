@@ -1,42 +1,22 @@
 ﻿using System;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
-using TicTac.DAO;
-using System.Windows.Forms;
+
 
 namespace TicTac
 {
-    class Preferences
+    public class BackupPreferences : Preferences
     {
-        private const string Version = "0.7";
-        public const string PreferencesFileName = "preferences.xml";
-        public static string ApplicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
+        public static readonly string PreferencesFileName = "preferences.xml";
         public static string PreferencesFilePathAndName { get; set; }
+        private static readonly string Version = "0.7";
 
-        public Point StartLocation { get; set; }
-        public Point DefaultLocation { get; set; }
-        public Architect LastArchitect { get; set; }
-        public Project LastProject { get; set; }
-        public Phase LastPhase { get; set; }
-        private readonly RecordWindow _parent;
-
-        // Constructor
-        public Preferences(RecordWindow recordWindow)
+        static BackupPreferences()
         {
-            _parent = recordWindow;
-
-            DefaultLocation = new Point(Screen.PrimaryScreen.Bounds.Width / 2 - recordWindow.Width / 2,
-                                        Screen.PrimaryScreen.Bounds.Height / 2 - recordWindow.Height / 2);
-            StartLocation = DefaultLocation;
-            LastArchitect = null;
-            LastProject = null;
-            LastPhase = null;
-
             // Preferences file should be saved in "AppData/Roaming" folder
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
+            var path = Program.ApplicationDataFolder;
             if (!Directory.Exists(path))
             {
                 Console.WriteLine("Directory \"" + path + "\"does not exist, creating...");
@@ -45,44 +25,15 @@ namespace TicTac
             PreferencesFilePathAndName = Path.Combine(path, PreferencesFileName);
         }
 
-        public void Load()
-        {
-            if (Program.IsDBPrefStorageAvailable)
-            {
-                LoadFromDatabase();
-            }
-            else
-            {
-                LoadFromXml();
-            }
-        }
+        // Constructors
+        public BackupPreferences() : base() {}
+        public BackupPreferences(RecordWindow recordWindow) : base(recordWindow) {}
 
-        private void LoadFromDatabase()
+        public override void Save()
         {
-            throw new NotImplementedException();
-        }
-
-        public void Save()
-        {
-            if (Program.IsDBPrefStorageAvailable)
-            {
-                SaveToDatabase();
-            }
-            else
-            {
-                SaveToXml();
-            }
-        }
-
-        private void SaveToDatabase()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        // Last selection memorization
-        public void SaveToXml()
-        {
+#if (DEBUG)
+            Console.WriteLine(@"Writing " + PreferencesFileName + @"...");
+#endif
             var writer = new XmlTextWriter(PreferencesFilePathAndName, Encoding.UTF8) { Formatting = Formatting.Indented };
 
             writer.WriteStartDocument(false);
@@ -136,22 +87,24 @@ namespace TicTac
 
             // Last prefered window location
             writer.WriteStartElement("location");
-            writer.WriteAttributeString("x", _parent.Location.X.ToString(CultureInfo.InvariantCulture));
-            writer.WriteAttributeString("y", _parent.Location.Y.ToString(CultureInfo.InvariantCulture));
+            writer.WriteAttributeString("x", StartLocation.X.ToString(CultureInfo.InvariantCulture));
+            writer.WriteAttributeString("y", StartLocation.Y.ToString(CultureInfo.InvariantCulture));
             writer.WriteEndElement();
 
             writer.WriteEndElement(); // End "preferences"
 
             writer.Flush();
             writer.Close();
+#if (DEBUG)
+            Console.WriteLine(PreferencesFileName + @" written.");
+#endif
         }
 
-        public void LoadFromXml()
+        public override void Load()
         {
             if (!(File.Exists(PreferencesFilePathAndName) && (new FileInfo(PreferencesFilePathAndName).Length > 100)))
             {
-                Console.WriteLine(@"No Preferences file found or size too low (file seems to be empty).");
-                return;
+                throw new FileLoadException(@"No Preferences file found or size too low (file seems to be empty).");
             }
 
             var settings = new XmlReaderSettings
@@ -221,30 +174,18 @@ namespace TicTac
             {
                 var x = Int32.Parse(reader.GetAttribute("x") ?? "-1");
                 var y = Int32.Parse(reader.GetAttribute("y") ?? "-1");
-                BoundAndSetLocation(x, y);
+                StartLocation = BoundLocation(x, y);
             }
 
             reader.Close();
         }
 
-        private void BoundAndSetLocation(int x, int y)
-        {
-            if (x != -1 && y != -1)
-            {
-                x = (x < Screen.PrimaryScreen.Bounds.Width - _parent.Width) ? x : Screen.PrimaryScreen.Bounds.Width - _parent.Width;
-                x = (x >= 0) ? x : 0;
-                y = (y < Screen.PrimaryScreen.Bounds.Height - _parent.Height) ? y : Screen.PrimaryScreen.Bounds.Height - _parent.Height;
-                x = (x >= 0) ? x : 0;
-                StartLocation = new Point(x, y);
-            }
-        }
-
-        public bool IsValid()
+        public override bool IsValid()
         {
             return (StartLocation != null &&
-                    LastArchitect != null && LastArchitect.IsValid() &&
-                    LastProject != null && LastProject.IsValid() &&
-                    LastPhase != null && LastPhase.IsValid());
+                    LastArchitect != null && LastArchitect != null &&
+                    LastProject != null && LastProject != null &&
+                    LastPhase != null && LastPhase != null);
         }
     }
 }

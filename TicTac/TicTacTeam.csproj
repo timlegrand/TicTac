@@ -89,6 +89,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Preferences\StandardPreferences.cs" />
+    <Compile Include="Preferences\DualModePreferences.cs" />
+    <Compile Include="Preferences\BackupPreferences.cs" />
     <Compile Include="ResumableStopwatch.cs" />
     <Compile Include="EditProject.cs">
       <SubType>Form</SubType>
@@ -112,7 +115,7 @@
     <Compile Include="DAO\DAOClient.cs" />
     <Compile Include="DAO\DAOClientClass.cs" />
     <Compile Include="DAO\Defaults.cs" />
-    <Compile Include="Preferences.cs" />
+    <Compile Include="Preferences\Preferences.cs" />
     <Compile Include="Object\Company.cs" />
     <Compile Include="EditPhase.cs">
       <SubType>Form</SubType>
@@ -173,6 +176,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

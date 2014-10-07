@@ -13,7 +13,7 @@ namespace TicTac
     {
         private Service _service;
         private Preferences _prefs;
-        private WorkSession _ws;
+        public WorkSession WorkSession { get; private set; }
         private TicTimer _ticTimer;
 
         //Constructor
@@ -56,7 +56,7 @@ namespace TicTac
             this.notifyIcon.Icon = this.Icon;
 
             // Load configuration, including Default information
-            _prefs = new Preferences(this);
+            _prefs = new DualModePreferences(this);
             _prefs.Load();
             StartPosition = FormStartPosition.Manual;
             Location = _prefs.StartLocation;
@@ -88,25 +88,9 @@ namespace TicTac
             if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
                 comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
-               
-                // Must be done LAST because of event management
-                if (_prefs.LastArchitect != null)
-                {
-                    // TODO make it work with Linq (see http://msdn.microsoft.com/fr-fr/library/vstudio/system.windows.forms.combobox.objectcollection.aspx)
-                    //var item = (ComboBox.ObjectCollection) from Architect elem in comboBoxArchitects.Items
-                    //           where elem.Id == LastArchitect.Id
-                    //           select elem;
-                    var i = 0;
-                    while (i < comboBoxArchitects.Items.Count && !_prefs.LastArchitect.RefersTo((Architect)comboBoxArchitects.Items[i]))
-                    {
-                        i++;
-                    }
-                    comboBoxArchitects.SelectedIndex = i;
-                }
-                else
-                {
-                    comboBoxArchitects.SelectedIndex = 0;
-                }
+                int id = _prefs.LastArchitect != null ? _prefs.LastArchitect.Id ?? 0 : 0;
+                var item = comboBoxArchitects.Items.Cast<Architect>().Where(archi => archi.Id == id).FirstOrDefault();
+                comboBoxArchitects.SelectedItem = item ?? comboBoxArchitects.Items[0];
             }
         }
 
@@ -121,25 +105,13 @@ namespace TicTac
                 _service.ProjectList.Sort((p1,p2)=>p1.Name.CompareTo(p2.Name));
                 _service.ProjectList.Reverse();
                 comboBoxProjects.DataSource = _service.ProjectList;
-                comboBoxProjects.DisplayMember = "Name";
-                comboBoxProjects.ValueMember = "Id";
-                if (_prefs.LastProject != null)
-                {
-                    int i;
-                    for (i = 0; i < comboBoxProjects.Items.Count; i++)
-                    {
-                        var p = (Project)comboBoxProjects.Items[i];
-                        if (_prefs.LastProject.Equals(p))
-                        {
-                            comboBoxProjects.SelectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    comboBoxProjects.SelectedIndex = 0;
-                }
+                //comboBoxProjects.DisplayMember = "Name";
+                //comboBoxProjects.ValueMember = "Id";
+
+                // Reselect last project
+                var id = _prefs.LastProject != null ? _prefs.LastProject.Id ?? 0 : 0;
+                var item = comboBoxProjects.Items.Cast<Project>().Where(project => project.Id == id).FirstOrDefault();
+                comboBoxProjects.SelectedItem = item ?? comboBoxProjects.Items[0];
             }
         }
 
@@ -153,22 +125,13 @@ namespace TicTac
                 // Sort ascending
                 _service.PhaseList.Sort((p1, p2) => p1.Name.CompareTo(p2.Name));
                 comboBoxPhases.DataSource = _service.PhaseList;
-                if (_prefs.LastPhase != null)
-                {
-                    int i;
-                    for (i = 0; i < comboBoxPhases.Items.Count; i++)
-                    {
-                        if (_prefs.LastPhase.Equals((Phase)comboBoxPhases.Items[i]))
-                        {
-                            comboBoxPhases.SelectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    comboBoxPhases.SelectedIndex = 0;
-                }
+                //comboBoxProjects.DisplayMember = "Name";
+                //comboBoxProjects.ValueMember = "Id";
+
+                // Reselect last phase
+                var id = _prefs.LastPhase != null ? _prefs.LastPhase.Id ?? 0 : 0;
+                var item = comboBoxPhases.Items.Cast<Phase>().Where(phase => phase.Id == id).FirstOrDefault();
+                comboBoxPhases.SelectedItem = item ?? comboBoxPhases.Items[0];
             }
         }
 
@@ -220,7 +183,7 @@ namespace TicTac
             var session = (sessions != null && sessions.Count == 1) ? sessions[0] : null;
             if (session != null)
             {
-                _ws = session;
+                WorkSession = session;
                 buttonStart.Enabled = false;
                 buttonStop.Enabled = true;
                 notifyIcon.Icon = Properties.Resources.tictac_on;
@@ -246,7 +209,7 @@ namespace TicTac
                 Console.WriteLine(ws.ToString());
             }
 
-            _ws = RestoreSession(archi) ?? new WorkSession
+            WorkSession = RestoreSession(archi) ?? new WorkSession
                 {
                     Architect = archi,
                     Project = (Project)comboBoxProjects.SelectedItem,
@@ -256,14 +219,14 @@ namespace TicTac
         
         private void ComboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_ws == null) return;
-            _ws.Project = (Project)comboBoxProjects.SelectedItem;
+            if (WorkSession == null) return;
+            WorkSession.Project = (Project)comboBoxProjects.SelectedItem;
         }
 
         private void ComboBoxPhaseSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_ws == null) return;
-            _ws.Phase = (Phase)comboBoxPhases.SelectedItem;
+            if (WorkSession == null) return;
+            WorkSession.Phase = (Phase)comboBoxPhases.SelectedItem;
         }
 
 
@@ -278,8 +241,8 @@ namespace TicTac
 
             _ticTimer.Start();
 
-            _ws.StartTime = DateTime.Now;
-            _service.StartWorkSession(_ws);
+            WorkSession.StartTime = DateTime.Now;
+            _service.StartWorkSession(WorkSession);
 
             comboBoxProjects.Enabled = false;
             comboBoxPhases.Enabled = false;
@@ -293,8 +256,8 @@ namespace TicTac
         {
             _ticTimer.Stop();
 
-            _ws.StopTime = DateTime.Now;
-            _service.EndWorkSession(_ws);
+            WorkSession.StopTime = DateTime.Now;
+            _service.EndWorkSession(WorkSession);
 
             comboBoxProjects.Enabled = true;
             comboBoxPhases.Enabled = true;
@@ -308,7 +271,7 @@ namespace TicTac
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
-            var prefs = new Preferences(this)
+            var prefs = new DualModePreferences(this)
                 {
                     StartLocation = Location,
                     LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
@@ -316,13 +279,7 @@ namespace TicTac
                     LastPhase = (Phase)comboBoxPhases.SelectedItem,
                 };
             if (!prefs.IsValid()) return;
-#if (DEBUG)            
-            Console.WriteLine(@"Writing " + Preferences.PreferencesFileName + @"...");
-#endif
             prefs.Save();
-#if (DEBUG)
-            Console.WriteLine(Preferences.PreferencesFileName + @" written.");
-#endif
 
             // Serialize and save comboboxes content in files
             _service.SaveAllArchitects();

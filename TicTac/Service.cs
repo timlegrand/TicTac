@@ -208,7 +208,7 @@ namespace TicTac
 
         public void SaveAllArchitects()
         {
-            using (var architectsFile = File.Open(Path.Combine(Preferences.ApplicationDataFolder, "Architects.osl"), FileMode.Create))
+            using (var architectsFile = File.Open(Path.Combine(Program.ApplicationDataFolder, "Architects.osl"), FileMode.Create))
             {
                 Console.WriteLine("Ecriture de la table des architectes (dans un fichier)");
                 _formatter.Serialize(architectsFile, ArchitectList);
@@ -217,7 +217,7 @@ namespace TicTac
 
         public void SaveAllProjects()
         {
-            using (var projectsFile = File.Open(Path.Combine(Preferences.ApplicationDataFolder, "Projects.osl"), FileMode.Create))
+            using (var projectsFile = File.Open(Path.Combine(Program.ApplicationDataFolder, "Projects.osl"), FileMode.Create))
             {
                 Console.WriteLine("Ecriture de la table des projets (dans un fichier)");
                 _formatter.Serialize(projectsFile, ProjectList);
@@ -226,7 +226,7 @@ namespace TicTac
 
         public void SaveAllPhases()
         {
-            using (var phasesFile = File.Open(Path.Combine(Preferences.ApplicationDataFolder, "Phases.osl"), FileMode.Create))
+            using (var phasesFile = File.Open(Path.Combine(Program.ApplicationDataFolder, "Phases.osl"), FileMode.Create))
             {
                 Console.WriteLine("Ecriture de la table des phases (dans un fichier)");
                 _formatter.Serialize(phasesFile, PhaseList);
