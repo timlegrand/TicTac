@@ -174,5 +174,11 @@ namespace TicTac
             SwitchDAO();
             return _db.UpdatePhase(id, phase);
         }
+
+        internal System.Data.DataTable GetWorkSessionDataTable(int id)
+        {
+            SwitchDAO();
+            return _db.GetWorkSessionDataTable(id);
+        }
     }
 }

@@ -291,5 +291,10 @@ namespace TicTac
         {
             ready.WaitOne();
         }
+
+        internal System.Data.DataTable GetWorkSessionDataTable(int id)
+        {
+            return _dao.GetWorkSessionDataTable(id);
+        }
     }
 }

@@ -698,5 +698,28 @@ namespace TicTac.DAO
             CloseConnection();
             return id;
         }
+
+        internal DataTable GetWorkSessionDataTable(int id)
+        {
+            if (OpenConnection())
+            {
+                var query = "SELECT id, startdate, enddate, TIMEDIFF(enddate, startdate) AS 'duration' FROM r_worked " +
+                           "WHERE " +
+                           "enddate IS NOT NULL AND " +
+                           "archi=" + id;
+
+                var cmd = new MySqlCommand(query, _connection);
+
+                MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+
+                DataTable data = new DataTable();
+                adapter.Fill(data);
+
+                CloseConnection();
+                return data;
+            }
+
+            return null;
+        }
     }
 }

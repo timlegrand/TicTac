@@ -368,7 +368,13 @@ namespace TicTac
 
         private void trayMenuItemConfigure_Click(object sender, EventArgs e)
         {
-            var consultForm = new DatabaseViewer(this) { FormBorderStyle = FormBorderStyle.FixedSingle };
+            WorkSession ws = new WorkSession
+                                    {
+                                        Architect = (Architect)comboBoxArchitects.SelectedItem,
+                                        Project = (Project)comboBoxProjects.SelectedItem,
+                                        Phase = (Phase)comboBoxPhases.SelectedItem
+                                    };
+            var consultForm = new DatabaseViewer(this, ws) { FormBorderStyle = FormBorderStyle.FixedSingle };
             consultForm.Show();
         }
     }
