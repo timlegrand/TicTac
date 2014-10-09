@@ -57,6 +57,8 @@ namespace TicTac
 
         private void Initialize()
         {
+            this.Text += " (v " + Program.CurrentVersion + ")";
+
             this.notifyIcon.Icon = this.Icon;
 
             StartPosition = FormStartPosition.Manual;

@@ -44,11 +44,11 @@ namespace TicTac
             this.label4 = new System.Windows.Forms.Label();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.trayMenuItemConfigure = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemReduce = new System.Windows.Forms.ToolStripMenuItem();
-            this.trayMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayMenuItemConfigure = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.trayMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -167,14 +167,6 @@ namespace TicTac
             this.notifyIconMenu.Name = "notifyIconMenu";
             this.notifyIconMenu.Size = new System.Drawing.Size(160, 98);
             // 
-            // trayMenuItemConfigure
-            // 
-            this.trayMenuItemConfigure.Image = global::TicTac.Properties.Resources.configure;
-            this.trayMenuItemConfigure.Name = "trayMenuItemConfigure";
-            this.trayMenuItemConfigure.Size = new System.Drawing.Size(159, 22);
-            this.trayMenuItemConfigure.Text = "Configure";
-            this.trayMenuItemConfigure.Click += new System.EventHandler(this.trayMenuItemConfigure_Click);
-            // 
             // trayMenuItemOpen
             // 
             this.trayMenuItemOpen.Name = "trayMenuItemOpen";
@@ -191,6 +183,19 @@ namespace TicTac
             this.trayMenuItemReduce.ToolTipText = "Minimize in system tray (keep running in background)";
             this.trayMenuItemReduce.Click += new System.EventHandler(this.trayMenuItemMinimize_Click);
             // 
+            // trayMenuItemConfigure
+            // 
+            this.trayMenuItemConfigure.Image = global::TicTac.Properties.Resources.configure;
+            this.trayMenuItemConfigure.Name = "trayMenuItemConfigure";
+            this.trayMenuItemConfigure.Size = new System.Drawing.Size(159, 22);
+            this.trayMenuItemConfigure.Text = "Configure";
+            this.trayMenuItemConfigure.Click += new System.EventHandler(this.trayMenuItemConfigure_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(156, 6);
+            // 
             // trayMenuItemExit
             // 
             this.trayMenuItemExit.Image = global::TicTac.Properties.Resources.power;
@@ -199,11 +204,6 @@ namespace TicTac
             this.trayMenuItemExit.Text = "Exit";
             this.trayMenuItemExit.ToolTipText = "Close TicTac";
             this.trayMenuItemExit.Click += new System.EventHandler(this.notifyIconMenuExit_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(156, 6);
             // 
             // RecordWindow
             // 
@@ -225,7 +225,7 @@ namespace TicTac
             this.MaximizeBox = false;
             this.Name = "RecordWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TicTac (v 0.1)";
+            this.Text = "TicTac";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.RecordWindowFormClosed);
             this.Resize += new System.EventHandler(this.RecordWindow_Resize);
             this.notifyIconMenu.ResumeLayout(false);
