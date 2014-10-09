@@ -19,7 +19,11 @@ namespace TicTac
         //Constructor
         public RecordWindow()
         {
-            _service = Service.Instance;
+            // Load configuration, including Default information
+            _prefs = new DualModePreferences(this);
+            _prefs.Load();
+
+            Service.StartAsync();
             _ticTimer = new TicTimer(OnTimerTickEvent, 1000, true);
 
             InitializeComponent();
@@ -55,14 +59,12 @@ namespace TicTac
         {
             this.notifyIcon.Icon = this.Icon;
 
-            // Load configuration, including Default information
-            _prefs = new DualModePreferences(this);
-            _prefs.Load();
             StartPosition = FormStartPosition.Manual;
             Location = _prefs.StartLocation;
 
             // Following needs Service to be initialized
             Service.Ready();
+            _service = Service.Instance;
             Program.clk.Probe("SERVICE READY");
 
             this.SuspendLayout();
@@ -137,7 +139,7 @@ namespace TicTac
 
         private WorkSession RestoreSession(Architect archi)
         {
-            if (!Program.DatabaseConnexionAvailable)
+            if (!ConnectionPing.DatabaseConnexionAvailable)
             {
                 throw new NotImplementedException(@"file-based session not yet implemented");
             }
@@ -200,7 +202,6 @@ namespace TicTac
         // ComboBox selection
         private void ComboBoxArchitectsSelectionChangeCommited(object sender, EventArgs e)
         {
-            Console.WriteLine("ComboBoxArchitectsSelectionChangeCommited");
             var archi = (Architect)comboBoxArchitects.SelectedItem;
 
             var daily = _service.GetDailyWorkSessions(archi);

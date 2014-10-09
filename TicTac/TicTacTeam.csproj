@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionPing.cs" />
     <Compile Include="Preferences\StandardPreferences.cs" />
     <Compile Include="Preferences\DualModePreferences.cs" />
     <Compile Include="Preferences\BackupPreferences.cs" />
@@ -114,7 +115,7 @@
     <Compile Include="Service.cs" />
     <Compile Include="DAO\DAOClient.cs" />
     <Compile Include="DAO\DAOClientClass.cs" />
-    <Compile Include="DAO\Defaults.cs" />
+    <Compile Include="DAO\Database.cs" />
     <Compile Include="Preferences\Preferences.cs" />
     <Compile Include="Object\Company.cs" />
     <Compile Include="EditPhase.cs">

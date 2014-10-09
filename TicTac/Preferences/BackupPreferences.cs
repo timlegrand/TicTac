@@ -44,13 +44,13 @@ namespace TicTac
             writer.WriteAttributeString("version", Version);
 
             // Database info
-            if (Database.DbPassword != null)
+            if (Database.Password != null)
             {
                 writer.WriteStartElement("database");
-                writer.WriteAttributeString("name", Database.DbName);
-                writer.WriteAttributeString("address", Database.DbServerIp);
-                writer.WriteAttributeString("userName", Database.DbUserName);
-                writer.WriteAttributeString("password", Database.DbPassword);
+                writer.WriteAttributeString("name", Database.Name);
+                writer.WriteAttributeString("address", Database.ServerAddress);
+                writer.WriteAttributeString("userName", Database.UserName);
+                writer.WriteAttributeString("password", Database.Password);
                 writer.WriteEndElement();
             }
 
@@ -135,10 +135,10 @@ namespace TicTac
             // Database info
             if (reader.ReadToFollowing("database"))
             {
-                Database.DbName = reader.GetAttribute("name");
-                Database.DbServerIp = reader.GetAttribute("address");
-                Database.DbUserName = reader.GetAttribute("userName");
-                Database.DbPassword = reader.GetAttribute("password");
+                Database.Name = reader.GetAttribute("name");
+                Database.ServerAddress = reader.GetAttribute("address");
+                Database.UserName = reader.GetAttribute("userName");
+                Database.Password = reader.GetAttribute("password");
             }
 
             // Last working architect

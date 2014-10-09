@@ -54,21 +54,18 @@ namespace TicTac
             {
                 ArchitectList = new DAOClient().SelectAllArchitects();
             });
-            ar.Name = "GetAllArchitects";
             ar.Start();
 
             Thread pr = new Thread(delegate()
             {
                 ProjectList = new DAOClient().SelectAllProjects();
             });
-            pr.Name = "GetAllProjects";
             pr.Start();
 
             Thread ph = new Thread(delegate()
             {
                 PhaseList = new DAOClient().SelectAllPhases();
             });
-            ph.Name = "GetAllPhases";
             ph.Start();
 
             _dao = new DAOClient();
@@ -145,7 +142,7 @@ namespace TicTac
 
         public List<Architect> GetAllArchitects()
         {
-            if (Program.DatabaseConnexionAvailable)
+            if (ConnectionPing.DatabaseConnexionAvailable)
             {
                 // Retrieve data from server
                 ArchitectList = _dao.SelectAllArchitects();
@@ -165,7 +162,7 @@ namespace TicTac
 
         public List<Project> GetAllProjects()
         {
-            if (Program.DatabaseConnexionAvailable)
+            if (ConnectionPing.DatabaseConnexionAvailable)
             {
                 ProjectList = _dao.SelectAllProjects();
             }
@@ -182,7 +179,7 @@ namespace TicTac
 
         public List<Phase> GetAllPhases()
         {
-            if (Program.DatabaseConnexionAvailable)
+            if (ConnectionPing.DatabaseConnexionAvailable)
             {
                 PhaseList = _dao.SelectAllPhases();
             }
@@ -199,7 +196,7 @@ namespace TicTac
 
         internal List<Company> GetAllCompanies()
         {
-            if (CompanyList == null && Program.DatabaseConnexionAvailable)
+            if (CompanyList == null && ConnectionPing.DatabaseConnexionAvailable)
             {
                 CompanyList = _dao.SelectAllCompanies();
             }
@@ -287,9 +284,16 @@ namespace TicTac
             return _dao.UpdatePhase(id, phase);
         }
 
-        internal static void Ready()
+        public bool IsReady()
         {
-            ready.WaitOne();
+            // Non-blocking check
+            return ready.WaitOne(0);
+        }
+
+        internal static bool Ready()
+        {
+            // Blocking check
+            return ready.WaitOne();
         }
 
         internal System.Data.DataTable GetWorkSessionDataTable(int id)

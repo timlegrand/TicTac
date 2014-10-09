@@ -21,7 +21,7 @@ namespace TicTac
         // according to current connectivity state
         private void SwitchDAO()
         {
-            if (Program.DatabaseConnexionAvailable)
+            if (ConnectionPing.CheckDatabaseConnexionAvailable(Database.ServerAddress))
             {
                 // Check and process waiting messages if any
                 //_mq.ProcessWaitingMessages();

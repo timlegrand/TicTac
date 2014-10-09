@@ -13,6 +13,11 @@ namespace TicTac
         public Architect LastArchitect { get; set; }
         public Project LastProject { get; set; }
         public Phase LastPhase { get; set; }
+        public string DbServerAddress { get; set; }
+        public string DbName { get; set; }
+        public string DbUserName { get; set; }
+        public string DbPassword { get; set; }
+
         protected readonly RecordWindow _parent = null;
 
         // Constructor
@@ -37,6 +42,11 @@ namespace TicTac
 
                 // If WorkSession exists consider that RecordWindow location is apporved by user
                 StartLocation = recordWindow.Location;
+
+                DbServerAddress = Database.ServerAddress;
+                DbName = Database.Name;
+                DbUserName = Database.UserName;
+                DbPassword = Database.Password;
             }
         }
 

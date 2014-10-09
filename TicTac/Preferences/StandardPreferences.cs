@@ -18,10 +18,10 @@ namespace TicTac
         {
             StartLocation = Properties.Settings.Default.Location;
 
-            Database.DbName = Properties.Settings.Default.DbName;
-            Database.DbServerIp = Properties.Settings.Default.DbAddress;
-            Database.DbUserName = Properties.Settings.Default.DbUserName;
-            Database.DbPassword = Properties.Settings.Default.DbPassword;
+            Database.Name = Properties.Settings.Default.DbName;
+            Database.ServerAddress = Properties.Settings.Default.DbAddress;
+            Database.UserName = Properties.Settings.Default.DbUserName;
+            Database.Password = Properties.Settings.Default.DbPassword;
 
             LastArchitect = new Architect() { Id = Properties.Settings.Default.ArchitectId };
             LastProject = new Project() { Id = Properties.Settings.Default.ProjectId };
@@ -32,10 +32,10 @@ namespace TicTac
         {
             Properties.Settings.Default.Location = StartLocation;
 
-            Properties.Settings.Default.DbName = Database.DbName;
-            Properties.Settings.Default.DbAddress = Database.DbServerIp;
-            Properties.Settings.Default.DbUserName = Database.DbUserName;
-            Properties.Settings.Default.DbPassword = Database.DbPassword;
+            Properties.Settings.Default.DbName = Database.Name;
+            Properties.Settings.Default.DbAddress = Database.ServerAddress;
+            Properties.Settings.Default.DbUserName = Database.UserName;
+            Properties.Settings.Default.DbPassword = Database.Password;
 
             Properties.Settings.Default.ArchitectId = LastArchitect.Id ?? 0;
             Properties.Settings.Default.ProjectId = LastProject.Id ?? 0;

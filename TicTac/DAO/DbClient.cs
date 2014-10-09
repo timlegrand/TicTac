@@ -20,10 +20,10 @@ namespace TicTac.DAO
         //Constructor
         public DbClient()
         {
-            Server =    TicTac.Database.DbServerIp;
-            Database =  TicTac.Database.DbName;
-            Uid =       TicTac.Database.DbUserName;
-            Password =  TicTac.Database.DbPassword;
+            Server =    TicTac.Database.ServerAddress;
+            Database =  TicTac.Database.Name;
+            Uid =       TicTac.Database.UserName;
+            Password =  TicTac.Database.Password;
 
             Initialize();
         }
@@ -205,7 +205,6 @@ namespace TicTac.DAO
                             startString + endString +
 #if (DEBUG)
                             "test=1";
-            Console.WriteLine(cmdString);
 #else
                             "test=0";
 #endif

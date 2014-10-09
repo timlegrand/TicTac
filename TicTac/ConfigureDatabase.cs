@@ -16,9 +16,9 @@ namespace TicTac
             InitializeComponent();
 
             _parent = consult;
-            textBoxServer.Text   = Database.DbServerIp;
-            textBoxDatabase.Text = Database.DbName;
-            textBoxUserName.Text = Database.DbUserName;
+            textBoxServer.Text   = Database.ServerAddress;
+            textBoxDatabase.Text = Database.Name;
+            textBoxUserName.Text = Database.UserName;
             textBoxPassword.Text = "*********";
             hPassword = null;
         }
@@ -33,7 +33,7 @@ namespace TicTac
                 MessageBox.Show(@"Veuillez renseigner tous les champs", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            if (!Program.CheckDatabaseConnexionAvailable(textBoxServer.Text))
+            if (!ConnectionPing.CheckDatabaseConnexionAvailable(textBoxServer.Text))
             {
                 MessageBox.Show(@"Base de données inaccessible. Vérifiez l'adresse ou le nom du serveur, ou bien vérifiez que celui-ci est démarré.", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -45,10 +45,10 @@ namespace TicTac
        
         private void PropagateDatabaseConfiguration()
         {
-            Database.DbServerIp = textBoxServer.Text;
-            Database.DbName     = textBoxDatabase.Text;
-            Database.DbUserName = textBoxUserName.Text;
-            Database.DbPassword = hPassword;
+            Database.ServerAddress = textBoxServer.Text;
+            Database.Name     = textBoxDatabase.Text;
+            Database.UserName = textBoxUserName.Text;
+            Database.Password = hPassword;
         }
 
         private bool IsValid()
