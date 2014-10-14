@@ -89,7 +89,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionPing.cs" />
     <Compile Include="Preferences\StandardPreferences.cs" />
     <Compile Include="Preferences\DualModePreferences.cs" />
     <Compile Include="Preferences\BackupPreferences.cs" />
@@ -178,7 +177,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="Properties\app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>

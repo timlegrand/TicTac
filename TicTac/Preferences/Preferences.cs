@@ -8,7 +8,8 @@ namespace TicTac
     public abstract class Preferences
     {
         public static readonly Point DefaultLocation = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
-        
+
+        public string Version { get; set; }
         public Point StartLocation { get; set; }
         public Architect LastArchitect { get; set; }
         public Project LastProject { get; set; }

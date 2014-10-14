@@ -142,7 +142,7 @@ namespace TicTac
 
         public List<Architect> GetAllArchitects()
         {
-            if (ConnectionPing.DatabaseConnexionAvailable)
+            if (Database.DatabaseConnexionAvailable)
             {
                 // Retrieve data from server
                 ArchitectList = _dao.SelectAllArchitects();
@@ -162,7 +162,7 @@ namespace TicTac
 
         public List<Project> GetAllProjects()
         {
-            if (ConnectionPing.DatabaseConnexionAvailable)
+            if (Database.DatabaseConnexionAvailable)
             {
                 ProjectList = _dao.SelectAllProjects();
             }
@@ -179,7 +179,7 @@ namespace TicTac
 
         public List<Phase> GetAllPhases()
         {
-            if (ConnectionPing.DatabaseConnexionAvailable)
+            if (Database.DatabaseConnexionAvailable)
             {
                 PhaseList = _dao.SelectAllPhases();
             }
@@ -196,7 +196,7 @@ namespace TicTac
 
         internal List<Company> GetAllCompanies()
         {
-            if (CompanyList == null && ConnectionPing.DatabaseConnexionAvailable)
+            if (CompanyList == null && Database.DatabaseConnexionAvailable)
             {
                 CompanyList = _dao.SelectAllCompanies();
             }
@@ -290,10 +290,12 @@ namespace TicTac
             return ready.WaitOne(0);
         }
 
-        internal static bool Ready()
+        internal static Service Ready()
         {
-            // Blocking check
-            return ready.WaitOne();
+            // Blocking wait
+            ready.WaitOne();
+
+            return instance;
         }
 
         internal System.Data.DataTable GetWorkSessionDataTable(int id)

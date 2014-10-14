@@ -25,6 +25,7 @@ namespace TicTac.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
         public global::System.Drawing.Point Location {
             get {
                 return ((global::System.Drawing.Point)(this["Location"]));
@@ -84,6 +85,7 @@ namespace TicTac.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
         public int ArchitectId {
             get {
                 return ((int)(this["ArchitectId"]));
@@ -95,6 +97,7 @@ namespace TicTac.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
         public int ProjectId {
             get {
                 return ((int)(this["ProjectId"]));
@@ -106,6 +109,7 @@ namespace TicTac.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
         public int PhaseId {
             get {
                 return ((int)(this["PhaseId"]));

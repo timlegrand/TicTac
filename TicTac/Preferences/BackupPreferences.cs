@@ -11,7 +11,7 @@ namespace TicTac
     {
         public static readonly string PreferencesFileName = "preferences.xml";
         public static string PreferencesFilePathAndName { get; set; }
-        private static readonly string Version = "0.7";
+        private static readonly new string Version = "0.7";
 
         static BackupPreferences()
         {
@@ -126,7 +126,8 @@ namespace TicTac
                 Console.WriteLine(@"File is going to be overwritten.");
                 //Console.WriteLine(@"Please edit file manually or simply delete it (no worries, it will appear again at next launch). You may find it at '" + PreferencesFilePathAndName + @"'.");
                 reader.Close();
-                return;
+
+                throw new Exception(@"Cannot read preferences file (version " + version + @") doesn't match with current supported version (" + Version + @").");
             }
 #if (DEBUG)
             Console.WriteLine(@"Preferences file version " + version);

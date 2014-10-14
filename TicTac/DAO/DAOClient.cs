@@ -21,7 +21,7 @@ namespace TicTac
         // according to current connectivity state
         private void SwitchDAO()
         {
-            if (ConnectionPing.CheckDatabaseConnexionAvailable(Database.ServerAddress))
+            if (Database.CheckServerReachable(Database.ServerAddress))
             {
                 // Check and process waiting messages if any
                 //_mq.ProcessWaitingMessages();
@@ -51,6 +51,11 @@ namespace TicTac
         public List<WorkSession> SelectStartedWorkSessions(Architect archi)
         {
             SwitchDAO();
+            if (!Database.DatabaseConnexionAvailable)
+            {
+                throw new NotImplementedException(@"file-based session not yet implemented");
+            }
+
             return _db.SelectStartedWorkSessions(archi);
         }
 

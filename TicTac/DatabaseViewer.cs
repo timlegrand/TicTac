@@ -231,7 +231,7 @@ namespace TicTac
 
         private void EditDatabaseButtonClick(object sender, EventArgs e)
         {
-            var configureForm = new ConfigureDatabase(this) { FormBorderStyle = FormBorderStyle.FixedSingle };
+            var configureForm = new ConfigureDatabase() { FormBorderStyle = FormBorderStyle.FixedSingle };
             configureForm.Show();
         }
 

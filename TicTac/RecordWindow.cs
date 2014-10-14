@@ -23,6 +23,9 @@ namespace TicTac
             _prefs = new DualModePreferences(this);
             _prefs.Load();
 
+            // Check if an Internet connection is available
+            Database.WaitForConnectivity();
+
             Service.StartAsync();
             _ticTimer = new TicTimer(OnTimerTickEvent, 1000, true);
 
@@ -65,8 +68,7 @@ namespace TicTac
             Location = _prefs.StartLocation;
 
             // Following needs Service to be initialized
-            Service.Ready();
-            _service = Service.Instance;
+            _service = Service.Ready();
             Program.clk.Probe("SERVICE READY");
 
             this.SuspendLayout();
@@ -141,11 +143,6 @@ namespace TicTac
 
         private WorkSession RestoreSession(Architect archi)
         {
-            if (!ConnectionPing.DatabaseConnexionAvailable)
-            {
-                throw new NotImplementedException(@"file-based session not yet implemented");
-            }
-
             // 1- Try to retrieve one single open Session in DB
             var session = _service.GetStartedWorkSessions(archi).SingleOrDefault<WorkSession>();
             if (session == null)

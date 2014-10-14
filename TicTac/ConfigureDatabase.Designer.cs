@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.labelServerNameOrIp = new System.Windows.Forms.Label();
+            this.labelServerAddress = new System.Windows.Forms.Label();
             this.labelUserName = new System.Windows.Forms.Label();
             this.labelDatabaseName = new System.Windows.Forms.Label();
             this.buttonSave = new System.Windows.Forms.Button();
@@ -39,14 +39,14 @@
             this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // labelServerNameOrIp
+            // labelServerAddress
             // 
-            this.labelServerNameOrIp.AutoSize = true;
-            this.labelServerNameOrIp.Location = new System.Drawing.Point(12, 16);
-            this.labelServerNameOrIp.Name = "labelServerNameOrIp";
-            this.labelServerNameOrIp.Size = new System.Drawing.Size(64, 13);
-            this.labelServerNameOrIp.TabIndex = 10;
-            this.labelServerNameOrIp.Text = "Adresse (IP)";
+            this.labelServerAddress.AutoSize = true;
+            this.labelServerAddress.Location = new System.Drawing.Point(12, 16);
+            this.labelServerAddress.Name = "labelServerAddress";
+            this.labelServerAddress.Size = new System.Drawing.Size(93, 13);
+            this.labelServerAddress.TabIndex = 10;
+            this.labelServerAddress.Text = "Adresse (url ou IP)";
             // 
             // labelUserName
             // 
@@ -91,6 +91,7 @@
             this.textBoxServer.Name = "textBoxServer";
             this.textBoxServer.Size = new System.Drawing.Size(144, 20);
             this.textBoxServer.TabIndex = 12;
+            this.textBoxServer.Enter += new System.EventHandler(this.textBoxServer_Enter);
             // 
             // textBoxDatabase
             // 
@@ -98,6 +99,7 @@
             this.textBoxDatabase.Name = "textBoxDatabase";
             this.textBoxDatabase.Size = new System.Drawing.Size(144, 20);
             this.textBoxDatabase.TabIndex = 13;
+            this.textBoxDatabase.Enter += new System.EventHandler(this.textBoxDatabase_Enter);
             // 
             // textBoxUserName
             // 
@@ -105,6 +107,7 @@
             this.textBoxUserName.Name = "textBoxUserName";
             this.textBoxUserName.Size = new System.Drawing.Size(144, 20);
             this.textBoxUserName.TabIndex = 14;
+            this.textBoxUserName.Enter += new System.EventHandler(this.textBoxUserName_Enter);
             // 
             // textBoxPassword
             // 
@@ -113,9 +116,11 @@
             this.textBoxPassword.PasswordChar = '*';
             this.textBoxPassword.Size = new System.Drawing.Size(144, 20);
             this.textBoxPassword.TabIndex = 15;
+            this.textBoxPassword.Enter += new System.EventHandler(this.textBoxPassword_Enter);
             // 
             // ConfigureDatabase
             // 
+            this.AcceptButton = this.buttonSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(258, 151);
@@ -124,13 +129,14 @@
             this.Controls.Add(this.textBoxDatabase);
             this.Controls.Add(this.textBoxServer);
             this.Controls.Add(this.labelPassword);
-            this.Controls.Add(this.labelServerNameOrIp);
+            this.Controls.Add(this.labelServerAddress);
             this.Controls.Add(this.labelUserName);
             this.Controls.Add(this.labelDatabaseName);
             this.Controls.Add(this.buttonSave);
             this.Name = "ConfigureDatabase";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Configure database";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigureDatabase_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -138,7 +144,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label labelServerNameOrIp;
+        private System.Windows.Forms.Label labelServerAddress;
         private System.Windows.Forms.Label labelUserName;
         private System.Windows.Forms.Label labelDatabaseName;
         private System.Windows.Forms.Button buttonSave;
