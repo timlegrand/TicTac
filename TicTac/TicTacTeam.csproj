@@ -111,7 +111,6 @@
     </Compile>
     <Compile Include="TicTimer.cs" />
     <Compile Include="Utils\Logger.cs" />
-    <Compile Include="Utils\Vardump.cs" />
     <Compile Include="Utils\WallClock.cs" />
     <Compile Include="DAO\SHA1Util.cs" />
     <Compile Include="DateRange.cs" />
