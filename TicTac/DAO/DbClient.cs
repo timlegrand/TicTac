@@ -54,10 +54,12 @@ namespace TicTac.DAO
                 switch (ex.Number)
                 {
                     case 0:
+                        Logger.Write(String.Format("{0}: \"{1}\"", ex.Message, Server));
                         MessageBox.Show(@"Cannot connect to server. Contact administrator.");
                         break;
 
                     case 1045:
+                        Logger.Write(String.Format("{0}: with login \"{1}\" and password \"{2}\"", ex.Message, Uid, Password));
                         MessageBox.Show(@"Invalid username/password, please try again.");
                         break;
                 }
@@ -75,6 +77,7 @@ namespace TicTac.DAO
             }
             catch (MySqlException ex)
             {
+                Logger.Write(ex);
                 MessageBox.Show(ex.Message);
                 return false;
             }

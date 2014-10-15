@@ -66,10 +66,7 @@ namespace TicTac
             }
             catch (System.Net.NetworkInformation.PingException e)
             {
-                using (var logFile = new System.IO.StreamWriter("log.txt", true))
-                {
-                    logFile.WriteLine(DateTime.Now + ": Remote database unreachable (" + e.Message + ")");
-                }
+                Logger.Write("Remote server \"" + serverAddress + "\" unreachable:" + e.Message);
                 return false;
             }
 
@@ -112,9 +109,12 @@ namespace TicTac
             }
             catch (MySqlException ex)
             {
+                Logger.Write(String.Format("Database authentication test failed ({0}): \"{1}\"", serverAddress, ex.Message));
                 MessageBox.Show(ex.Message, @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return false;
             }
+
+            Logger.Write(String.Format("Database authentication test succeeded ({0})", serverAddress));
            
             DatabaseConnexionAvailable = true;
             LastServerChecked = serverAddress;

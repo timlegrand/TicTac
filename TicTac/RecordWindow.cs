@@ -31,8 +31,6 @@ namespace TicTac
 
             InitializeComponent();
             Initialize();
-
-            Program.clk.Print();
         }
 
         private delegate void SetLabelTimeTextDelegate(string newLabel);

@@ -43,7 +43,7 @@ namespace TicTac
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Logger.Write(e);
                 IntegratedMode.Load();
                 Synchronize(IntegratedMode);
             }

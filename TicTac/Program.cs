@@ -35,8 +35,8 @@ namespace TicTac
         [STAThread]
         static void Main()
         {
+            // Prologue
             clk = new WallClock();
-            Program.clk.Probe("PROGRAM START");
 
             // Create time recording window and launch application
             Application.EnableVisualStyles();
@@ -52,8 +52,14 @@ namespace TicTac
             }
             catch (AbortSignalException)
             {
+                Logger.Write("Abort signal raised");
                 Application.Exit();
             }
+
+            // Epilogue
+            Program.clk.Print();
+            Logger.Write("PROGRAM END");
+            Logger.Print();
         }
     }
 }
