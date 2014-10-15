@@ -148,21 +148,17 @@ namespace TicTac
                 comboBoxProjects.Enabled = true;
                 comboBoxPhases.Enabled = true;
             }
-            else
-            {
-                //TODO 2- If none try to retrieve last work Session info from XML
-            }
-
-            if(session != null && session.IsValid())
+            else if(session.IsValid())
             {
                 Console.WriteLine(@"Running session found:");
                 Utils.Vardump.dump(session);
-                var matchingProjects = (from proj in _service.ProjectList where proj.Id == session.Project.Id select proj).ToList();
-                if (matchingProjects.Count() != 1) throw new DataException();
-                comboBoxProjects.SelectedItem = matchingProjects.First();
-                var matchingPhases = (from phase in _service.PhaseList where phase.Id == session.Phase.Id select phase).ToList();
-                if (matchingPhases.Count() != 1) throw new DataException();
-                comboBoxPhases.SelectedItem = matchingPhases.First();
+                
+                comboBoxProjects.SelectedItem = (from proj in _service.ProjectList
+                                                 where proj.Id == session.Project.Id
+                                                 select proj).Single();
+                comboBoxPhases.SelectedItem = (from phase in _service.PhaseList
+                                               where phase.Id == session.Phase.Id
+                                               select phase).Single();
 
                 _ticTimer.Start(DateTime.Now - session.StartTime);
 

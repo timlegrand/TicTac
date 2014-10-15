@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace TicTac
 {
-    internal static class Database
+    public static class Database
     {
         public static string ServerAddress = "";
         public static string Name = "";
@@ -24,59 +24,7 @@ namespace TicTac
             Abort = false;
         }
 
-        public static bool CheckServerReachable(string serverAddress)
-        {
-            if (DatabaseConnexionChecked &&
-                serverAddress != null && serverAddress != string.Empty &&
-                LastServerChecked == serverAddress)
-            {
-                return DatabaseConnexionAvailable;
-            }
-
-            string server = "";
-            if (serverAddress != null && serverAddress != string.Empty)
-            {
-                server = serverAddress;
-            }
-            else if(Database.ServerAddress != null && Database.ServerAddress != string.Empty)
-            {
-                server = Database.ServerAddress;
-            }
-
-            return CheckConnexion(server);
-        }
-
-        public static bool CheckConnexion(string serverAddress)
-        {
-            if (serverAddress == null)
-            {
-                throw new ArgumentNullException("serverAddress cannot be empty");
-            }
-
-            if (serverAddress == string.Empty)
-            {
-                return false;
-            }
-
-            var req = new System.Net.NetworkInformation.Ping();
-            System.Net.NetworkInformation.PingReply rep;
-            try
-            {
-                rep = req.Send(serverAddress);
-            }
-            catch (System.Net.NetworkInformation.PingException e)
-            {
-                Logger.Write("Remote server \"" + serverAddress + "\" unreachable:" + e.Message);
-                return false;
-            }
-
-            DatabaseConnexionAvailable = (rep != null && (rep.Status == System.Net.NetworkInformation.IPStatus.Success));
-            LastServerChecked = serverAddress;
-
-            return DatabaseConnexionAvailable;
-        }
-
-        public static bool CheckDatabaseConnexion(string serverAddress, string dbName, string userName, string hPassword)
+        public static bool CheckConnexion(string serverAddress, string dbName, string userName, string hPassword)
         {
             if (serverAddress == null)
             {
@@ -122,9 +70,14 @@ namespace TicTac
             return DatabaseConnexionAvailable;
         }
 
-        internal static bool CheckDatabaseConnexion(string serverAddress)
+        public static bool CheckConnexion(string serverAddress)
         {
-            return CheckDatabaseConnexion(serverAddress, Database.Name, Database.UserName, Database.Password);
+            return CheckConnexion(serverAddress, Database.Name, Database.UserName, Database.Password);
+        }
+
+        public static bool CheckConnexion()
+        {
+            return CheckConnexion(Database.ServerAddress);
         }
 
         public static bool IsValid()
@@ -137,10 +90,9 @@ namespace TicTac
         }
 
 
-        internal static void WaitForConnectivity()
+        public static void WaitForConnectivity()
         {
-            
-            while (!CheckDatabaseConnexion(ServerAddress) && !Abort)
+            while (!CheckConnexion(ServerAddress) && !Abort)
             {
                 // Feed Database properties
                 var configureForm = new ConfigureDatabase() { FormBorderStyle = FormBorderStyle.FixedSingle };

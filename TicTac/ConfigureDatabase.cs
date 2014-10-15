@@ -35,7 +35,7 @@ namespace TicTac
                 buttonSave.Enabled = true;
                 return;
             }
-            if (!Database.CheckDatabaseConnexion(textBoxServer.Text, textBoxDatabase.Text, textBoxUserName.Text, hPassword))
+            if (!Database.CheckConnexion(textBoxServer.Text, textBoxDatabase.Text, textBoxUserName.Text, hPassword))
             {
                 MessageBox.Show("Base de données inaccessible. Vérifiez vos informations, notamment " +
                     "l'adresse du serveur (qui peut être une url ou une IP) ou vérifiez que ce dernier est démarré.",

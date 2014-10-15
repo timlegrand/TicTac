@@ -21,7 +21,7 @@ namespace TicTac
         // according to current connectivity state
         private void SwitchDAO()
         {
-            if (Database.CheckServerReachable(Database.ServerAddress))
+            if (Database.CheckConnexion())
             {
                 // Check and process waiting messages if any
                 //_mq.ProcessWaitingMessages();
