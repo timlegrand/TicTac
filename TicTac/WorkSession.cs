@@ -46,13 +46,18 @@ namespace TicTac
 
         public override string ToString()
         {
-            var s = " -- Work session #" + RunningSessionId;
-            s += "\nArchitect: " + Architect;
-            s += "\nProject: " + Project;
-            s += "\nPhase: " + Phase;
-            s += "\nStart time: " + StartTime;
-            s += "\nStop time: " + StopTime;
+            var s = " -- Work session #" + RunningSessionId ?? "unknown";
+            s += "\nArchitect: " + Architect ?? "unknown";
+            s += "\nProject: " + Project ?? "unknown";
+            s += "\nPhase: " + Phase ?? "unknown";
+            s += "\nStart time: " + StartTime ?? "unknown";
+            s += "\nStop time: " + StopTime ?? "unknown";
             return s;
+        }
+
+        internal void PrettyPrint()
+        {
+            Console.Write(this.ToString());
         }
     }
 }

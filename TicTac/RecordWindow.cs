@@ -151,7 +151,7 @@ namespace TicTac
             else if(session.IsValid())
             {
                 Console.WriteLine(@"Running session found:");
-                Utils.Vardump.dump(session);
+                session.PrettyPrint();
                 
                 comboBoxProjects.SelectedItem = (from proj in _service.ProjectList
                                                  where proj.Id == session.Project.Id
