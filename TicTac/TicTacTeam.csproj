@@ -89,6 +89,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Preferences\StandardPreferences.cs" />
     <Compile Include="Preferences\DualModePreferences.cs" />
     <Compile Include="Preferences\BackupPreferences.cs" />

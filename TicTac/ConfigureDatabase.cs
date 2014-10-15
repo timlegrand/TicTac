@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TicTac
 {
-    public partial class ConfigureDatabase : Form
+    public partial class ConfigureDatabase : CommonForm
     {
         private string hPassword;
 

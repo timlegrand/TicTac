@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace TicTac
 {
-    public partial class DatabaseViewer : Form
+    public partial class DatabaseViewer : CommonForm
     {
         private Architect _currentArchitect;
         private Project _currentProject;

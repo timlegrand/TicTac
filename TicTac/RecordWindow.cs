@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace TicTac
 {
-    public partial class RecordWindow : Form
+    public partial class RecordWindow : CommonForm
     {
         private Service _service;
         private Preferences _prefs;
