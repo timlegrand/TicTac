@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using TicTac.DAO;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace TicTac
 {
@@ -9,12 +11,14 @@ namespace TicTac
         //private DAOClientClass _dao;
         private DbClient _db;
         private MessageQueue _mq;
+        private readonly BinaryFormatter _formatter;
 
         //Constructor
         public DAOClient()
         {
             _db = new DbClient();
             _mq = new MessageQueue();
+            _formatter = new BinaryFormatter();
         }
 
         // This method may switch the _service internal variable between _service and _mq
@@ -184,6 +188,100 @@ namespace TicTac
         {
             SwitchDAO();
             return _db.GetWorkSessionDataTable(id);
+        }
+
+        internal void SaveAllPhases(List<Phase> PhaseList)
+        {
+            using (var phasesFile = File.Open(Path.Combine(Program.ApplicationDataFolder, "Phases.osl"), FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des phases (dans un fichier)");
+                _formatter.Serialize(phasesFile, PhaseList);
+            }
+        }
+
+        internal void SaveAllProjects(List<Project> ProjectList)
+        {
+            using (var projectsFile = File.Open(Path.Combine(Program.ApplicationDataFolder, "Projects.osl"), FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des projets (dans un fichier)");
+                _formatter.Serialize(projectsFile, ProjectList);
+            }
+        }
+
+        internal void SaveAllArchitects(List<Architect> ArchitectList)
+        {
+            using (var architectsFile = File.Open(Path.Combine(Program.ApplicationDataFolder, "Architects.osl"), FileMode.Create))
+            {
+                Console.WriteLine("Ecriture de la table des architectes (dans un fichier)");
+                _formatter.Serialize(architectsFile, ArchitectList);
+            }
+        }
+
+        internal List<Architect> GetAllArchitects()
+        {
+            List<Architect> ArchitectList;
+            if (Database.DatabaseConnexionAvailable)
+            {
+                // Retrieve data from server
+                ArchitectList = SelectAllArchitects();
+            }
+            else
+            {
+                // Deserialize from file if any
+                // Use serialization to files until real DB
+                using (var architectsFile = File.Open("Architects.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des architectes (depuis un fichier)");
+                    ArchitectList = (List<Architect>)_formatter.Deserialize(architectsFile);
+                }
+            }
+            return ArchitectList;
+        }
+
+        internal List<Project> GetAllProjects()
+        {
+            List<Project> ProjectList;
+            if (Database.DatabaseConnexionAvailable)
+            {
+                ProjectList = SelectAllProjects();
+            }
+            else
+            {
+                using (var projectsFile = File.Open("Projects.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des projets (depuis un fichier)");
+                    ProjectList = (List<Project>)_formatter.Deserialize(projectsFile);
+                }
+            }
+            return ProjectList;
+        }
+
+        internal List<Phase> GetAllPhases()
+        {
+            List<Phase> PhaseList;
+            if (Database.DatabaseConnexionAvailable)
+            {
+                PhaseList = SelectAllPhases();
+            }
+            else
+            {
+                using (var phasesFile = File.Open("Phases.osl", FileMode.Open))
+                {
+                    Console.WriteLine("Lecture de la table des phases (depuis un fichier)");
+                    PhaseList = (List<Phase>)_formatter.Deserialize(phasesFile);
+                }
+            }
+            return PhaseList;
+        }
+
+        internal List<Company> GetAllCompanies()
+        {
+            List<Company> CompanyList = null;
+            if (Service.Instance.CompanyList == null && Database.DatabaseConnexionAvailable)
+            {
+                CompanyList = SelectAllCompanies();
+            }
+            return CompanyList;
         }
     }
 }
