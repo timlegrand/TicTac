@@ -32,8 +32,7 @@ namespace TicTac
             }
             else
             {
-//                string action = System.Reflection.MethodBase.GetCurrentMethod().Name
-//;
+//                string action = System.Reflection.MethodBase.GetCurrentMethod().Name;
 //                string data = ;
 //                Message msg = new Message(action, data);
 //                _mq.StoreMessage();
