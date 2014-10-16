@@ -14,14 +14,13 @@ namespace TicTac
         private Architect _currentArchitect;
         private Project _currentProject;
         private Phase _currentPhase;
-        public readonly RecordWindow _parent;
         private WorkSession WS;
 
         public DatabaseViewer(RecordWindow mainWindow, WorkSession worksession)
+            : base(mainWindow, new System.Drawing.Point(146, 102))
         {
             InitializeComponent();
 
-            _parent = mainWindow;
             this.WS = worksession;
             _currentArchitect = this.WS.Architect ?? null;
             _currentProject = this.WS.Project ?? null;
@@ -29,8 +28,6 @@ namespace TicTac
 
             InitializeComboboxes();
             InitializeDataGridView();
-
-            busyAnimation.Hide();
         }
 
         private void InitializeDataGridView()
@@ -65,13 +62,7 @@ namespace TicTac
         public void UpdateData()
         {
             InitializeComboboxes();
-            _parent.InitComboboxes();
-        }
-
-        delegate void ShowBusyAnimationDelegate();
-        private void ShowBusyAnimation(object sender, DoWorkEventArgs e)
-        {
-            this.BeginInvoke(new ShowBusyAnimationDelegate(busyAnimation.Show), null);
+            ((RecordWindow) _parent).InitComboboxes();
         }
 
         delegate void LongOperationDelegate();
@@ -92,19 +83,10 @@ namespace TicTac
             this.textBoxCountHours.Text = String.Format("{0:0.00}", timeSpan.TotalHours);
             this.textBoxCountManMonth.Text = String.Format("{0:0.00}", timeSpan.TotalDays);
         }
-                    
-        delegate void HideBusyAnimationDelegate();
-        private void HideBusyAnimation(object sender, RunWorkerCompletedEventArgs e)
-        {
-            _parent.BeginInvoke(new HideBusyAnimationDelegate(busyAnimation.Hide), null);
-        }
 
         private void ButtonValidateClick(object sender, EventArgs e)
         {
-            var bgw = new BackgroundWorker();
-            bgw.DoWork += ShowBusyAnimation;
-            bgw.DoWork += LongOperation;
-            bgw.RunWorkerCompleted += HideBusyAnimation;
+            var bgw = new AnimatedBackgroundWorker(ShowBusyAnimation, LongOperation, HideBusyAnimation);
             bgw.RunWorkerAsync();
         }
 
@@ -150,9 +132,8 @@ namespace TicTac
         private void DeleteArchitectButtonClick(object sender, EventArgs e)
         {
             if (
-                MessageBox.Show(
-                    "Êtes vous sûr de vouloir supprimer l'achitecte " + _currentArchitect.ToString() + " ? Tous les enregistrements le concernant seront perdus.",
-                    "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                MessageBox.Show("Êtes vous sûr de vouloir supprimer l'achitecte " + _currentArchitect.ToString() + " ? Tous les enregistrements le concernant seront perdus.",
+                                "Confirmer la suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 var success = Service.Instance.DeleteArchitect(_currentArchitect);
                 if (!success) throw new DataException();

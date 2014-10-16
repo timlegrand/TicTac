@@ -39,7 +39,6 @@
             this.textBoxCountHours = new System.Windows.Forms.TextBox();
             this.textBoxCountManMonth = new System.Windows.Forms.TextBox();
             this.labelTotalCountManMonth = new System.Windows.Forms.Label();
-            this.busyAnimation = new System.Windows.Forms.PictureBox();
             this.addArchitect = new System.Windows.Forms.Button();
             this.addProject = new System.Windows.Forms.Button();
             this.addPhase = new System.Windows.Forms.Button();
@@ -56,7 +55,6 @@
             this.enddate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.startdate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.duration = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.busyAnimation)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -159,16 +157,6 @@
             this.labelTotalCountManMonth.Size = new System.Drawing.Size(25, 13);
             this.labelTotalCountManMonth.TabIndex = 9;
             this.labelTotalCountManMonth.Text = "ou :";
-            // 
-            // busyAnimation
-            // 
-            this.busyAnimation.Image = global::TicTac.Properties.Resources.loading;
-            this.busyAnimation.Location = new System.Drawing.Point(146, 102);
-            this.busyAnimation.Name = "busyAnimation";
-            this.busyAnimation.Size = new System.Drawing.Size(21, 21);
-            this.busyAnimation.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.busyAnimation.TabIndex = 15;
-            this.busyAnimation.TabStop = false;
             // 
             // addArchitect
             // 
@@ -344,7 +332,6 @@
             this.Controls.Add(this.deletePhaseButton);
             this.Controls.Add(this.deleteProjectButton);
             this.Controls.Add(this.deleteArchitectButton);
-            this.Controls.Add(this.busyAnimation);
             this.Controls.Add(this.addPhase);
             this.Controls.Add(this.addProject);
             this.Controls.Add(this.addArchitect);
@@ -363,7 +350,6 @@
             this.Name = "DatabaseViewer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Consulter / éditer la base";
-            ((System.ComponentModel.ISupportInitialize)(this.busyAnimation)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -383,7 +369,6 @@
         private System.Windows.Forms.TextBox textBoxCountHours;
         private System.Windows.Forms.TextBox textBoxCountManMonth;
         private System.Windows.Forms.Label labelTotalCountManMonth;
-        private System.Windows.Forms.PictureBox busyAnimation;
         private System.Windows.Forms.Button addArchitect;
         private System.Windows.Forms.Button addProject;
         private System.Windows.Forms.Button addPhase;
