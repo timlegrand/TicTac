@@ -14,21 +14,20 @@ namespace TicTac
         private Service _service;
         private Preferences preferences;
         public WorkSession WorkSession { get; private set; }
-        private TicTimer _ticTimer;
+        private TicTimer ticTimer;
+        private TicTimer recallTimer;
 
-        //Constructor
         public RecordWindow()
             : base()
         {
-            // Load configuration, including Default information
-            preferences = new DualModePreferences();
-            preferences.Load();
+            this.preferences = new DualModePreferences();
+            this.preferences.Load();
 
-            // Check if an Internet connection is available
             Database.WaitForConnectivity();
-
             Service.StartAsync();
-            _ticTimer = new TicTimer(OnTimerTickEvent, 1000, true);
+
+            this.ticTimer = new TicTimer(OnTimerTick, 1000, true);
+            this.recallTimer = new TicTimer(OnRecallTimerAlarm, 900000); // Every 15 minutes
 
             InitializeComponent();
             Initialize();
@@ -38,29 +37,6 @@ namespace TicTac
             : this()
         {
             this.busyAnimation.Location = p;
-        }
-
-        private delegate void SetLabelTimeTextDelegate(string newLabel);
-        private void SetLabelTimeText(string newLabel)
-        {
-            if (this.InvokeRequired)
-            {
-                this.BeginInvoke(new SetLabelTimeTextDelegate(SetLabelTimeText), new object[] {newLabel});
-                return;
-            }
-
-            this.labelTime.Text = newLabel;
-        }
-
-        void OnTimerTickEvent(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            var s = string.Format("{0:0} jour(s) et {1:00}:{2:00}:{3:00}",
-                _ticTimer.Elapsed.TotalDays,
-                _ticTimer.Elapsed.Hours,
-                _ticTimer.Elapsed.Minutes,
-                _ticTimer.Elapsed.Seconds);
-
-            SetLabelTimeText(s);
         }
 
         private void Initialize()
@@ -187,7 +163,8 @@ namespace TicTac
                                                where phase.Id == session.Phase.Id
                                                select phase).Single();
 
-                _ticTimer.Start(DateTime.Now - session.StartTime);
+                ticTimer.Start(DateTime.Now - session.StartTime);
+                recallTimer.Start();
 
                 comboBoxProjects.Enabled = false;
                 comboBoxPhases.Enabled = false;
@@ -229,54 +206,16 @@ namespace TicTac
         }
 
 
-        // Time events handling
-        private void ButtonStartClick(object sender, EventArgs e)
-        {
-            if (!(comboBoxProjects.SelectedIndex > -1) || !(comboBoxPhases.SelectedIndex > -1))
-            {
-                MessageBox.Show(@"Choisissez un projet et une phase", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
-            _ticTimer.Start();
-
-            WorkSession.StartTime = DateTime.Now;
-            _service.StartWorkSession(WorkSession);
-
-            comboBoxProjects.Enabled = false;
-            comboBoxPhases.Enabled = false;
-            buttonStart.Enabled = false;
-            buttonStop.Enabled = true;
-
-            notifyIcon.Icon = Properties.Resources.tictac_on;
-        }
-        
-        private void ButtonStopClick(object sender, EventArgs e)
-        {
-            _ticTimer.Stop();
-
-            WorkSession.StopTime = DateTime.Now;
-            _service.EndWorkSession(WorkSession);
-
-            comboBoxProjects.Enabled = true;
-            comboBoxPhases.Enabled = true;
-            buttonStart.Enabled = true;
-            buttonStop.Enabled = false;
-
-            notifyIcon.Icon = Properties.Resources.tictac;
-        }
-
-
         // Termination
         private void RecordWindowFormClosed(object sender, FormClosedEventArgs e)
         {
             var prefs = new DualModePreferences(this)
-                {
-                    StartLocation = Location,
-                    LastArchitect = (Architect) comboBoxArchitects.SelectedItem,
-                    LastProject = (Project)comboBoxProjects.SelectedItem,
-                    LastPhase = (Phase)comboBoxPhases.SelectedItem,
-                };
+            {
+                StartLocation = Location,
+                LastArchitect = (Architect)comboBoxArchitects.SelectedItem,
+                LastProject = (Project)comboBoxProjects.SelectedItem,
+                LastPhase = (Phase)comboBoxPhases.SelectedItem,
+            };
             if (!prefs.IsValid()) return;
             prefs.Save();
 
@@ -294,14 +233,106 @@ namespace TicTac
             }
         }
 
-        //this.notifyIcon.Icon = this.Icon; // L'icône de not_zero est celle de l'application.
-        //this.notifyIcon.Icon = SystemIcons.Application; // Affiche l'icône par défaut.
-        //this.notifyIcon.Icon = SystemIcons.Error; // Affiche l'icône d'erreur.
-        //this.notifyIcon.Icon = SystemIcons.Warning; // Affiche l'icône de danger.
-        //this.notifyIcon.Icon = SystemIcons.Question; // Affiche l'icône de question.
-        //this.notifyIcon.Icon = SystemIcons.Shield; // Affiche l'icône du bouclier Windows.
-        //this.notifyIcon.BalloonTipIcon = ToolTipIcon.Info; // Icône information de Windows.
-        //this.notifyIcon.ShowBalloonTip(3000); // On affiche le message indéfiniment.
+
+        // Time events handling
+        private delegate void SetLabelTimeTextDelegate(string newLabel);
+        private void SetLabelTimeText(string newLabel)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new SetLabelTimeTextDelegate(SetLabelTimeText), new object[] { newLabel });
+                return;
+            }
+
+            this.labelTime.Text = newLabel;
+        }
+
+        private void OnTimerTick(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var s = string.Format("{0:0} jour(s) et {1:00}:{2:00}:{3:00}",
+                ticTimer.Elapsed.TotalDays,
+                ticTimer.Elapsed.Hours,
+                ticTimer.Elapsed.Minutes,
+                ticTimer.Elapsed.Seconds);
+
+            SetLabelTimeText(s);
+        }
+
+        private delegate void SetAndShowBallonTipDelegate(string title, string message);
+        private void SetAndShowBallonTip(string title, string message)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new SetAndShowBallonTipDelegate(SetAndShowBallonTip), new object[] { title, message });
+                return;
+            }
+
+            this.notifyIcon.BalloonTipTitle = title;
+            this.notifyIcon.BalloonTipText = message;
+            this.notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            this.notifyIcon.ShowBalloonTip(10000);
+        }
+
+        private void OnRecallTimerAlarm(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (WorkSession == null || WorkSession.IsTerminated())
+            {
+                return;
+            }
+
+            string previousTitle = this.notifyIcon.BalloonTipTitle;
+            string previousMessage = this.notifyIcon.BalloonTipText;
+
+            string title = String.Format("Hey, {0}!", WorkSession.Architect.FirstName);
+            string message = String.Format("Êtes-vous toujours en train de travailler sur la phase {0} du projet {1} ?",
+                WorkSession.Phase.ToString(),
+                WorkSession.Project.ToString());
+
+            SetAndShowBallonTip(title, message);
+
+            this.notifyIcon.BalloonTipTitle = previousTitle;
+            this.notifyIcon.BalloonTipText = previousMessage;
+        }
+
+
+        // User events handling
+        private void ButtonStartClick(object sender, EventArgs e)
+        {
+            if (!(comboBoxProjects.SelectedIndex > -1) || !(comboBoxPhases.SelectedIndex > -1))
+            {
+                MessageBox.Show(@"Choisissez un projet et une phase", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            ticTimer.Start();
+            recallTimer.Start();
+
+            WorkSession.StartTime = DateTime.Now;
+            _service.StartWorkSession(WorkSession);
+
+            comboBoxProjects.Enabled = false;
+            comboBoxPhases.Enabled = false;
+            buttonStart.Enabled = false;
+            buttonStop.Enabled = true;
+
+            notifyIcon.Icon = Properties.Resources.tictac_on;
+        }
+        
+        private void ButtonStopClick(object sender, EventArgs e)
+        {
+            ticTimer.Pause();
+            recallTimer.Stop();
+
+            WorkSession.StopTime = DateTime.Now;
+            _service.EndWorkSession(WorkSession);
+
+            comboBoxProjects.Enabled = true;
+            comboBoxPhases.Enabled = true;
+            buttonStart.Enabled = true;
+            buttonStop.Enabled = false;
+
+            notifyIcon.Icon = Properties.Resources.tictac;
+        }
 
         private void RecordWindow_Resize(object sender, EventArgs e)
         {
