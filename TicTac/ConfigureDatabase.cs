@@ -115,6 +115,11 @@ namespace TicTac
                 return;
             }
 
+            if (Database.DatabaseConnexionAvailable)
+            {
+                return;
+            }
+
             // Confirm user wants to close
             DialogResult dr = MessageBox.Show(this, "Il n'est pas encore possible d'utiliser TicTac sans configurer l'accès à la base de données." 
             + "\n\nSouhaitez-vous quitter TicTac ?"

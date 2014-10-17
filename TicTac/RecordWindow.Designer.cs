@@ -46,9 +46,11 @@ namespace TicTac
             this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.trayMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemReduce = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayMenuItemViewData = new System.Windows.Forms.ToolStripMenuItem();
             this.trayMenuItemConfigure = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.trayMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            ((System.ComponentModel.ISupportInitialize)(this.busyAnimation)).BeginInit();
             this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -161,11 +163,12 @@ namespace TicTac
             this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.trayMenuItemOpen,
             this.trayMenuItemReduce,
+            this.trayMenuItemViewData,
             this.trayMenuItemConfigure,
             this.toolStripSeparator1,
             this.trayMenuItemExit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(160, 98);
+            this.notifyIconMenu.Size = new System.Drawing.Size(160, 142);
             // 
             // trayMenuItemOpen
             // 
@@ -182,6 +185,14 @@ namespace TicTac
             this.trayMenuItemReduce.Text = "Minimize in tray";
             this.trayMenuItemReduce.ToolTipText = "Minimize in system tray (keep running in background)";
             this.trayMenuItemReduce.Click += new System.EventHandler(this.trayMenuItemMinimize_Click);
+            // 
+            // trayMenuItemViewData
+            // 
+            this.trayMenuItemViewData.Image = global::TicTac.Properties.Resources.charts;
+            this.trayMenuItemViewData.Name = "trayMenuItemViewData";
+            this.trayMenuItemViewData.Size = new System.Drawing.Size(159, 22);
+            this.trayMenuItemViewData.Text = "View data";
+            this.trayMenuItemViewData.Click += new System.EventHandler(this.trayMenuItemViewData_Click);
             // 
             // trayMenuItemConfigure
             // 
@@ -228,6 +239,18 @@ namespace TicTac
             this.Text = "TicTac";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.RecordWindowFormClosed);
             this.Resize += new System.EventHandler(this.RecordWindow_Resize);
+            this.Controls.SetChildIndex(this.buttonStart, 0);
+            this.Controls.SetChildIndex(this.buttonStop, 0);
+            this.Controls.SetChildIndex(this.comboBoxProjects, 0);
+            this.Controls.SetChildIndex(this.comboBoxPhases, 0);
+            this.Controls.SetChildIndex(this.label1, 0);
+            this.Controls.SetChildIndex(this.label2, 0);
+            this.Controls.SetChildIndex(this.label3, 0);
+            this.Controls.SetChildIndex(this.comboBoxArchitects, 0);
+            this.Controls.SetChildIndex(this.labelTime, 0);
+            this.Controls.SetChildIndex(this.label4, 0);
+            this.Controls.SetChildIndex(this.busyAnimation, 0);
+            ((System.ComponentModel.ISupportInitialize)(this.busyAnimation)).EndInit();
             this.notifyIconMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -253,6 +276,7 @@ namespace TicTac
         private System.Windows.Forms.ToolStripMenuItem trayMenuItemReduce;
         private System.Windows.Forms.ToolStripMenuItem trayMenuItemConfigure;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem trayMenuItemViewData;
     }
 }
 
