@@ -209,21 +209,5 @@ namespace TicTac
             var dist = Math.Sqrt(Math.Pow(rwCenter.X - cwCenter.X, 2) + Math.Pow(rwCenter.Y - cwCenter.Y, 2));
             return dist <= 400;
         }
-
-        private void EditDatabaseButtonClick(object sender, EventArgs e)
-        {
-            var configureForm = new ConfigureDatabase(new System.Drawing.Point(144, 120)) { FormBorderStyle = FormBorderStyle.FixedSingle };
-            configureForm.Show();
-        }
-
-        private void dataGridView1_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

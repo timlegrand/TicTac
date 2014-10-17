@@ -47,7 +47,6 @@
             this.deleteArchitectButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.editDatabaseButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -236,16 +235,6 @@
             this.label2.TabIndex = 19;
             this.label2.Text = "heures";
             // 
-            // editDatabaseButton
-            // 
-            this.editDatabaseButton.Location = new System.Drawing.Point(17, 437);
-            this.editDatabaseButton.Name = "editDatabaseButton";
-            this.editDatabaseButton.Size = new System.Drawing.Size(75, 23);
-            this.editDatabaseButton.TabIndex = 21;
-            this.editDatabaseButton.Text = "Configurer";
-            this.editDatabaseButton.UseVisualStyleBackColor = true;
-            this.editDatabaseButton.Click += new System.EventHandler(this.EditDatabaseButtonClick);
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(239, 73);
@@ -326,7 +315,6 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.editDatabaseButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.deletePhaseButton);
@@ -377,7 +365,6 @@
         private System.Windows.Forms.Button deleteArchitectButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button editDatabaseButton;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
