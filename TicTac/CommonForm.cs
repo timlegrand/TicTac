@@ -5,7 +5,7 @@ namespace TicTac
 {
     public class CommonForm : Form
     {
-        protected System.Windows.Forms.PictureBox busyAnimation;
+        protected PictureBox busyAnimation;
         protected readonly Form _parent;
 
         public CommonForm()
@@ -13,17 +13,17 @@ namespace TicTac
         {
             // Escape key closes Form
             this.KeyPreview = true;
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDownHandler);
+            this.KeyDown += new KeyEventHandler(this.KeyDownHandler);
 
             // Busy animation
-            this.busyAnimation = new System.Windows.Forms.PictureBox();
+            this.busyAnimation = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.busyAnimation)).BeginInit();
             this.SuspendLayout();
             this.busyAnimation.Image = global::TicTac.Properties.Resources.loading;
             this.busyAnimation.Location = new System.Drawing.Point(146, 102); // Default
             this.busyAnimation.Name = "busyAnimation";
             this.busyAnimation.Size = new System.Drawing.Size(21, 21);
-            this.busyAnimation.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.busyAnimation.SizeMode = PictureBoxSizeMode.StretchImage;
             this.busyAnimation.TabIndex = 15;
             this.busyAnimation.TabStop = false;
             this.Controls.Add(this.busyAnimation);

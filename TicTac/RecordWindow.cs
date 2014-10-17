@@ -18,6 +18,7 @@ namespace TicTac
 
         //Constructor
         public RecordWindow()
+            : base()
         {
             // Load configuration, including Default information
             _prefs = new DualModePreferences(this);
@@ -31,6 +32,12 @@ namespace TicTac
 
             InitializeComponent();
             Initialize();
+        }
+
+        public RecordWindow(System.Drawing.Point p)
+            : this()
+        {
+            this.busyAnimation.Location = p;
         }
 
         private delegate void SetLabelTimeTextDelegate(string newLabel);

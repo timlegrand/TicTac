@@ -12,6 +12,7 @@ namespace TicTac
 
 
         public ConfigureDatabase()
+            : base()
         {
             InitializeComponent();
 
@@ -20,6 +21,12 @@ namespace TicTac
             textBoxUserName.Text = Database.UserName ?? "";
             textBoxPassword.Text = Database.Password != null && Database.Password != string.Empty ? "*********" : "";
             hPassword = null;
+        }
+
+        public ConfigureDatabase(System.Drawing.Point p)
+            : this()
+        {
+            this.busyAnimation.Location = p;
         }
 
         private void ButtonSaveClick(object sender, EventArgs e)
