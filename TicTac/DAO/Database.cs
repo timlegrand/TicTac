@@ -34,7 +34,7 @@ namespace TicTac
             }
             else if (serverAddress == String.Empty || dbName == String.Empty || userName == String.Empty || hPassword == String.Empty)
             {
-                throw new ArgumentException();
+                return false;
             }
 
             // Prevent from redundant, simultaneous requests from other threads
