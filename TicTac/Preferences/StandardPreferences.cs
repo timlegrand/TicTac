@@ -8,7 +8,7 @@ namespace TicTac
         // Constructor
         public StandardPreferences()
         {
-            StartLocation = DefaultLocation;
+            StartLocation = new System.Drawing.Point(-1,-1);
             LastArchitect = null;
             LastProject = null;
             LastPhase = null;

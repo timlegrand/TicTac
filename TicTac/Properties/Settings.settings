@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Location" Type="System.Drawing.Point" Scope="User">
-      <Value Profile="(Default)">0, 0</Value>
+      <Value Profile="(Default)">-1, -1</Value>
     </Setting>
     <Setting Name="DbName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

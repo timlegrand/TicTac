@@ -12,7 +12,7 @@ namespace TicTac
     public partial class RecordWindow : CommonForm
     {
         private Service _service;
-        private Preferences _prefs;
+        private Preferences preferences;
         public WorkSession WorkSession { get; private set; }
         private TicTimer _ticTimer;
 
@@ -21,8 +21,8 @@ namespace TicTac
             : base()
         {
             // Load configuration, including Default information
-            _prefs = new DualModePreferences(this);
-            _prefs.Load();
+            preferences = new DualModePreferences();
+            preferences.Load();
 
             // Check if an Internet connection is available
             Database.WaitForConnectivity();
@@ -70,7 +70,7 @@ namespace TicTac
             this.notifyIcon.Icon = this.Icon;
 
             StartPosition = FormStartPosition.Manual;
-            Location = _prefs.StartLocation;
+            Location = BoundLocation(preferences.StartLocation);
 
             // Following needs Service to be initialized
             _service = Service.Ready();
@@ -99,7 +99,7 @@ namespace TicTac
             if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
                 comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
-                int id = _prefs.LastArchitect != null ? _prefs.LastArchitect.Id ?? 0 : 0;
+                int id = preferences.LastArchitect != null ? preferences.LastArchitect.Id ?? 0 : 0;
                 var item = comboBoxArchitects.Items.Cast<Architect>().Where(archi => archi.Id == id).FirstOrDefault();
                 comboBoxArchitects.SelectedItem = item ?? comboBoxArchitects.Items[0];
             }
@@ -120,7 +120,7 @@ namespace TicTac
                 //comboBoxProjects.ValueMember = "Id";
 
                 // Reselect last project
-                var id = _prefs.LastProject != null ? _prefs.LastProject.Id ?? 0 : 0;
+                var id = preferences.LastProject != null ? preferences.LastProject.Id ?? 0 : 0;
                 var item = comboBoxProjects.Items.Cast<Project>().Where(project => project.Id == id).FirstOrDefault();
                 comboBoxProjects.SelectedItem = item ?? comboBoxProjects.Items[0];
             }
@@ -140,7 +140,7 @@ namespace TicTac
                 //comboBoxProjects.ValueMember = "Id";
 
                 // Reselect last phase
-                var id = _prefs.LastPhase != null ? _prefs.LastPhase.Id ?? 0 : 0;
+                var id = preferences.LastPhase != null ? preferences.LastPhase.Id ?? 0 : 0;
                 var item = comboBoxPhases.Items.Cast<Phase>().Where(phase => phase.Id == id).FirstOrDefault();
                 comboBoxPhases.SelectedItem = item ?? comboBoxPhases.Items[0];
             }
@@ -265,7 +265,7 @@ namespace TicTac
             buttonStart.Enabled = true;
             buttonStop.Enabled = false;
 
-            notifyIcon.Icon = Properties.Resources.tictac_on;
+            notifyIcon.Icon = Properties.Resources.tictac;
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace TicTac
@@ -83,5 +84,28 @@ namespace TicTac
 
             this.ResumeLayout(false);
         }
+
+        protected Point BoundLocation(Point p)
+        {
+                return BoundLocation(p.X, p.Y);
+        }
+
+        protected Point BoundLocation(int x, int y)
+        {
+            if (x != -1 && y != -1)
+            {
+                x = (x < Screen.PrimaryScreen.Bounds.Width - this.Width) ? x : Screen.PrimaryScreen.Bounds.Width - this.Width;
+                x = (x >= 0) ? x : 0;
+                y = (y < Screen.PrimaryScreen.Bounds.Height - this.Height) ? y : Screen.PrimaryScreen.Bounds.Height - this.Height;
+                x = (x >= 0) ? x : 0;
+                return new Point(x, y);
+            }
+
+            // Default
+            return new Point(
+                (Screen.PrimaryScreen.Bounds.Width - this.Width) / 2,
+                (Screen.PrimaryScreen.Bounds.Height - this.Width) / 2);
+        }
+
     }
 }

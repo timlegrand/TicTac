@@ -175,7 +175,7 @@ namespace TicTac
             {
                 var x = Int32.Parse(reader.GetAttribute("x") ?? "-1");
                 var y = Int32.Parse(reader.GetAttribute("y") ?? "-1");
-                StartLocation = BoundLocation(x, y);
+                StartLocation = new System.Drawing.Point(x, y);
             }
 
             reader.Close();

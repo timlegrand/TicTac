@@ -51,8 +51,15 @@ namespace TicTac
 
         public override void Save()
         {
-            IntegratedMode.Save();
-            FileMode.Save();
+            try
+            {
+                IntegratedMode.Save();
+                FileMode.Save();
+            }
+            catch (Exception e)
+            {
+                Logger.Write(e);
+            }
         }
 
         protected void Synchronize(Preferences mode)
