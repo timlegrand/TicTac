@@ -36,8 +36,16 @@ namespace TicTac
                 LastPhase = recordWindow.WorkSession.Phase ?? null;
 
                 // If WorkSession exists consider that RecordWindow location is approved by user
-                StartLocation = recordWindow.Location;
-
+                // (only if window in not minimized to system tray).
+                if (recordWindow.WindowState != FormWindowState.Minimized)
+                {
+                    StartLocation = recordWindow.Location;
+                }
+                else
+                {
+                    StartLocation = new Point(-1, -1);
+                }
+                
                 DbServerAddress = Database.ServerAddress;
                 DbName = Database.Name;
                 DbUserName = Database.UserName;
