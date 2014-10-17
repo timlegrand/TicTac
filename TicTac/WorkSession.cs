@@ -52,6 +52,7 @@ namespace TicTac
             s += "\nPhase: " + Phase ?? "unknown";
             s += "\nStart time: " + StartTime ?? "unknown";
             s += "\nStop time: " + StopTime ?? "unknown";
+            s += "\n";
             return s;
         }
 

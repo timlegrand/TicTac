@@ -95,6 +95,15 @@ namespace TicTac
         }
 
         /// <summary>
+        /// Starts the watch. Starts counting elapsed time from
+        /// a given value, just as if it was paused.</summary>
+        public void Start(TimeSpan startOffset)
+        {
+            _stopWatch = new ResumableStopwatch(startOffset);
+            this.Start();
+        }
+
+        /// <summary>
         /// Stops the watch. Resets elapsed time to zero.</summary>
         public void Stop()
         {
@@ -103,19 +112,6 @@ namespace TicTac
             if (_callback != null)
             {
                 _timer.Elapsed -= new ElapsedEventHandler(_callback);
-            }
-        }
-
-        /// <summary>
-        /// Starts the watch. Starts counting elapsed time from
-        /// a given value, just as if it was paused.</summary>
-        public void Start(TimeSpan startOffset)
-        {
-            _stopWatch = new ResumableStopwatch(startOffset);
-            _stopWatch.Start();
-            if (_callback != null)
-            {
-                _timer.Elapsed += new ElapsedEventHandler(_callback);
             }
         }
 

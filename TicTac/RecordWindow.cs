@@ -146,38 +146,6 @@ namespace TicTac
             }
         }
 
-        private WorkSession RestoreSession(Architect archi)
-        {
-            // 1- Try to retrieve one single open Session in DB
-            var session = _service.GetStartedWorkSessions(archi).SingleOrDefault<WorkSession>();
-            if (session == null)
-            {
-                comboBoxProjects.Enabled = true;
-                comboBoxPhases.Enabled = true;
-            }
-            else if(session.IsValid())
-            {
-                Console.WriteLine(@"Running session found:");
-                session.PrettyPrint();
-                
-                comboBoxProjects.SelectedItem = (from proj in _service.ProjectList
-                                                 where proj.Id == session.Project.Id
-                                                 select proj).Single();
-                comboBoxPhases.SelectedItem = (from phase in _service.PhaseList
-                                               where phase.Id == session.Phase.Id
-                                               select phase).Single();
-
-                _ticTimer.Start(DateTime.Now - session.StartTime);
-
-                comboBoxProjects.Enabled = false;
-                comboBoxPhases.Enabled = false;
-            }
-
-            InitButtons();
-            return session;
-        }
-
-
         private void InitButtons()
         {
             // Search for any already-started session for a given Architect
@@ -197,7 +165,37 @@ namespace TicTac
                 notifyIcon.Icon = Properties.Resources.tictac;
             }
         }
-        
+
+        private WorkSession RestoreSession(Architect archi)
+        {
+            // 1- Try to retrieve one single open Session in DB
+            var session = _service.GetStartedWorkSessions(archi).SingleOrDefault<WorkSession>();
+            if (session == null)
+            {
+                comboBoxProjects.Enabled = true;
+                comboBoxPhases.Enabled = true;
+            }
+            else if (session.IsValid())
+            {
+                Console.WriteLine(@"Running session found:");
+                session.PrettyPrint();
+
+                comboBoxProjects.SelectedItem = (from proj in _service.ProjectList
+                                                 where proj.Id == session.Project.Id
+                                                 select proj).Single();
+                comboBoxPhases.SelectedItem = (from phase in _service.PhaseList
+                                               where phase.Id == session.Phase.Id
+                                               select phase).Single();
+
+                _ticTimer.Start(DateTime.Now - session.StartTime);
+
+                comboBoxProjects.Enabled = false;
+                comboBoxPhases.Enabled = false;
+            }
+
+            InitButtons();
+            return session;
+        }
 
         // ComboBox selection
         private void ComboBoxArchitectsSelectionChangeCommited(object sender, EventArgs e)
