@@ -168,7 +168,7 @@ namespace TicTac
             this.toolStripSeparator1,
             this.trayMenuItemExit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(160, 142);
+            this.notifyIconMenu.Size = new System.Drawing.Size(160, 120);
             // 
             // trayMenuItemOpen
             // 
@@ -232,7 +232,6 @@ namespace TicTac
             this.Controls.Add(this.comboBoxProjects);
             this.Controls.Add(this.buttonStop);
             this.Controls.Add(this.buttonStart);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "RecordWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
