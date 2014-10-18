@@ -3868,7 +3868,7 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>-1130177622</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>-1130177622</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>-1130175574</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.Superware.com</td><td>0</td><td/><td>-1130221874</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.superware.com</td><td>0</td><td/><td>-1792888022</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>Superware</td><td>0</td><td/><td>-1130221874</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>-1130177622</td></row>
 	</table>
@@ -4488,7 +4488,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]TicTacTeam.Primary output</td><td/></row>
 		<row><td>ProductCode</td><td>{4D645DE3-49BC-4FE1-A62F-AA8A296104DC}</td><td/></row>
 		<row><td>ProductName</td><td>TicTac</td><td/></row>
-		<row><td>ProductVersion</td><td>0.1.0</td><td/></row>
+		<row><td>ProductVersion</td><td>0.2.1</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
