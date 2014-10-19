@@ -53,7 +53,9 @@ namespace TicTac
         {
             try
             {
+                Logger.Write("IntegratedMode preferences: " + IntegratedMode.ToString());
                 IntegratedMode.Save();
+                Logger.Write("FileMode preferences: " + FileMode.ToString());
                 FileMode.Save();
             }
             catch (Exception e)

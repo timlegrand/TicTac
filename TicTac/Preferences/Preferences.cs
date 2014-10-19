@@ -63,5 +63,16 @@ namespace TicTac
                     LastProject != null && LastProject.Id != null &&
                     LastPhase != null && LastPhase.Id != null);
         }
+
+        public override string ToString()
+        {
+            string s = String.Format("{0}, {1}, {2}, {3}, {4}",
+                                     StartLocation.ToString(),
+                                     LastArchitect.ToString(),
+                                     LastProject.ToString(),
+                                     LastPhase.ToString(),
+                                     Database.ToString());
+            return s;
+        }
     }
 }

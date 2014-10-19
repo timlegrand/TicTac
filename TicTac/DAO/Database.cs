@@ -87,10 +87,10 @@ namespace TicTac
         public static bool IsValid()
         {
             return
-                ServerAddress != null && ServerAddress != string.Empty &&
-                Name != null && Name != string.Empty &&
-                UserName != null && UserName != string.Empty &&
-                Password != null && Password != string.Empty;
+                !string.IsNullOrEmpty(ServerAddress) &&
+                !string.IsNullOrEmpty(Name) &&
+                !string.IsNullOrEmpty(UserName) &&
+                !string.IsNullOrEmpty(Password);
         }
 
 
@@ -108,5 +108,13 @@ namespace TicTac
                 throw new AbortSignalException();
             }
         }
+
+        public new static string ToString()
+        {
+            string s = String.Format("{0}, {1}, {2}, {3}",
+                ServerAddress, Name, UserName, Password);
+            return s;
+        }
+
     }
 }
