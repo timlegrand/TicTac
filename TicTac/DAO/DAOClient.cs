@@ -276,7 +276,7 @@ namespace TicTac
         internal List<Company> GetAllCompanies()
         {
             List<Company> CompanyList = null;
-            if (Service.Instance.CompanyList == null && Database.DatabaseConnexionAvailable)
+            if (Database.DatabaseConnexionAvailable)
             {
                 CompanyList = SelectAllCompanies();
             }

@@ -42,17 +42,20 @@ namespace TicTac
 
         private void InitializeComboboxes()
         {
-            // Fill in the Architect, Project and Phases ComboBox
+            // Fill in the Architect, Project and Phase ComboBox
+            comboBoxArchitects.Items.Clear();
             comboBoxArchitects.Items.AddRange(Service.Instance.ArchitectList.ToArray());
             var a = comboBoxArchitects.Items.Cast<Architect>().Where(i => i.Id == _currentArchitect.Id).FirstOrDefault();
             comboBoxArchitects.Items.Insert(0, "Tous");
             comboBoxArchitects.SelectedItem = a ?? comboBoxArchitects.Items[0];
 
+            comboBoxProjects.Items.Clear();
             comboBoxProjects.Items.AddRange(Service.Instance.ProjectList.ToArray());
             var pr = comboBoxProjects.Items.Cast<Project>().Where(i => i.Id == _currentProject.Id).FirstOrDefault();
             comboBoxProjects.Items.Insert(0, "Tous");
             comboBoxProjects.SelectedItem = pr ?? comboBoxProjects.Items[0];
 
+            comboBoxPhases.Items.Clear();
             comboBoxPhases.Items.AddRange(Service.Instance.PhaseList.ToArray());
             var ph = comboBoxPhases.Items.Cast<Phase>().Where(i => i.Id == _currentPhase.Id).FirstOrDefault();
             comboBoxPhases.Items.Insert(0, "Tous");
