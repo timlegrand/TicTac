@@ -89,9 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimatedBackgroundWorker.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="AnimatedBackgroundWorker.cs" />
     <Compile Include="CommonForm.cs">
       <SubType>Form</SubType>
     </Compile>

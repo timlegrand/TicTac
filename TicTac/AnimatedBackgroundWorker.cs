@@ -3,6 +3,9 @@
 
 namespace TicTac
 {
+    // Since explicit name qualifier is required in attribute
+// ReSharper disable once RedundantNameQualifier
+    [System.ComponentModel.DesignerCategory("")]
     public class AnimatedBackgroundWorker : BackgroundWorker
     {
         public AnimatedBackgroundWorker(
