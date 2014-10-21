@@ -22,7 +22,7 @@ namespace TicTac
         {
             get
             {
-                return base.Elapsed + this.StartOffset;
+                return base.Elapsed + StartOffset;
             }
         }
 

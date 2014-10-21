@@ -5,26 +5,26 @@ namespace TicTac
 {
     public partial class EditPhase : Form
     {
-        private readonly DatabaseViewer parentWindow;
-        private Phase _currentPhase;
-        private bool _updateOnly;
+        private readonly DatabaseViewer _parentWindow;
+        private readonly Phase _currentPhase;
+        private readonly bool _updateOnly;
 
         public EditPhase(DatabaseViewer parent)
         {
             InitializeComponent();
-            this.parentWindow = parent;
+            _parentWindow = parent;
         }
 
         public EditPhase(DatabaseViewer parent, Phase currentPhase) : this(parent)
         {
-            this.Text = "Modifier une Phase";
-            this.textBoxPhaseName.Text = currentPhase.Name;
-            this.textBoxDescription.Text = currentPhase.Description;
-            this._currentPhase = currentPhase;
-            this._updateOnly = true;
+            Text = "Modifier une Phase";
+            textBoxPhaseName.Text = currentPhase.Name;
+            textBoxDescription.Text = currentPhase.Description;
+            _currentPhase = currentPhase;
+            _updateOnly = true;
         }
 
-        private void SaveClick(object sender, System.EventArgs e)
+        private void SaveClick(object sender, EventArgs e)
         {
             var n = textBoxPhaseName.Text;
             var d = textBoxDescription.Text;
@@ -35,12 +35,12 @@ namespace TicTac
             }
 
             var updatedPhase = new Phase() { Id = _currentPhase.Id, Name = n, Description = d };
-            var id = (_updateOnly == true) ?
+            var id = (_updateOnly == true && _currentPhase.Id != null) ?
                 Service.Instance.EditPhase((int)_currentPhase.Id, updatedPhase) :
                 Service.Instance.AddPhase(updatedPhase);
             Console.WriteLine("inserted id = {0}", id);
 
-            parentWindow.UpdateData();
+            _parentWindow.UpdateData();
             Hide();
         }
     }

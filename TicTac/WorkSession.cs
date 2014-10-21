@@ -58,7 +58,7 @@ namespace TicTac
 
         internal void PrettyPrint()
         {
-            Console.Write(this.ToString());
+            Console.Write(ToString());
         }
     }
 }

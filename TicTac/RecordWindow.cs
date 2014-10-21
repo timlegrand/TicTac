@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
-using System.Threading;
 using System.Linq;
+using System.Timers;
 using System.Windows.Forms;
+using TicTac.Properties;
 
 
 namespace TicTac
@@ -12,50 +11,49 @@ namespace TicTac
     public partial class RecordWindow : CommonForm
     {
         private Service _service;
-        private Preferences preferences;
+        private readonly Preferences _preferences;
         public WorkSession WorkSession { get; private set; }
-        private TicTimer ticTimer;
-        private TicTimer recallTimer;
+        private readonly TicTimer _ticTimer;
+        private readonly TicTimer _recallTimer;
 
         public RecordWindow()
-            : base()
         {
-            this.preferences = new DualModePreferences();
-            this.preferences.Load();
+            _preferences = new DualModePreferences();
+            _preferences.Load();
 
             Database.WaitForConnectivity();
             Service.StartAsync();
 
-            this.ticTimer = new TicTimer(OnTimerTick, 1000, true);
-            this.recallTimer = new TicTimer(OnRecallTimerAlarm, 900000); // Every 15 minutes
+            _ticTimer = new TicTimer(OnTimerTick, 1000, true);
+            _recallTimer = new TicTimer(OnRecallTimerAlarm, 900000); // Every 15 minutes
 
             InitializeComponent();
             Initialize();
         }
 
-        public RecordWindow(System.Drawing.Point p)
+        public RecordWindow(Point p)
             : this()
         {
-            this.busyAnimation.Location = p;
+            busyAnimation.Location = p;
         }
 
         private void Initialize()
         {
-            this.Text += " (v " + Program.CurrentVersion + ")";
+            Text += @" (v " + Program.CurrentVersion + @")";
 
-            this.notifyIcon.Icon = this.Icon;
+            notifyIcon.Icon = Icon;
 
             StartPosition = FormStartPosition.Manual;
-            Location = BoundLocation(preferences.StartLocation);
+            Location = BoundLocation(_preferences.StartLocation);
 
             // Following needs Service to be initialized
             _service = Service.Ready();
-            Program.clk.Probe("SERVICE READY");
+            Program.Clk.Probe("SERVICE READY");
 
-            this.SuspendLayout();
+            SuspendLayout();
             InitComboboxes();
             InitButtons();
-            this.ResumeLayout();
+            ResumeLayout();
 
             // Retrieve current WS if any
             ComboBoxArchitectsSelectionChangeCommited(null, null);
@@ -75,8 +73,8 @@ namespace TicTac
             if (_service.ArchitectList != null && _service.ArchitectList.Count() != 0)
             {
                 comboBoxArchitects.Items.AddRange(_service.ArchitectList.ToArray());
-                int id = preferences.LastArchitect != null ? preferences.LastArchitect.Id ?? 0 : 0;
-                var item = comboBoxArchitects.Items.Cast<Architect>().Where(archi => archi.Id == id).FirstOrDefault();
+                int id = _preferences.LastArchitect != null ? _preferences.LastArchitect.Id ?? 0 : 0;
+                var item = comboBoxArchitects.Items.Cast<Architect>().FirstOrDefault(archi => archi.Id == id);
                 comboBoxArchitects.SelectedItem = item ?? comboBoxArchitects.Items[0];
             }
         }
@@ -89,15 +87,15 @@ namespace TicTac
             if (_service.ProjectList != null && _service.ProjectList.Count() != 0)
             {
                 // Sort descending
-                _service.ProjectList.Sort((p1,p2)=>p1.Name.CompareTo(p2.Name));
+                _service.ProjectList.Sort((p1,p2)=>String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
                 _service.ProjectList.Reverse();
                 comboBoxProjects.DataSource = _service.ProjectList;
                 //comboBoxProjects.DisplayMember = "Name";
                 //comboBoxProjects.ValueMember = "Id";
 
                 // Reselect last project
-                var id = preferences.LastProject != null ? preferences.LastProject.Id ?? 0 : 0;
-                var item = comboBoxProjects.Items.Cast<Project>().Where(project => project.Id == id).FirstOrDefault();
+                var id = _preferences.LastProject != null ? _preferences.LastProject.Id ?? 0 : 0;
+                var item = comboBoxProjects.Items.Cast<Project>().FirstOrDefault(project => project.Id == id);
                 comboBoxProjects.SelectedItem = item ?? comboBoxProjects.Items[0];
             }
         }
@@ -110,14 +108,14 @@ namespace TicTac
             if (_service.PhaseList != null && _service.PhaseList.Count() != 0)
             {
                 // Sort ascending
-                _service.PhaseList.Sort((p1, p2) => p1.Name.CompareTo(p2.Name));
+                _service.PhaseList.Sort((p1, p2) => String.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
                 comboBoxPhases.DataSource = _service.PhaseList;
                 //comboBoxProjects.DisplayMember = "Name";
                 //comboBoxProjects.ValueMember = "Id";
 
                 // Reselect last phase
-                var id = preferences.LastPhase != null ? preferences.LastPhase.Id ?? 0 : 0;
-                var item = comboBoxPhases.Items.Cast<Phase>().Where(phase => phase.Id == id).FirstOrDefault();
+                var id = _preferences.LastPhase != null ? _preferences.LastPhase.Id ?? 0 : 0;
+                var item = comboBoxPhases.Items.Cast<Phase>().FirstOrDefault(phase => phase.Id == id);
                 comboBoxPhases.SelectedItem = item ?? comboBoxPhases.Items[0];
             }
         }
@@ -132,20 +130,20 @@ namespace TicTac
                 WorkSession = session;
                 buttonStart.Enabled = false;
                 buttonStop.Enabled = true;
-                notifyIcon.Icon = Properties.Resources.tictac_on;
+                notifyIcon.Icon = Resources.tictac_on;
             }
             else // hope that return value is 0 (big problem otherwise)
             {
                 buttonStart.Enabled = true;
                 buttonStop.Enabled = false;
-                notifyIcon.Icon = Properties.Resources.tictac;
+                notifyIcon.Icon = Resources.tictac;
             }
         }
 
         private WorkSession RestoreSession(Architect archi)
         {
             // 1- Try to retrieve one single open Session in DB
-            var session = _service.GetStartedWorkSessions(archi).SingleOrDefault<WorkSession>();
+            var session = _service.GetStartedWorkSessions(archi).SingleOrDefault();
             if (session == null)
             {
                 comboBoxProjects.Enabled = true;
@@ -163,8 +161,8 @@ namespace TicTac
                                                where phase.Id == session.Phase.Id
                                                select phase).Single();
 
-                ticTimer.Start(DateTime.Now - session.StartTime);
-                recallTimer.Start();
+                _ticTimer.Start(DateTime.Now - session.StartTime);
+                _recallTimer.Start();
 
                 comboBoxProjects.Enabled = false;
                 comboBoxPhases.Enabled = false;
@@ -227,9 +225,9 @@ namespace TicTac
             // System tray icon
             if (notifyIcon != null)
             {
-                this.notifyIcon.Visible = false;
-                this.notifyIcon.Dispose();
-                this.notifyIcon = null;
+                notifyIcon.Visible = false;
+                notifyIcon.Dispose();
+                notifyIcon = null;
             }
         }
 
@@ -238,22 +236,22 @@ namespace TicTac
         private delegate void SetLabelTimeTextDelegate(string newLabel);
         private void SetLabelTimeText(string newLabel)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new SetLabelTimeTextDelegate(SetLabelTimeText), new object[] { newLabel });
+                BeginInvoke(new SetLabelTimeTextDelegate(SetLabelTimeText), new object[] { newLabel });
                 return;
             }
 
-            this.labelTime.Text = newLabel;
+            labelTime.Text = newLabel;
         }
 
-        private void OnTimerTick(object sender, System.Timers.ElapsedEventArgs e)
+        private void OnTimerTick(object sender, ElapsedEventArgs e)
         {
             var s = string.Format("{0:0} jour(s) et {1:00}:{2:00}:{3:00}",
-                ticTimer.Elapsed.TotalDays,
-                ticTimer.Elapsed.Hours,
-                ticTimer.Elapsed.Minutes,
-                ticTimer.Elapsed.Seconds);
+                _ticTimer.Elapsed.TotalDays,
+                _ticTimer.Elapsed.Hours,
+                _ticTimer.Elapsed.Minutes,
+                _ticTimer.Elapsed.Seconds);
 
             SetLabelTimeText(s);
         }
@@ -261,27 +259,27 @@ namespace TicTac
         private delegate void SetAndShowBallonTipDelegate(string title, string message);
         private void SetAndShowBallonTip(string title, string message)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.Invoke(new SetAndShowBallonTipDelegate(SetAndShowBallonTip), new object[] { title, message });
+                Invoke(new SetAndShowBallonTipDelegate(SetAndShowBallonTip), new object[] { title, message });
                 return;
             }
 
-            this.notifyIcon.BalloonTipTitle = title;
-            this.notifyIcon.BalloonTipText = message;
-            this.notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-            this.notifyIcon.ShowBalloonTip(10000);
+            notifyIcon.BalloonTipTitle = title;
+            notifyIcon.BalloonTipText = message;
+            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            notifyIcon.ShowBalloonTip(10000);
         }
 
-        private void OnRecallTimerAlarm(object sender, System.Timers.ElapsedEventArgs e)
+        private void OnRecallTimerAlarm(object sender, ElapsedEventArgs e)
         {
             if (WorkSession == null || WorkSession.IsTerminated())
             {
                 return;
             }
 
-            string previousTitle = this.notifyIcon.BalloonTipTitle;
-            string previousMessage = this.notifyIcon.BalloonTipText;
+            string previousTitle = notifyIcon.BalloonTipTitle;
+            string previousMessage = notifyIcon.BalloonTipText;
 
             string title = String.Format("Hey, {0}!", WorkSession.Architect.FirstName);
             string message = String.Format("Êtes-vous toujours en train de travailler sur la phase {0} du projet {1} ?",
@@ -290,8 +288,8 @@ namespace TicTac
 
             SetAndShowBallonTip(title, message);
 
-            this.notifyIcon.BalloonTipTitle = previousTitle;
-            this.notifyIcon.BalloonTipText = previousMessage;
+            notifyIcon.BalloonTipTitle = previousTitle;
+            notifyIcon.BalloonTipText = previousMessage;
         }
 
 
@@ -304,8 +302,8 @@ namespace TicTac
                 return;
             }
 
-            ticTimer.Start();
-            recallTimer.Start();
+            _ticTimer.Start();
+            _recallTimer.Start();
 
             WorkSession.StartTime = DateTime.Now;
             _service.StartWorkSession(WorkSession);
@@ -315,13 +313,13 @@ namespace TicTac
             buttonStart.Enabled = false;
             buttonStop.Enabled = true;
 
-            notifyIcon.Icon = Properties.Resources.tictac_on;
+            notifyIcon.Icon = Resources.tictac_on;
         }
         
         private void ButtonStopClick(object sender, EventArgs e)
         {
-            ticTimer.Pause();
-            recallTimer.Stop();
+            _ticTimer.Pause();
+            _recallTimer.Stop();
 
             WorkSession.StopTime = DateTime.Now;
             _service.EndWorkSession(WorkSession);
@@ -331,19 +329,19 @@ namespace TicTac
             buttonStart.Enabled = true;
             buttonStop.Enabled = false;
 
-            notifyIcon.Icon = Properties.Resources.tictac;
+            notifyIcon.Icon = Resources.tictac;
         }
 
         private void RecordWindow_Resize(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Minimized)
+            if (WindowState == FormWindowState.Minimized)
             {
                 notifyIcon.ShowBalloonTip(500);
-                this.Hide();
+                Hide();
             }
             else
             {
-                this.Show();
+                Show();
             }
         }
 
@@ -356,32 +354,32 @@ namespace TicTac
             }
 
             // Hide
-            if (this.WindowState == FormWindowState.Normal)
+            if (WindowState == FormWindowState.Normal)
             {
-                this.Hide();
-                this.WindowState = FormWindowState.Minimized;
+                Hide();
+                WindowState = FormWindowState.Minimized;
                 notifyIcon.ShowBalloonTip(500);
             }
             // Show
-            else if (this.WindowState == FormWindowState.Minimized)
+            else if (WindowState == FormWindowState.Minimized)
             {
-                this.Show();
-                this.WindowState = FormWindowState.Normal;
+                Show();
+                WindowState = FormWindowState.Normal;
             }
         }
 
         private void notifyIconMenuExit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void trayMenuItemMinimize_Click(object sender, EventArgs e)
         {
             // Hide
-            if (this.WindowState == FormWindowState.Normal)
+            if (WindowState == FormWindowState.Normal)
             {
-                this.Hide();
-                this.WindowState = FormWindowState.Minimized;
+                Hide();
+                WindowState = FormWindowState.Minimized;
                 notifyIcon.ShowBalloonTip(500);
             }
         }
@@ -389,16 +387,16 @@ namespace TicTac
         private void trayMenuItemOpen_Click(object sender, EventArgs e)
         {
             // Show
-            if (this.WindowState == FormWindowState.Minimized)
+            if (WindowState == FormWindowState.Minimized)
             {
-                this.Show();
-                this.WindowState = FormWindowState.Normal;
+                Show();
+                WindowState = FormWindowState.Normal;
             }
         }
 
         private void trayMenuItemConfigure_Click(object sender, EventArgs e)
         {
-            var configureForm = new ConfigureDatabase(new System.Drawing.Point(144, 120)) { FormBorderStyle = FormBorderStyle.FixedSingle };
+            var configureForm = new ConfigureDatabase(new Point(144, 120)) { FormBorderStyle = FormBorderStyle.FixedSingle };
             configureForm.Show();
         }
 

@@ -5,23 +5,23 @@ namespace TicTac
 {
     public partial class EditProject : Form
     {
-        private readonly DatabaseViewer parentWindow;
-        private Project currentProject; 
-        private bool updateOnly;
+        private readonly DatabaseViewer _parentWindow;
+        private readonly Project _currentProject; 
+        private readonly bool _updateOnly;
 
         public EditProject(DatabaseViewer parent)
         {
             InitializeComponent();
-            this.parentWindow = parent;
+            _parentWindow = parent;
         }
 
         public EditProject(DatabaseViewer parent, Project currentProject) : this(parent)
         {
-            this.Text = "Modifier un Projet";
-            this.textBoxProjectName.Text = currentProject.Name;
-            this.textBoxDescription.Text = currentProject.Description;
-            this.currentProject = currentProject;
-            this.updateOnly = true;
+            Text = "Modifier un Projet";
+            textBoxProjectName.Text = currentProject.Name;
+            textBoxDescription.Text = currentProject.Description;
+            _currentProject = currentProject;
+            _updateOnly = true;
         }
 
         private void SaveClick(object sender, EventArgs e)
@@ -34,13 +34,13 @@ namespace TicTac
                 return;
             }
 
-            var updatedProject = new Project() { Id = currentProject.Id, Name = n, Description = d };
-            var id = (updateOnly == true) ?
-                Service.Instance.EditProject((int)currentProject.Id, updatedProject) :
+            var updatedProject = new Project() { Id = _currentProject.Id, Name = n, Description = d };
+            var id = (_updateOnly == true && _currentProject.Id != null) ?
+                Service.Instance.EditProject((int)_currentProject.Id, updatedProject) :
                 Service.Instance.AddProject(updatedProject);
             Console.WriteLine("inserted id = {0}", id);
 
-            this.parentWindow.UpdateData();
+            _parentWindow.UpdateData();
             Hide();
         }
     }

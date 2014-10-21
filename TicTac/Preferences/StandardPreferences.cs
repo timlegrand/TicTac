@@ -23,9 +23,9 @@ namespace TicTac
             Database.UserName = Properties.Settings.Default.DbUserName;
             Database.Password = Properties.Settings.Default.DbPassword;
 
-            LastArchitect = new Architect() { Id = Properties.Settings.Default.ArchitectId };
-            LastProject = new Project() { Id = Properties.Settings.Default.ProjectId };
-            LastPhase = new Phase() { Id = Properties.Settings.Default.PhaseId };
+            LastArchitect = new Architect { Id = Properties.Settings.Default.ArchitectId };
+            LastProject = new Project { Id = Properties.Settings.Default.ProjectId };
+            LastPhase = new Phase { Id = Properties.Settings.Default.PhaseId };
         }
 
         public override void Save()

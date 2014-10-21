@@ -11,8 +11,8 @@ namespace TicTac
     static class Program
     {
         public static string ApplicationDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TicTac\\";
-        public const bool IsDBPrefStorageAvailable = false;
-        public static WallClock clk;
+        public const bool IsDbPrefStorageAvailable = false;
+        public static WallClock Clk;
 
         public static string CurrentVersion
         {
@@ -36,18 +36,17 @@ namespace TicTac
         static void Main()
         {
             // Prologue
-            clk = new WallClock();
+            Clk = new WallClock();
 
             // Create time recording window and launch application
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            RecordWindow mainWindow;
             try
             {
-                mainWindow = new RecordWindow
-                                 {
-                                     FormBorderStyle = FormBorderStyle.FixedSingle
-                                 };
+                var mainWindow = new RecordWindow
+                {
+                    FormBorderStyle = FormBorderStyle.FixedSingle
+                };
                 Application.Run(mainWindow);
             }
             catch (AbortSignalException)
@@ -57,7 +56,7 @@ namespace TicTac
             }
 
             // Epilogue
-            clk.Print();
+            Clk.Print();
             Logger.Write("PROGRAM END");
             //Logger.Print();
         }

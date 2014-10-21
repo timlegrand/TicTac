@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 
@@ -9,26 +10,26 @@ namespace TicTac
     // Singleton
     public sealed class Service
     {
-        private static ManualResetEvent ready;
-        private static volatile Service instance;
-        private static object syncRoot = new Object();
+        private static ManualResetEvent _ready;
+        private static volatile Service _instance;
+        private static readonly object SyncRoot = new Object();
 
         private readonly DAOClient _dao;
 
-        private List<Project> projectList;
-        private List<Phase> phaseList;
-        private List<Architect> architectList;
-        private List<Company> companyList;
+        private List<Project> _projectList;
+        private List<Phase> _phaseList;
+        private List<Architect> _architectList;
+        private List<Company> _companyList;
 
-        public List<Project> ProjectList        { get { return Instance.projectList; }      private set { projectList = value; } }
-        public List<Phase> PhaseList            { get { return Instance.phaseList; }        private set { phaseList = value; } }
-        public List<Architect> ArchitectList    { get { return Instance.architectList; }    private set { architectList = value; } }
-        public List<Company> CompanyList        { get { return Instance.companyList; }      private set { companyList = value; } }
+        public List<Project> ProjectList        { get { return Instance._projectList; }      private set { _projectList = value; } }
+        public List<Phase> PhaseList            { get { return Instance._phaseList; }        private set { _phaseList = value; } }
+        public List<Architect> ArchitectList    { get { return Instance._architectList; }    private set { _architectList = value; } }
+        public List<Company> CompanyList        { get { return Instance._companyList; }      private set { _companyList = value; } }
 
         // Static constructor
         static Service()
         {
-            Service.ready = new ManualResetEvent(false);
+            _ready = new ManualResetEvent(false);
         }
 
         // Singleton getter & lazy constructor
@@ -36,41 +37,41 @@ namespace TicTac
         {
             get
             {
-                if (instance == null)
+                if (_instance == null)
                 {
-                    lock (syncRoot)
+                    lock (SyncRoot)
                     {
-                        if (instance == null)
-                            instance = new Service();
+                        if (_instance == null)
+                            _instance = new Service();
                     }
                 }
 
-                return instance;
+                return _instance;
             }
         }
 
         // Instance constructor
         private Service()
         {
-            Thread ar = new Thread(delegate()
+            var ar = new Thread(delegate()
             {
                 ArchitectList = new DAOClient().SelectAllArchitects();
             });
             ar.Start();
 
-            Thread pr = new Thread(delegate()
+            var pr = new Thread(delegate()
             {
                 ProjectList = new DAOClient().SelectAllProjects();
             });
             pr.Start();
 
-            Thread ph = new Thread(delegate()
+            var ph = new Thread(delegate()
             {
                 PhaseList = new DAOClient().SelectAllPhases();
             });
             ph.Start();
 
-            Thread co = new Thread(delegate()
+            var co = new Thread(delegate()
             {
                 CompanyList = new DAOClient().SelectAllCompanies();
             });
@@ -83,14 +84,16 @@ namespace TicTac
             ph.Join();
             co.Join();
 
-            Service.ready.Set(); // Tell I'm ready
+            _ready.Set(); // Tell I'm ready
         }
 
         public static void StartAsync()
         {
-            Thread startUpThread = new Thread(delegate()
+            var startUpThread = new Thread(delegate()
             {
-                var s = Service.Instance;
+                // Since call to Instance needed to initiate Service
+                // ReSharper disable once UnusedVariable
+                var s = Instance;
             });
             startUpThread.Start();
         }
@@ -98,15 +101,15 @@ namespace TicTac
         public bool IsReady()
         {
             // Non-blocking check
-            return ready.WaitOne(0);
+            return _ready.WaitOne(0);
         }
 
         internal static Service Ready()
         {
             // Blocking wait
-            ready.WaitOne();
+            _ready.WaitOne();
 
-            return instance;
+            return _instance;
         }
 
         internal List<WorkSession> GetStartedWorkSessions(Architect archi)
@@ -253,7 +256,7 @@ namespace TicTac
             return _dao.UpdatePhase(id, phase);
         }
 
-        internal System.Data.DataTable GetWorkSessionDataTable(int id)
+        internal DataTable GetWorkSessionDataTable(int id)
         {
             return _dao.GetWorkSessionDataTable(id);
         }

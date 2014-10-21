@@ -9,7 +9,7 @@ namespace TicTac
     class DAOClient
     {
         //private DAOClientClass _dao;
-        private DbClient _db;
+        private readonly DbClient _db;
         private MessageQueue _mq;
         private readonly BinaryFormatter _formatter;
 
@@ -218,11 +218,11 @@ namespace TicTac
 
         internal List<Architect> GetAllArchitects()
         {
-            List<Architect> ArchitectList;
+            List<Architect> architectList;
             if (Database.DatabaseConnexionAvailable)
             {
                 // Retrieve data from server
-                ArchitectList = SelectAllArchitects();
+                architectList = SelectAllArchitects();
             }
             else
             {
@@ -231,56 +231,56 @@ namespace TicTac
                 using (var architectsFile = File.Open("Architects.osl", FileMode.Open))
                 {
                     Console.WriteLine("Lecture de la table des architectes (depuis un fichier)");
-                    ArchitectList = (List<Architect>)_formatter.Deserialize(architectsFile);
+                    architectList = (List<Architect>)_formatter.Deserialize(architectsFile);
                 }
             }
-            return ArchitectList;
+            return architectList;
         }
 
         internal List<Project> GetAllProjects()
         {
-            List<Project> ProjectList;
+            List<Project> projectList;
             if (Database.DatabaseConnexionAvailable)
             {
-                ProjectList = SelectAllProjects();
+                projectList = SelectAllProjects();
             }
             else
             {
                 using (var projectsFile = File.Open("Projects.osl", FileMode.Open))
                 {
                     Console.WriteLine("Lecture de la table des projets (depuis un fichier)");
-                    ProjectList = (List<Project>)_formatter.Deserialize(projectsFile);
+                    projectList = (List<Project>)_formatter.Deserialize(projectsFile);
                 }
             }
-            return ProjectList;
+            return projectList;
         }
 
         internal List<Phase> GetAllPhases()
         {
-            List<Phase> PhaseList;
+            List<Phase> phaseList;
             if (Database.DatabaseConnexionAvailable)
             {
-                PhaseList = SelectAllPhases();
+                phaseList = SelectAllPhases();
             }
             else
             {
                 using (var phasesFile = File.Open("Phases.osl", FileMode.Open))
                 {
                     Console.WriteLine("Lecture de la table des phases (depuis un fichier)");
-                    PhaseList = (List<Phase>)_formatter.Deserialize(phasesFile);
+                    phaseList = (List<Phase>)_formatter.Deserialize(phasesFile);
                 }
             }
-            return PhaseList;
+            return phaseList;
         }
 
         internal List<Company> GetAllCompanies()
         {
-            List<Company> CompanyList = null;
+            List<Company> companyList = null;
             if (Database.DatabaseConnexionAvailable)
             {
-                CompanyList = SelectAllCompanies();
+                companyList = SelectAllCompanies();
             }
-            return CompanyList;
+            return companyList;
         }
     }
 }

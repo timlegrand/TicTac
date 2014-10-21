@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -26,7 +27,8 @@ namespace TicTac
         }
 
         // Constructors
-        public BackupPreferences() : base() {}
+        public BackupPreferences()
+        {}
         public BackupPreferences(RecordWindow recordWindow) : base(recordWindow) {}
 
         public override void Save()
@@ -149,7 +151,7 @@ namespace TicTac
                 var firstname = reader.GetAttribute("firstname") ?? "Unknown";
                 var lastname = reader.GetAttribute("lastname") ?? "Unknown";
                 var company = Int32.Parse(reader.GetAttribute("company") ?? "-1");
-                LastArchitect = new Architect() { Id = id, FirstName = firstname, LastName = lastname, Company = company };
+                LastArchitect = new Architect { Id = id, FirstName = firstname, LastName = lastname, Company = company };
             }
 
             // Last project
@@ -158,7 +160,7 @@ namespace TicTac
                 var id = Int32.Parse(reader.GetAttribute("id") ?? "-1");
                 var name = reader.GetAttribute("name") ?? "Unknown";
                 var description = reader.GetAttribute("description") ?? "Unknown";
-                LastProject = new Project() { Id = id, Name = name, Description = description };
+                LastProject = new Project { Id = id, Name = name, Description = description };
             }
 
             // Last phase
@@ -167,7 +169,7 @@ namespace TicTac
                 var id = Int32.Parse(reader.GetAttribute("id") ?? "-1");
                 var name = reader.GetAttribute("name") ?? "Unknown";
                 var description = reader.GetAttribute("description") ?? "Unknown";
-                LastPhase = new Phase() { Id = id, Name = name, Description = description };
+                LastPhase = new Phase { Id = id, Name = name, Description = description };
             }
 
             // Last prefered window location
@@ -175,7 +177,7 @@ namespace TicTac
             {
                 var x = Int32.Parse(reader.GetAttribute("x") ?? "-1");
                 var y = Int32.Parse(reader.GetAttribute("y") ?? "-1");
-                StartLocation = new System.Drawing.Point(x, y);
+                StartLocation = new Point(x, y);
             }
 
             reader.Close();
@@ -183,7 +185,7 @@ namespace TicTac
 
         public override bool IsValid()
         {
-            return (StartLocation != null &&
+            return (StartLocation.Equals(new Point(-1,-1)) &&
                     LastArchitect != null && LastArchitect != null &&
                     LastProject != null && LastProject != null &&
                     LastPhase != null && LastPhase != null);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,44 +9,47 @@ namespace TicTac
     public class DateRange : IEquatable<DateRange>
     {
 
-        Nullable<DateTime> startDate, endDate;
+        DateTime? _startDate, _endDate;
 
-        public DateRange() : this(new Nullable<DateTime>(), new Nullable<DateTime>()) { }
+        public DateRange() : this(new DateTime?(), new DateTime?()) { }
 
-        public DateRange(Nullable<DateTime> startDate, Nullable<DateTime> endDate)
+        public DateRange(DateTime? startDate, DateTime? endDate)
         {
             AssertStartDateFollowsEndDate(startDate, endDate);
-            this.startDate = startDate;
-            this.endDate = endDate;
+            _startDate = startDate;
+            _endDate = endDate;
         }
 
         //public Nullable<TimeSpan> TimeSpan {
         //    get {  return endDate – startDate; }
         //}
 
-        public Nullable<DateTime> StartDate
+        public DateTime? StartDate
         {
-            get { return startDate; }
+            get { return _startDate; }
             set
             {
-                AssertStartDateFollowsEndDate(value, this.endDate);
-                startDate = value;
+                AssertStartDateFollowsEndDate(value, _endDate);
+                _startDate = value;
             }
         }
 
-        public Nullable<DateTime> EndDate
+        public DateTime? EndDate
         {
-            get { return endDate; }
+            get { return _endDate; }
             set
             {
-                AssertStartDateFollowsEndDate(this.startDate, value);
-                endDate = value;
+                AssertStartDateFollowsEndDate(_startDate, value);
+                _endDate = value;
             }
         }
 
-        private void AssertStartDateFollowsEndDate(Nullable<DateTime> startDate,
-            Nullable<DateTime> endDate)
+        private static void AssertStartDateFollowsEndDate(DateTime? startDate,
+            DateTime? endDate)
         {
+            if (startDate == null) throw new ArgumentNullException("startDate");
+            if (endDate == null) throw new ArgumentNullException("endDate");
+
             if ((startDate.HasValue && endDate.HasValue) &&
                 (endDate.Value < startDate.Value))
                 throw new InvalidOperationException("Start Date must be less than or equal to End Date");
@@ -57,31 +61,31 @@ namespace TicTac
             return new DateRange(GetLaterStartDate(other.StartDate), GetEarlierEndDate(other.EndDate));
         }
 
-        private Nullable<DateTime> GetLaterStartDate(Nullable<DateTime> other)
+        private DateTime? GetLaterStartDate(DateTime? other)
         {
-            return Nullable.Compare<DateTime>(startDate, other) >= 0 ? startDate : other;
+            return Nullable.Compare(_startDate, other) >= 0 ? _startDate : other;
         }
 
-        private Nullable<DateTime> GetEarlierEndDate(Nullable<DateTime> other)
+        private DateTime? GetEarlierEndDate(DateTime? other)
         {
             //!endDate.HasValue == +infinity, not negative infinity
             //as is the case with !startDate.HasValue
-            if (Nullable.Compare<DateTime>(endDate, other) == 0) return other;
-            if (endDate.HasValue && !other.HasValue) return endDate;
-            if (!endDate.HasValue && other.HasValue) return other;
-            return (Nullable.Compare<DateTime>(endDate, other) >= 0) ? other : endDate;
+            if (Nullable.Compare(_endDate, other) == 0) return other;
+            if (_endDate.HasValue && !other.HasValue) return _endDate;
+            if (!_endDate.HasValue && other.HasValue) return other;
+            return (Nullable.Compare(_endDate, other) >= 0) ? other : _endDate;
         }
 
         public bool Intersects(DateRange other)
         {
-            if ((this.startDate.HasValue && other.EndDate.HasValue &&
-                other.EndDate.Value < this.startDate.Value) ||
-                (this.endDate.HasValue && other.StartDate.HasValue &&
-                other.StartDate.Value > this.endDate.Value) ||
-                (other.StartDate.HasValue && this.endDate.HasValue &&
-                this.endDate.Value < other.StartDate.Value) ||
-                (other.EndDate.HasValue && this.startDate.HasValue &&
-                this.startDate.Value > other.EndDate.Value))
+            if ((_startDate.HasValue && other.EndDate.HasValue &&
+                other.EndDate.Value < _startDate.Value) ||
+                (_endDate.HasValue && other.StartDate.HasValue &&
+                other.StartDate.Value > _endDate.Value) ||
+                (other.StartDate.HasValue && _endDate.HasValue &&
+                _endDate.Value < other.StartDate.Value) ||
+                (other.EndDate.HasValue && _startDate.HasValue &&
+                _startDate.Value > other.EndDate.Value))
             {
                 return false;
             }
@@ -90,20 +94,20 @@ namespace TicTac
 
         public bool Equals(DateRange other)
         {
-            if (object.ReferenceEquals(other, null)) return false;
-            return ((startDate == other.StartDate) && (endDate == other.EndDate));
+            if (ReferenceEquals(other, null)) return false;
+            return ((_startDate == other.StartDate) && (_endDate == other.EndDate));
         }
 
     }
 
 
-    public class DateRangeComparerByStartDate : System.Collections.IComparer,
-    System.Collections.Generic.IComparer<DateRange>
+    public class DateRangeComparerByStartDate : IComparer,
+    IComparer<DateRange>
     {
         public int Compare(object x, object y)
         {
             if (!(x is DateRange) || !(y is DateRange))
-                throw new System.ArgumentException("Value not a DateRange");
+                throw new ArgumentException("Value not a DateRange");
             return Compare((DateRange)x, (DateRange)y);
         }
         public int Compare(DateRange x, DateRange y)

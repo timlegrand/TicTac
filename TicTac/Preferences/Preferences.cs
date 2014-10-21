@@ -18,7 +18,7 @@ namespace TicTac
         public string DbPassword { get; set; }
 
         // Constructor
-        public Preferences()
+        protected Preferences()
         {
             StartLocation = new Point(-1,-1);
             LastArchitect = null;
@@ -26,31 +26,23 @@ namespace TicTac
             LastPhase = null;
         }
 
-        public Preferences(RecordWindow recordWindow)
+        protected Preferences(RecordWindow recordWindow)
             : this()
-        {            
-            if (recordWindow.WorkSession != null)
-            {
-                LastArchitect = recordWindow.WorkSession.Architect ?? null;
-                LastProject = recordWindow.WorkSession.Project ?? null;
-                LastPhase = recordWindow.WorkSession.Phase ?? null;
+        {
+            if (recordWindow.WorkSession == null) return;
 
-                // If WorkSession exists consider that RecordWindow location is approved by user
-                // (only if window in not minimized to system tray).
-                if (recordWindow.WindowState != FormWindowState.Minimized)
-                {
-                    StartLocation = recordWindow.Location;
-                }
-                else
-                {
-                    StartLocation = new Point(-1, -1);
-                }
+            LastArchitect = recordWindow.WorkSession.Architect ?? null;
+            LastProject = recordWindow.WorkSession.Project ?? null;
+            LastPhase = recordWindow.WorkSession.Phase ?? null;
+
+            // If WorkSession exists consider that RecordWindow location is approved by user
+            // (only if window in not minimized to system tray).
+            StartLocation = recordWindow.WindowState != FormWindowState.Minimized ? recordWindow.Location : new Point(-1, -1);
                 
-                DbServerAddress = Database.ServerAddress;
-                DbName = Database.Name;
-                DbUserName = Database.UserName;
-                DbPassword = Database.Password;
-            }
+            DbServerAddress = Database.ServerAddress;
+            DbName = Database.Name;
+            DbUserName = Database.UserName;
+            DbPassword = Database.Password;
         }
 
         public abstract void Load();

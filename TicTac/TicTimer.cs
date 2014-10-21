@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Timers;
 
-/// <summary>
-/// Timer class that fires a callback every tick and keeps elapsed time.</summary>
-/// <remarks>
-/// Supports callback firing right on start (no wait for first trigger).
-/// Supports standard Pause and Resume.
-/// Supports long term resume (start with a given offset).</remarks>
 namespace TicTac
 {
+    /// <summary>
+    /// Timer class that fires a callback every tick and keeps elapsed time.</summary>
+    /// <remarks>
+    /// Supports callback firing right on start (no wait for first trigger).
+    /// Supports standard Pause and Resume.
+    /// Supports long term resume (start with a given offset).</remarks>
     class TicTimer
     {
-        private Timer _timer;
+        private readonly Timer _timer;
         private ResumableStopwatch _stopWatch;
-        private ElapsedEventHandler _callback;
-        private bool _fireAtLaunch = false;
+        private readonly ElapsedEventHandler _callback;
+        private readonly bool _fireAtLaunch = false;
 
         /// <summary>
         /// The main class constructor.</summary>
@@ -24,9 +24,7 @@ namespace TicTac
         {
             _stopWatch = new ResumableStopwatch();
             _callback = null;
-            _timer = new System.Timers.Timer();
-            _timer.Interval = 1000;
-            _timer.AutoReset = true;
+            _timer = new Timer {Interval = 1000, AutoReset = true};
         }
 
         /// <summary>
@@ -84,11 +82,11 @@ namespace TicTac
         {
             if (_callback != null)
             {
-                if (_fireAtLaunch == true)
+                if (_fireAtLaunch)
                 {
                     _callback(this, null);
                 }
-                _timer.Elapsed += new ElapsedEventHandler(_callback);
+                _timer.Elapsed += _callback;
             }
             _timer.Start();
             _stopWatch.Start();
@@ -100,7 +98,7 @@ namespace TicTac
         public void Start(TimeSpan startOffset)
         {
             _stopWatch = new ResumableStopwatch(startOffset);
-            this.Start();
+            Start();
         }
 
         /// <summary>
@@ -111,7 +109,7 @@ namespace TicTac
             _stopWatch.Reset();
             if (_callback != null)
             {
-                _timer.Elapsed -= new ElapsedEventHandler(_callback);
+                _timer.Elapsed -= _callback;
             }
         }
 

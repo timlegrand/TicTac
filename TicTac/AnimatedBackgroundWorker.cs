@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 
 namespace TicTac
@@ -7,14 +6,13 @@ namespace TicTac
     public class AnimatedBackgroundWorker : BackgroundWorker
     {
         public AnimatedBackgroundWorker(
-            DoWorkEventHandler ShowBusyAnimation,
-            DoWorkEventHandler LongOperation,
-            RunWorkerCompletedEventHandler HideBusyAnimation)
-            : base()
+            DoWorkEventHandler showBusyAnimation,
+            DoWorkEventHandler longOperation,
+            RunWorkerCompletedEventHandler hideBusyAnimation)
         {
-            this.DoWork += ShowBusyAnimation;
-            this.DoWork += LongOperation;
-            this.RunWorkerCompleted += HideBusyAnimation;
+            DoWork += showBusyAnimation;
+            DoWork += longOperation;
+            RunWorkerCompleted += hideBusyAnimation;
         }
             
     }

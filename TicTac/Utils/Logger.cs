@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -46,14 +44,14 @@ namespace TicTac
 
         public static void Write(string message)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             string now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture);
             string log = String.Format("{0}: {1}", now, message ?? "");
 
             sb.Append(log);
 
-            using (StreamWriter outfile = new StreamWriter(FilePathAndName, true))
+            using (var outfile = new StreamWriter(FilePathAndName, true))
             {
                 outfile.WriteLine(sb.ToString());
             }
@@ -61,7 +59,7 @@ namespace TicTac
 
         public static void Print()
         {
-            string text = System.IO.File.ReadAllText(FilePathAndName);
+            string text = File.ReadAllText(FilePathAndName);
             Console.WriteLine(text);
         }
     }

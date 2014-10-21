@@ -6,27 +6,27 @@ namespace TicTac
 {
     public partial class EditArchitect : Form
     {
-        private readonly DatabaseViewer parentWindow;
-        private Architect currentArchitect; 
-        private bool updateOnly;
+        private readonly DatabaseViewer _parentWindow;
+        private readonly Architect _currentArchitect; 
+        private readonly bool _updateOnly;
 
         public EditArchitect(DatabaseViewer parent)
         {
             InitializeComponent();
-            this.parentWindow = parent;
-            this.comboBoxCompany.Items.AddRange(Service.Instance.GetAllCompanies().ToArray());
-            this.comboBoxCompany.SelectedItem = this.comboBoxCompany.Items[0];
-            this.updateOnly = false;
+            _parentWindow = parent;
+            comboBoxCompany.Items.AddRange(Service.Instance.GetAllCompanies().ToArray());
+            comboBoxCompany.SelectedItem = comboBoxCompany.Items[0];
+            _updateOnly = false;
         }
 
         public EditArchitect(DatabaseViewer parent, Architect architect) : this(parent)
         {
-            this.Text = "Modifier un architecte";
-            this.textBoxFirstName.Text = architect.FirstName;
-            this.textBoxLastName.Text = architect.LastName;
-            this.comboBoxCompany.SelectedItem = Service.Instance.SelectCompanyFromId(architect.Company);
-            this.currentArchitect = architect;
-            this.updateOnly = true;
+            Text = "Modifier un architecte";
+            textBoxFirstName.Text = architect.FirstName;
+            textBoxLastName.Text = architect.LastName;
+            comboBoxCompany.SelectedItem = Service.Instance.SelectCompanyFromId(architect.Company);
+            _currentArchitect = architect;
+            _updateOnly = true;
         }
 
         private void SaveClick(object sender, EventArgs e)
@@ -40,13 +40,13 @@ namespace TicTac
                 return;
             }
 
-            var updatedArchitect = new Architect() { Id = currentArchitect.Id, Company = (int)cp.Id, FirstName = fn, LastName = ln };
-            var id = (updateOnly == true) ?
-                Service.Instance.EditArchitect((int)currentArchitect.Id, updatedArchitect) :
+            var updatedArchitect = new Architect() { Id = _currentArchitect.Id, Company = (int)cp.Id, FirstName = fn, LastName = ln };
+            var id = (_updateOnly == true && _currentArchitect.Id != null) ?
+                Service.Instance.EditArchitect((int)_currentArchitect.Id, updatedArchitect) :
                 Service.Instance.AddArchitect(updatedArchitect);
             Console.WriteLine("inserted id = {0}", id);
 
-            parentWindow.UpdateData();
+            _parentWindow.UpdateData();
             Hide();
         }
     }

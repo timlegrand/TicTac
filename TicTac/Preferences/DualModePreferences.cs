@@ -5,32 +5,32 @@ namespace TicTac
 {
     public class DualModePreferences : Preferences
     {
-        BackupPreferences FileMode;
-        StandardPreferences IntegratedMode;
+        readonly BackupPreferences _fileMode;
+        readonly StandardPreferences _integratedMode;
 
         public DualModePreferences()
             : base()
         {
-            FileMode = new BackupPreferences();
-            IntegratedMode = new StandardPreferences();
+            _fileMode = new BackupPreferences();
+            _integratedMode = new StandardPreferences();
         }
 
         public DualModePreferences(RecordWindow recordWindow)
             : base(recordWindow)
         {
-            FileMode = new BackupPreferences(recordWindow)
+            _fileMode = new BackupPreferences(recordWindow)
             {
-                StartLocation = this.StartLocation,
-                LastArchitect = this.LastArchitect,
-                LastProject = this.LastProject,
-                LastPhase = this.LastPhase,
+                StartLocation = StartLocation,
+                LastArchitect = LastArchitect,
+                LastProject = LastProject,
+                LastPhase = LastPhase,
             };
-            IntegratedMode = new StandardPreferences()
+            _integratedMode = new StandardPreferences()
             {
-                StartLocation = this.StartLocation,
-                LastArchitect = this.LastArchitect,
-                LastProject = this.LastProject,
-                LastPhase = this.LastPhase,
+                StartLocation = StartLocation,
+                LastArchitect = LastArchitect,
+                LastProject = LastProject,
+                LastPhase = LastPhase,
             };
         }
 
@@ -38,14 +38,14 @@ namespace TicTac
         {
             try
             {
-                FileMode.Load();
-                Synchronize(FileMode);
+                _fileMode.Load();
+                Synchronize(_fileMode);
             }
             catch (Exception e)
             {
                 Logger.Write(e);
-                IntegratedMode.Load();
-                Synchronize(IntegratedMode);
+                _integratedMode.Load();
+                Synchronize(_integratedMode);
             }
         }
 
@@ -53,10 +53,10 @@ namespace TicTac
         {
             try
             {
-                Logger.Write("IntegratedMode preferences: " + IntegratedMode.ToString());
-                IntegratedMode.Save();
-                Logger.Write("FileMode preferences: " + FileMode.ToString());
-                FileMode.Save();
+                Logger.Write("IntegratedMode preferences: " + _integratedMode.ToString());
+                _integratedMode.Save();
+                Logger.Write("FileMode preferences: " + _fileMode.ToString());
+                _fileMode.Save();
             }
             catch (Exception e)
             {
@@ -66,10 +66,10 @@ namespace TicTac
 
         protected void Synchronize(Preferences mode)
         {
-            this.StartLocation = mode.StartLocation;
-            this.LastArchitect = mode.LastArchitect;
-            this.LastProject = mode.LastProject;
-            this.LastPhase = mode.LastPhase;
+            StartLocation = mode.StartLocation;
+            LastArchitect = mode.LastArchitect;
+            LastProject = mode.LastProject;
+            LastPhase = mode.LastPhase;
         }
     }
 }

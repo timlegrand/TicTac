@@ -18,7 +18,7 @@ namespace TicTac
 
         public static bool Abort { get; set; }
 
-        private static object syncRoot = new Object();
+        private static readonly object SyncRoot = new Object();
 
         // Static constructor
         static Database()
@@ -38,24 +38,24 @@ namespace TicTac
             }
 
             // Prevent from redundant, simultaneous requests from other threads
-            lock (syncRoot)
+            lock (SyncRoot)
             {
                 if (DatabaseConnexionChecked && LastServerChecked == serverAddress)
                 {
                     return DatabaseConnexionAvailable;
                 }
 
-                string _connectionString =
+                string connectionString =
                     "SERVER='" + serverAddress + "';" +
                     "DATABASE='" + dbName + "';" +
                     "UID='" + userName + "';" +
                     "PASSWORD='" + hPassword + "';";
-                var _connection = new MySqlConnection(_connectionString);
+                var connection = new MySqlConnection(connectionString);
 
                 try
                 {
-                    _connection.Open();
-                    _connection.Close();
+                    connection.Open();
+                    connection.Close();
                 }
                 catch (MySqlException ex)
                 {
