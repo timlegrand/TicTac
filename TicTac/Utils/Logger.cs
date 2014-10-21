@@ -22,11 +22,21 @@ namespace TicTac
             }
             FilePathAndName = Path.Combine(path, FileName);
 
+            // If log file size is greater than limit, backup and restart logging
+            if (File.Exists(FilePathAndName) && new FileInfo(FilePathAndName).Length > 1000000)
+            {
+                string backupName = FilePathAndName + ".old";
+                if (File.Exists(backupName))
+                {
+                    File.Delete(backupName);
+                }
+
+                File.Move(FilePathAndName, backupName);
+            }
+
             // Log file header
             Write("Logger started.");
             Write(String.Format("TicTac version: {0}", Program.CurrentVersion));
-
-            
         }
 
         public static void Write(Exception ex)

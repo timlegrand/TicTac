@@ -59,7 +59,7 @@ namespace TicTac
             // Epilogue
             clk.Print();
             Logger.Write("PROGRAM END");
-            Logger.Print();
+            //Logger.Print();
         }
     }
 }
