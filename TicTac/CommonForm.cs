@@ -92,7 +92,7 @@ namespace TicTac
 
         protected Point BoundLocation(int x, int y)
         {
-            if (x != -1 && y != -1)
+            if (x > 0 && y > 0)
             {
                 x = (x < Screen.PrimaryScreen.Bounds.Width - this.Width) ? x : Screen.PrimaryScreen.Bounds.Width - this.Width;
                 x = (x >= 0) ? x : 0;
