@@ -183,10 +183,10 @@ namespace TicTac
             return _db.UpdatePhase(id, phase);
         }
 
-        internal System.Data.DataTable GetWorkSessionDataTable(int id)
+        internal System.Data.DataTable GetWorkSessionDataTable(int archi_id, int? project_id, int? phase_id)
         {
             SwitchDAO();
-            return _db.GetWorkSessionDataTable(id);
+            return _db.GetWorkSessionDataTable(archi_id, project_id, phase_id);
         }
 
         internal void SaveAllPhases(List<Phase> PhaseList)

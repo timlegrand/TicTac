@@ -256,9 +256,9 @@ namespace TicTac
             return _dao.UpdatePhase(id, phase);
         }
 
-        internal DataTable GetWorkSessionDataTable(int id)
+        internal DataTable GetWorkSessionDataTable(int archi_id, int? project_id, int? phase_id)
         {
-            return _dao.GetWorkSessionDataTable(id);
+            return _dao.GetWorkSessionDataTable(archi_id, project_id, phase_id);
         }
     }
 }

@@ -701,15 +701,17 @@ namespace TicTac.DAO
             return id;
         }
 
-        internal DataTable GetWorkSessionDataTable(int id)
+        internal DataTable GetWorkSessionDataTable(int? archi_id, int? project_id, int? phase_id)
         {
             if (OpenConnection())
             {
                 var query = "SELECT id, startdate, enddate, TIMEDIFF(enddate, startdate) AS 'duration' FROM r_worked " +
                            "WHERE " +
-                           "enddate IS NOT NULL AND " +
-                           "archi=" + id;
-
+                           "enddate IS NOT NULL";
+                query += archi_id != null ? " AND archi=" + archi_id : "";
+                query += project_id != null ? " AND project=" + project_id : "";
+                query += phase_id != null ? " AND phase=" + phase_id : "";
+                Console.WriteLine(query);
                 var cmd = new MySqlCommand(query, _connection);
 
                 MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);

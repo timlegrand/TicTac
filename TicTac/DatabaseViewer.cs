@@ -30,10 +30,14 @@ namespace TicTac
             InitializeDataGridView();
         }
 
+        delegate void UpdateDataGridViewDelegate();
         private void InitializeDataGridView()
         {
-            int id = (_currentArchitect != null && _currentArchitect.Id != null) ? (int)_currentArchitect.Id : 0;
-            DataTable data = Service.Instance.GetWorkSessionDataTable(id);
+            int archi_id = (_currentArchitect != null && _currentArchitect.Id != null) ? (int)_currentArchitect.Id : 0;
+            int? project_id = (_currentProject != null && _currentProject.Id != null) ? _currentProject.Id : null;
+            int? phase_id = (_currentPhase != null && _currentPhase.Id != null) ? _currentPhase.Id : null;
+            Console.WriteLine("{0} {1} {2}\n", archi_id, project_id, phase_id);
+            DataTable data = Service.Instance.GetWorkSessionDataTable(archi_id, project_id, phase_id);
 
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = data;
@@ -70,13 +74,14 @@ namespace TicTac
 
         delegate void LongOperationDelegate();
         private void LongOperation(object sender, DoWorkEventArgs e)
-        {            
+        {
             var archiId = (_currentArchitect != null) ? _currentArchitect.Id : null;
             var projectId = (_currentProject != null) ? _currentProject.Id : null;
             var phaseId = (_currentPhase != null) ? _currentPhase.Id : null;
 
             var timeSpan = Service.Instance.SelectTimeCount(archiId, projectId, phaseId);
 
+            this.BeginInvoke(new UpdateDataGridViewDelegate(InitializeDataGridView));
             this.BeginInvoke(new UpdateTextBoxCountDelegate(UpdateTextBoxCount), timeSpan);
         }
 
@@ -89,6 +94,7 @@ namespace TicTac
 
         private void ButtonValidateClick(object sender, EventArgs e)
         {
+            InitializeDataGridView();
             var bgw = new AnimatedBackgroundWorker(ShowBusyAnimation, LongOperation, HideBusyAnimation);
             bgw.RunWorkerAsync();
         }
