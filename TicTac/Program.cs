@@ -28,6 +28,10 @@ namespace TicTac
                     v = v.Substring(0, v.Length - 2);
                 }
 
+#if DEBUG
+                v += "d";
+#endif
+
                 return v;
             }
         }
